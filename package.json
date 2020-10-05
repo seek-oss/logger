@@ -1,0 +1,59 @@
+{
+  "author": {
+    "name": "Discover"
+  },
+  "bugs": {
+    "url": "https://github.com/seek-oss/logger-js/issues"
+  },
+  "dependencies": {
+    "@types/pino": "^6.3.2",
+    "dtrim": "^1.9.0",
+    "pino": "^6.6.0",
+    "pino-std-serializers": "^2.5.0"
+  },
+  "description": "Standardized logging",
+  "devDependencies": {
+    "@types/node": "^11.10.4",
+    "@types/split2": "^2.1.6",
+    "skuba": "3.9.2",
+    "split2": "^3.1.1"
+  },
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5.5.0"
+  },
+  "files": [
+    "lib*/**/*.d.ts",
+    "lib*/**/*.js",
+    "lib*/**/*.js.map",
+    "lib*/**/*.json"
+  ],
+  "homepage": "https://github.com/seek-oss/logger-js#readme",
+  "license": "UNLICENSED",
+  "main": "./lib-commonjs/index.js",
+  "module": "./lib-es2015/index.js",
+  "name": "@seek/logger-js",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seek-oss/logger-js.git"
+  },
+  "scripts": {
+    "format": "skuba format",
+    "lint": "skuba lint",
+    "clean": "rm -fr lib",
+    "build": "skuba build-package",
+    "test": "skuba test",
+    "prepush": "yarn test",
+    "release": "yarn build && skuba release"
+  },
+  "sideEffects": "false",
+  "skuba": {
+    "entryPoint": "src/index.ts",
+    "template": null,
+    "type": "package",
+    "version": "3.9.2"
+  },
+  "types": "./lib-types/index.d.ts",
+  "version": "0.0.0-semantically-released"
+}
