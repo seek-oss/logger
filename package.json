@@ -9,6 +9,7 @@
     "@types/pino": "^6.3.2",
     "dtrim": "^1.9.0",
     "pino": "^6.6.0",
+    "pino-pretty": "^4.2.1",
     "pino-std-serializers": "^2.5.0"
   },
   "description": "Standardized logging",
