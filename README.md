@@ -1,9 +1,9 @@
 # Logger JS
 
-[![GitHub Release](https://github.com/seek-oss/logger-js/workflows/Release/badge.svg?branch=master)](https://github.com/seek-oss/logger-js/actions?query=workflow%3ARelease)
-[![GitHub Validate](https://github.com/seek-oss/logger-js/workflows/Validate/badge.svg?branch=master)](https://github.com/seek-oss/logger-js/actions?query=workflow%3AValidate)
+[![GitHub Release](https://github.com/seek-oss/logger/workflows/Release/badge.svg?branch=master)](https://github.com/seek-oss/logger/actions?query=workflow%3ARelease)
+[![GitHub Validate](https://github.com/seek-oss/logger/workflows/Validate/badge.svg?branch=master)](https://github.com/seek-oss/logger/actions?query=workflow%3AValidate)
 [![Node.js version](https://img.shields.io/badge/node-%3E%3D%208-brightgreen)](https://nodejs.org/en/)
-[![npm package](https://img.shields.io/npm/v/@seek/logger-js)](https://www.npmjs.com/package/@seek/logger-js)
+[![npm package](https://img.shields.io/npm/v/@seek/logger)](https://www.npmjs.com/package/@seek/logger)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
@@ -14,7 +14,7 @@ This allows us consistently query request and response across all apps.
 ## Sample Usage
 
 ```typescript
-import createLogger from '@seek/logger-js';
+import createLogger from '@seek/logger';
 
 // Initialize - by default logs to Console Stream
 const logger = createLogger({
@@ -63,7 +63,7 @@ The following trimming rules apply to all logging data:
 - All strings that are longer than 512 will be trimmed.
 - All buffers will be substituted with their string representations, eg. "Buffer(123)".
 
-All Bearer tokens (regardless of their placement in the log object) will be redacted by the logger-js itself.
+All Bearer tokens (regardless of their placement in the log object) will be redacted by the logger itself.
 
 As trimming operations are not cheap please make sure your application logs only meaningful data which does not contain
 Buffers, deeply nested objects, large arrays or other large entities, because it might lead to significant performance issues of your application.
@@ -74,7 +74,7 @@ Library is utilising [Pino](https://github.com/pinojs/pino/blob/master/docs/api.
 If you would like to customise your logging you could do so by providing options acceptable by pino while creating a logger like so:
 
 ```javascript
-import createLogger, { pino } from '@seek/logger-js';
+import createLogger, { pino } from '@seek/logger';
 
 const logger = createLogger(
   {
