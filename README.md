@@ -68,10 +68,10 @@ All Bearer tokens (regardless of their placement in the log object) will be reda
 As trimming operations are not cheap please make sure your application logs only meaningful data which does not contain
 Buffers, deeply nested objects, large arrays or other large entities, because it might lead to significant performance issues of your application.
 
-## Pino
+### Pino
 
-Library is utilising [Pino](https://github.com/pinojs/pino/blob/master/docs/api.md#options).
-If you would like to customise your logging you could do so by providing options acceptable by pino while creating a logger like so:
+**@seek/logger** uses Pino under the hood.
+You can customise your logger by providing [Pino options] like so:
 
 ```javascript
 import createLogger, { pino } from '@seek/logger-js';
@@ -87,7 +87,27 @@ const logger = createLogger(
 const extremeLogger = createLogger({ name: 'my-app' }, pino.extreme());
 ```
 
-Note: createLogger mutates the supplied destination in order to redact sensitive data.
+Note: `createLogger` mutates the supplied destination in order to redact sensitive data.
+
+### Pretty printing
+
+**@seek/logger** supports Pino-compatible pretty printers.
+For example, you can install **[pino-pretty]** as a `devDependency`:
+
+```shell
+yarn add --dev pino-pretty
+```
+
+Then selectively enable pretty printing when running your application locally:
+
+```typescript
+import createLogger from '@seek/logger-js';
+
+const logger = createLogger({
+  name: 'my-app',
+  prettyPrint: process.env.ENVIRONMENT === 'local',
+});
+```
 
 ## Serializers
 
@@ -98,3 +118,6 @@ If other serializers with same keys are provided to the library, they will take 
 
 If you would like to enforce the structure of objects being logged, define the interface to log and specify it as the generic type in the logger functions.
 Compatibility should be maintained with the existing [`serializer functions`](src/serializers/index.ts).
+
+[pino options]: https://github.com/pinojs/pino/blob/master/docs/api.md#options
+[pino-pretty]: https://github.com/pinojs/pino-pretty
