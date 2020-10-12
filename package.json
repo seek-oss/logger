@@ -29,7 +29,7 @@
     "lib*/**/*.json"
   ],
   "homepage": "https://github.com/seek-oss/logger#readme",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "main": "./lib-commonjs/index.js",
   "module": "./lib-es2015/index.js",
   "name": "@seek/logger",
