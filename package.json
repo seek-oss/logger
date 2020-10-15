@@ -8,15 +8,15 @@
   "dependencies": {
     "@types/pino": "^6.3.2",
     "dtrim": "^1.9.0",
-    "pino": "^6.6.0",
+    "pino": "^6.7.0",
     "pino-std-serializers": "^2.5.0"
   },
   "description": "Standardized logging",
   "devDependencies": {
-    "@types/node": "^11.10.4",
-    "@types/split2": "^2.1.6",
+    "@types/node": "11.10.4",
+    "@types/split2": "2.1.6",
     "skuba": "3.9.2",
-    "split2": "^3.1.1"
+    "split2": "3.2.2"
   },
   "engines": {
     "node": ">=8",
