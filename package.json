@@ -3,7 +3,7 @@
     "name": "Discover"
   },
   "bugs": {
-    "url": "https://github.com/seek-oss/logger-js/issues"
+    "url": "https://github.com/seek-oss/logger/issues"
   },
   "dependencies": {
     "@types/pino": "^6.3.2",
@@ -28,15 +28,15 @@
     "lib*/**/*.js.map",
     "lib*/**/*.json"
   ],
-  "homepage": "https://github.com/seek-oss/logger-js#readme",
-  "license": "UNLICENSED",
+  "homepage": "https://github.com/seek-oss/logger#readme",
+  "license": "MIT",
   "main": "./lib-commonjs/index.js",
   "module": "./lib-es2015/index.js",
-  "name": "@seek/logger-js",
+  "name": "@seek/logger",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/seek-oss/logger-js.git"
+    "url": "git+https://github.com/seek-oss/logger.git"
   },
   "scripts": {
     "format": "skuba format",
