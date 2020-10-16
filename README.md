@@ -69,7 +69,7 @@ Buffers, deeply nested objects, large arrays or other large entities, because it
 
 Note: You could configure the depth of the logs using the `maxObjectDepth` `LoggerOption`, however we strongly do not recommend
 logging deeper than 4 levels (default setting) as it might cause performance issues for your app as well as possible costs implications
-with the logging platform provider of your choice. Consider flattening the log structure and make it as meaningful as possible.
+with the logging platform provider of your choice. Consider flattening the log structure and make it as meaningful as possible instead.
 
 ## Pino
 
