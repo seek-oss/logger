@@ -67,6 +67,10 @@ All Bearer tokens (regardless of their placement in the log object) will be reda
 As trimming operations are not cheap please make sure your application logs only meaningful data which does not contain
 Buffers, deeply nested objects, large arrays or other large entities, because it might lead to significant performance issues of your application.
 
+Note: You could configure the depth of the logs using the `maxObjectDepth` `LoggerOption`, however we strongly do not recommend
+logging deeper than 4 levels (default setting) as it might cause performance issues for your app as well as possible costs implications
+with the logging platform provider of your choice. Consider flattening the log structure and make it as meaningful as possible.
+
 ## Pino
 
 Library is utilising [Pino](https://github.com/pinojs/pino/blob/master/docs/api.md#options).
