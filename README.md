@@ -68,7 +68,8 @@ As trimming operations are not cheap please make sure your application logs only
 Buffers, deeply nested objects, large arrays or other large entities, because it might lead to significant performance issues of your application.
 
 Note: You could configure the depth of the logs using the `loggerOptions.maxObjectDepth`, however we strongly do not recommend
-logging deeper than 4 levels (default setting) as it might cause performance issues for your app as well as possible costs implications. Consider flattening the log structure and make it as meaningful as possible instead.
+logging deeper than 4 levels (default setting) as it might cause performance issues for your app as well as most likely costs implications.
+Consider flattening the log structure and make it as meaningful as possible instead.
 
 ## Pino
 
