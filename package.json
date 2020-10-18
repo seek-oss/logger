@@ -38,6 +38,9 @@
     "type": "git",
     "url": "git+https://github.com/seek-oss/logger.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "format": "skuba format",
     "lint": "skuba lint",
