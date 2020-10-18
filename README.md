@@ -58,7 +58,6 @@ For suggestions on enforcing logged object structures for consistency, see [belo
 The following trimming rules apply to all logging data:
 
 - All log structures deeper than 4 levels will be omitted from output.
-  - Configure using the the `maxObjectDepth` `LoggerOption`.
 - All log structures (objects/arrays) with size bigger/longer than 64 will be trimmed.
 - All strings that are longer than 512 will be trimmed.
 - All buffers will be substituted with their string representations, eg. "Buffer(123)".
@@ -67,6 +66,10 @@ All Bearer tokens (regardless of their placement in the log object) will be reda
 
 As trimming operations are not cheap please make sure your application logs only meaningful data which does not contain
 Buffers, deeply nested objects, large arrays or other large entities, because it might lead to significant performance issues of your application.
+
+Note: You could configure the depth of the logs using the `loggerOptions.maxObjectDepth`, however we strongly do not recommend
+logging deeper than 4 levels (default setting) as it might cause performance issues for your app as well costs implications.
+Consider flattening the log structure and make it as meaningful as possible instead.
 
 ## Pino
 
