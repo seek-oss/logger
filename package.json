@@ -3,20 +3,20 @@
     "name": "SEEK"
   },
   "bugs": {
-    "url": "https://github.com/seek-oss/logger-js/issues"
+    "url": "https://github.com/seek-oss/logger/issues"
   },
   "dependencies": {
     "@types/pino": "^6.3.2",
     "dtrim": "^1.9.0",
-    "pino": "^6.6.0",
+    "pino": "^6.7.0",
     "pino-std-serializers": "^2.5.0"
   },
   "description": "Standardized logging",
   "devDependencies": {
-    "@types/node": "^11.10.4",
-    "@types/split2": "^2.1.6",
+    "@types/node": "11.10.4",
+    "@types/split2": "2.1.6",
     "skuba": "3.9.2",
-    "split2": "^3.1.1"
+    "split2": "3.2.2"
   },
   "engines": {
     "node": ">=8",
@@ -28,11 +28,11 @@
     "lib*/**/*.js.map",
     "lib*/**/*.json"
   ],
-  "homepage": "https://github.com/seek-oss/logger-js#readme",
-  "license": "UNLICENSED",
+  "homepage": "https://github.com/seek-oss/logger#readme",
+  "license": "MIT",
   "main": "./lib-commonjs/index.js",
   "module": "./lib-es2015/index.js",
-  "name": "@seek/logger-js",
+  "name": "@seek/logger",
   "peerDependencies": {
     "pino-pretty": ">= 4 < 5"
   },
@@ -44,7 +44,10 @@
   "private": false,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/seek-oss/logger-js.git"
+    "url": "git+https://github.com/seek-oss/logger.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "format": "skuba format",

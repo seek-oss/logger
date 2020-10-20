@@ -1,9 +1,9 @@
-# Logger JS
+# @seek/logger
 
-[![GitHub Release](https://github.com/seek-oss/logger-js/workflows/Release/badge.svg?branch=master)](https://github.com/seek-oss/logger-js/actions?query=workflow%3ARelease)
-[![GitHub Validate](https://github.com/seek-oss/logger-js/workflows/Validate/badge.svg?branch=master)](https://github.com/seek-oss/logger-js/actions?query=workflow%3AValidate)
+[![GitHub Release](https://github.com/seek-oss/logger/workflows/Release/badge.svg?branch=master)](https://github.com/seek-oss/logger/actions?query=workflow%3ARelease)
+[![GitHub Validate](https://github.com/seek-oss/logger/workflows/Validate/badge.svg?branch=master)](https://github.com/seek-oss/logger/actions?query=workflow%3AValidate)
 [![Node.js version](https://img.shields.io/badge/node-%3E%3D%208-brightgreen)](https://nodejs.org/en/)
-[![npm package](https://img.shields.io/npm/v/@seek/logger-js)](https://www.npmjs.com/package/@seek/logger-js)
+[![npm package](https://img.shields.io/npm/v/@seek/logger)](https://www.npmjs.com/package/@seek/logger)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
@@ -14,7 +14,7 @@ This allows us consistently query request and response across all apps.
 ## Sample Usage
 
 ```typescript
-import createLogger from '@seek/logger-js';
+import createLogger from '@seek/logger';
 
 // Initialize - by default logs to Console Stream
 const logger = createLogger({
@@ -53,20 +53,22 @@ If logger is used with an object as first argument, please use `req`, `res` and 
 
 All other objects passed will be logged directly.
 
+Bearer tokens are redacted regardless of their placement in the log object.
+
 For suggestions on enforcing logged object structures for consistency, see [below](#enforcing-logged-object-structures).
 
 The following trimming rules apply to all logging data:
 
-- All log structures deeper than 4 levels will be omitted from output.
-  - Configure using the the `maxObjectDepth` `LoggerOption`.
+- All log structures deeper than 4 levels (default) will be omitted from output.
 - All log structures (objects/arrays) with size bigger/longer than 64 will be trimmed.
 - All strings that are longer than 512 will be trimmed.
 - All buffers will be substituted with their string representations, eg. "Buffer(123)".
 
-All Bearer tokens (regardless of their placement in the log object) will be redacted by the logger-js itself.
+Avoid logging complex structures such as buffers, deeply nested objects and long arrays.
+Trimming operations are not cheap and may lead to significant performance issues of your application.
 
-As trimming operations are not cheap please make sure your application logs only meaningful data which does not contain
-Buffers, deeply nested objects, large arrays or other large entities, because it might lead to significant performance issues of your application.
+While log depth is configurable via `loggerOptions.maxObjectDepth`, we strongly discourage a log depth that exceeds the default of 4 levels.
+Consider flattening the log structure for performance, readability and cost savings.
 
 ### Pino
 
@@ -74,7 +76,7 @@ Buffers, deeply nested objects, large arrays or other large entities, because it
 You can customise your logger by providing [Pino options] like so:
 
 ```javascript
-import createLogger, { pino } from '@seek/logger-js';
+import createLogger, { pino } from '@seek/logger';
 
 const logger = createLogger(
   {
