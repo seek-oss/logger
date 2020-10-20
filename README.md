@@ -103,7 +103,7 @@ yarn add --dev pino-pretty
 Then selectively enable pretty printing when running your application locally:
 
 ```typescript
-import createLogger from '@seek/logger-js';
+import createLogger from '@seek/logger';
 
 const logger = createLogger({
   name: 'my-app',
