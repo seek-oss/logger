@@ -33,14 +33,6 @@
   "main": "./lib-commonjs/index.js",
   "module": "./lib-es2015/index.js",
   "name": "@seek/logger",
-  "peerDependencies": {
-    "pino-pretty": ">= 4 < 5"
-  },
-  "peerDependenciesMeta": {
-    "pino-pretty": {
-      "optional": true
-    }
-  },
   "private": false,
   "repository": {
     "type": "git",
