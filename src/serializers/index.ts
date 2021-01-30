@@ -16,8 +16,8 @@ interface Response extends Record<string, unknown> {
   status?: number;
 }
 
-const getHeaders = ({ _headers, header, headers }: Response) =>
-  _headers || header || headers;
+const getHeaders = ({ _header, header, headers }: Response) =>
+  _header || header || headers;
 const getStatus = ({ statusCode, status }: Response): number | undefined =>
   statusCode || status;
 
