@@ -53,28 +53,27 @@ If logger is used with an object as first argument, please use `req`, `res` and 
 
 All other objects passed will be logged directly.
 
+Bearer tokens are redacted regardless of their placement in the log object.
+
 For suggestions on enforcing logged object structures for consistency, see [below](#enforcing-logged-object-structures).
 
 The following trimming rules apply to all logging data:
 
-- All log structures deeper than 4 levels will be omitted from output.
+- All log structures deeper than 4 levels (default) will be omitted from output.
 - All log structures (objects/arrays) with size bigger/longer than 64 will be trimmed.
 - All strings that are longer than 512 will be trimmed.
 - All buffers will be substituted with their string representations, eg. "Buffer(123)".
 
-All Bearer tokens (regardless of their placement in the log object) will be redacted by the logger itself.
+Avoid logging complex structures such as buffers, deeply nested objects and long arrays.
+Trimming operations are not cheap and may lead to significant performance issues of your application.
 
-As trimming operations are not cheap please make sure your application logs only meaningful data which does not contain
-Buffers, deeply nested objects, large arrays or other large entities, because it might lead to significant performance issues of your application.
+While log depth is configurable via `loggerOptions.maxObjectDepth`, we strongly discourage a log depth that exceeds the default of 4 levels.
+Consider flattening the log structure for performance, readability and cost savings.
 
-Note: You could configure the depth of the logs using the `loggerOptions.maxObjectDepth`, however we strongly do not recommend
-logging deeper than 4 levels (default setting) as it might cause performance issues for your app as well costs implications.
-Consider flattening the log structure and make it as meaningful as possible instead.
+### Pino
 
-## Pino
-
-Library is utilising [Pino](https://github.com/pinojs/pino/blob/master/docs/api.md#options).
-If you would like to customise your logging you could do so by providing options acceptable by pino while creating a logger like so:
+**@seek/logger** uses Pino under the hood.
+You can customise your logger by providing [Pino options] like so:
 
 ```javascript
 import createLogger, { pino } from '@seek/logger';
@@ -90,7 +89,27 @@ const logger = createLogger(
 const extremeLogger = createLogger({ name: 'my-app' }, pino.extreme());
 ```
 
-Note: createLogger mutates the supplied destination in order to redact sensitive data.
+Note: `createLogger` mutates the supplied destination in order to redact sensitive data.
+
+### Pretty printing
+
+**@seek/logger** supports Pino-compatible pretty printers.
+For example, you can install **[pino-pretty]** as a `devDependency`:
+
+```shell
+yarn add --dev pino-pretty
+```
+
+Then selectively enable pretty printing when running your application locally:
+
+```typescript
+import createLogger from '@seek/logger';
+
+const logger = createLogger({
+  name: 'my-app',
+  prettyPrint: process.env.ENVIRONMENT === 'local',
+});
+```
 
 ## Serializers
 
@@ -101,3 +120,6 @@ If other serializers with same keys are provided to the library, they will take 
 
 If you would like to enforce the structure of objects being logged, define the interface to log and specify it as the generic type in the logger functions.
 Compatibility should be maintained with the existing [`serializer functions`](src/serializers/index.ts).
+
+[pino options]: https://github.com/pinojs/pino/blob/master/docs/api.md#options
+[pino-pretty]: https://github.com/pinojs/pino-pretty
