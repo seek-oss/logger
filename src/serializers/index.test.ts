@@ -109,10 +109,10 @@ describe('res', () => {
   });
 
   test.each`
-    scenario      | value
-    ${'_headers'} | ${{ _headers: { ...headersBase } }}
-    ${'header'}   | ${{ header: { ...headersBase } }}
-    ${'headers'}  | ${{ headers: { ...headersBase } }}
+    scenario     | value
+    ${'_header'} | ${{ _header: { ...headersBase } }}
+    ${'header'}  | ${{ header: { ...headersBase } }}
+    ${'headers'} | ${{ headers: { ...headersBase } }}
   `('maps $scenario', ({ value }) => {
     const result = serializers.res(value);
 
