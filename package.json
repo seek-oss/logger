@@ -50,7 +50,7 @@
     "prepush": "yarn test",
     "release": "yarn build && skuba release"
   },
-  "sideEffects": "false",
+  "sideEffects": false,
   "skuba": {
     "entryPoint": "src/index.ts",
     "template": null,
