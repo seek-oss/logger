@@ -5,57 +5,103 @@
 [![Node.js version](https://img.shields.io/badge/node-%3E%3D%208-brightgreen)](https://nodejs.org/en/)
 [![npm package](https://img.shields.io/npm/v/@seek/logger)](https://www.npmjs.com/package/@seek/logger)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-Standardized application Logging
+**@seek/logger** is a JSON logger for Node.js applications.
+It implements several SEEK customisations over [Pino], including:
 
-This allows us consistently query request and response across all apps.
+- Human-readable `timestamp`s for Splunk compatibility
+- Redaction of sensitive data
+- Trimming deep objects to reduce cost and unintended disclosure
 
-## Sample Usage
+## Table of contents
+
+- [Usage](#usage)
+  - [Standardised fields](#standardised-fields)
+  - [Typed fields](#typed-fields)
+- [Features](#features)
+  - [Redaction](#redaction)
+  - [Trimming](#trimming)
+  - [Pino customisation](#pino-customisation)
+  - [Pretty printing](#pretty-printing)
+
+## Usage
 
 ```typescript
 import createLogger from '@seek/logger';
 
-// Initialize - by default logs to Console Stream
+// Initialize the logger. By default, this will log to stdout.
 const logger = createLogger({
   name: 'my-app',
 });
 
-// Import logged object interfaces from a shared module OR
-// declare logged object interfaces
-interface MessageContext {
-  activity: string;
-  err?: Error | { message: string };
-  req?: {
-    method: 'OPTIONS' | 'GET' | 'HEAD' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-    url: string;
-  };
-}
+// Write an informational (`level` 30) log with a `msg`.
+logger.info('Something good happened');
 
-// Specify the interface and benefit from enforced structure and code completion.
-logger.trace<MessageContext>({
-  activity: 'Getting all the things',
-  req: { method: 'GET', url: 'https://example.com/things' },
-});
+// Create a child logger that automatically includes the `requestId` field.
+const childLogger = logger.child({ requestId });
 
-logger.error<MessageContext>({
-  activity: 'Getting all the things',
-  req: { method: 'GET', url: 'https://example.com/things' },
-  err: {
-    message: 'Unexpected error getting things',
-  },
-});
+// Write an error (`level` 50) log with `err`, `msg` and `requestId`.
+childLogger.error({ err }, 'Something bad happened');
 ```
 
-If logger is used with an object as first argument, please use `req`, `res` and `err` to log request, response and error respectively.
+### Standardised fields
 
-`req` and `res` objects are trimmed to contain only essential logging data.
+**seek/logger** bundles custom `req` and `res` serializers along with [Pino]'s standard set.
+User-defined serializers will take precedence over predefined ones.
 
-All other objects passed will be logged directly.
+Use the following standardised logging fields to benefit from customised serialization:
+
+- `err` for errors.
+
+  The [Error] is serialized with its message, name, stack and additional properties.
+  Notice that this is not possible with e.g. `JSON.stringify(new Error())`.
+
+- `req` for HTTP requests.
+
+  The request object is trimmed to a set of essential fields.
+
+- `res` for HTTP responses.
+
+  The response object is trimmed to a set of essential fields.
+
+All other fields will be logged directly.
+
+### Typed fields
+
+You can type common sets of fields to enforce consistent logging across your application(s).
+Compatibility should be maintained with the existing [`serializer functions`](src/serializers/index.ts).
+
+```typescript
+// Declare a TypeScript type for your log fields.
+interface Fields {
+  activity: string;
+  err?: Error;
+}
+
+// Supply it as a type parameter for code completion and compile-time checking.
+logger.trace<Fields>(
+  {
+    activity: 'Getting all the things',
+  },
+  'Request initiated',
+);
+
+logger.error<Fields>(
+  {
+    activity: 'Getting all the things',
+    err,
+  },
+  'Request failed',
+);
+```
+
+## Features
+
+### Redaction
 
 Bearer tokens are redacted regardless of their placement in the log object.
 
-For suggestions on enforcing logged object structures for consistency, see [below](#enforcing-logged-object-structures).
+### Trimming
 
 The following trimming rules apply to all logging data:
 
@@ -70,9 +116,9 @@ Trimming operations are not cheap and may lead to significant performance issues
 While log depth is configurable via `loggerOptions.maxObjectDepth`, we strongly discourage a log depth that exceeds the default of 4 levels.
 Consider flattening the log structure for performance, readability and cost savings.
 
-### Pino
+### Pino customisation
 
-**@seek/logger** uses Pino under the hood.
+**@seek/logger** uses [Pino] under the hood.
 You can customise your logger by providing [Pino options] like so:
 
 ```javascript
@@ -111,15 +157,7 @@ const logger = createLogger({
 });
 ```
 
-## Serializers
-
-Library is utilizing standard pino serializers with custom `req` and `res` serialializers.
-If other serializers with same keys are provided to the library, they will take precedence over predefined ones.
-
-## Enforcing Logged Object Structures
-
-If you would like to enforce the structure of objects being logged, define the interface to log and specify it as the generic type in the logger functions.
-Compatibility should be maintained with the existing [`serializer functions`](src/serializers/index.ts).
-
+[error]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
+[pino]: https://github.com/pinojs/pino
 [pino options]: https://github.com/pinojs/pino/blob/master/docs/api.md#options
 [pino-pretty]: https://github.com/pinojs/pino-pretty
