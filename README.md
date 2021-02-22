@@ -46,7 +46,7 @@ childLogger.error({ err }, 'Something bad happened');
 
 ### Standardised fields
 
-**seek/logger** bundles custom `req` and `res` serializers along with [Pino]'s standard set.
+**@seek/logger** bundles custom `req` and `res` serializers along with [Pino]'s standard set.
 User-defined serializers will take precedence over predefined ones.
 
 Use the following standardised logging fields to benefit from customised serialization:
@@ -69,7 +69,7 @@ All other fields will be logged directly.
 ### Typed fields
 
 You can type common sets of fields to enforce consistent logging across your application(s).
-Compatibility should be maintained with the existing [`serializer functions`](src/serializers/index.ts).
+Compatibility should be maintained with the existing [serializer functions](src/serializers/index.ts).
 
 ```typescript
 // Declare a TypeScript type for your log fields.
