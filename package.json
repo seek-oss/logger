@@ -6,10 +6,9 @@
     "url": "https://github.com/seek-oss/logger/issues"
   },
   "dependencies": {
-    "@types/pino": "^6.3.2",
     "dtrim": "^1.9.0",
-    "pino": "^6.7.0",
-    "pino-std-serializers": "^2.5.0"
+    "pino": "^7.0.2",
+    "pino-std-serializers": "^4.0.0"
   },
   "description": "Standardized logging",
   "devDependencies": {

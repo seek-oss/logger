@@ -1,4 +1,4 @@
-import pino, { DestinationStream } from 'pino';
+import pino from 'pino';
 
 import base from './base';
 import { withRedaction } from './destination';
@@ -17,7 +17,7 @@ export type LoggerOptions = pino.LoggerOptions & FormatterOptions;
  */
 export default (
   opts: LoggerOptions = {},
-  destination: DestinationStream = pino.destination(1),
+  destination: pino.DestinationStream = pino.destination(1),
 ): pino.Logger => {
   const formatters = createFormatters(opts);
 
