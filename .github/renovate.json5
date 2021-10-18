@@ -1,13 +1,4 @@
 {
-  extends: ['seek'],
+  extends: ['github>seek-oss/rynovate'],
   timezone: 'Australia/Melbourne',
-  packageRules: [
-    {
-      groupName: 'modules',
-      packagePatterns: ['^'],
-      schedule: ['on tuesday'],
-      automerge: true,
-      enabled: true,
-    },
-  ],
 }
