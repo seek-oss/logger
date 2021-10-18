@@ -1,5 +1,5 @@
 {
-  extends: ['seek'],
+  extends: ['github>seek-oss/rynovate'],
   timezone: 'Australia/Melbourne',
   packageRules: [
     {
