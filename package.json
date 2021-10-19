@@ -14,7 +14,7 @@
   "devDependencies": {
     "@types/node": "11.10.4",
     "@types/split2": "2.1.6",
-    "skuba": "3.9.2",
+    "skuba": "3.15.2",
     "split2": "3.2.2"
   },
   "engines": {
