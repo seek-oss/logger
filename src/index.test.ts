@@ -25,9 +25,9 @@ function once(emitter: any, name: any) {
     if (name !== 'error') {
       emitter.once('error', reject);
     }
-    emitter.once(name, (...args: any) => {
+    emitter.once(name, (arg: unknown) => {
       emitter.removeListener('error', reject);
-      resolve(...args);
+      resolve(arg);
     });
   });
 }
