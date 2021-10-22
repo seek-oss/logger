@@ -19,7 +19,7 @@ export type Logger = pino.Logger;
 export default (
   opts: LoggerOptions = {},
   destination: pino.DestinationStream = pino.destination(1),
-): pino.Logger => {
+): Logger => {
   const formatters = createFormatters(opts);
 
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
