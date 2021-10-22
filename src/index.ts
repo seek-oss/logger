@@ -9,6 +9,7 @@ import serializers from './serializers';
 export { pino };
 
 export type LoggerOptions = pino.LoggerOptions & FormatterOptions;
+export type Logger = pino.Logger;
 
 /**
  * Creates a logger that can enforce a strict logged object shape.
