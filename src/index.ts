@@ -9,6 +9,7 @@ import serializers from './serializers';
 export { pino };
 
 export type LoggerOptions = pino.LoggerOptions & FormatterOptions;
+export type Logger = pino.Logger;
 
 /**
  * Creates a logger that can enforce a strict logged object shape.
@@ -18,7 +19,7 @@ export type LoggerOptions = pino.LoggerOptions & FormatterOptions;
 export default (
   opts: LoggerOptions = {},
   destination: pino.DestinationStream = pino.destination(1),
-): pino.Logger => {
+): Logger => {
   const formatters = createFormatters(opts);
 
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
