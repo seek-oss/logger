@@ -153,7 +153,9 @@ import createLogger from '@seek/logger';
 
 const logger = createLogger({
   name: 'my-app',
-  prettyPrint: process.env.ENVIRONMENT === 'local',
+  transport: {
+    target: process.env.ENVIRONMENT === 'local' ? 'pino-pretty' : 'pino/file',
+  },
 });
 ```
 
