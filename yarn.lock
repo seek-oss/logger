@@ -816,7 +816,7 @@
     node-fetch "^2.6.1"
     universal-user-agent "^6.0.0"
 
-"@octokit/rest@^18.0.0":
+"@octokit/rest@^18.0.0", "@octokit/rest@^18.12.0":
   version "18.12.0"
   resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-18.12.0.tgz#f06bc4952fc87130308d810ca9d00e79f6988881"
   integrity sha512-gDPiOHlyGavxr72y0guQEhLsemgVjwRePayJ+FcKc2SJqKUbxbkvf5kAZEWA/MKvsfYlQAMVzNJE3ezQcxMJ2Q==
@@ -1112,7 +1112,7 @@
     semver "^7.3.5"
     tsutils "^3.21.0"
 
-"@typescript-eslint/experimental-utils@4.33.0", "@typescript-eslint/experimental-utils@^4.0.1":
+"@typescript-eslint/experimental-utils@4.33.0":
   version "4.33.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/experimental-utils/-/experimental-utils-4.33.0.tgz#6f2a786a4209fa2222989e9380b5331b2810f7fd"
   integrity sha512-zeQjOoES5JFjTnAhI5QY7ZviczMzDptls15GFsI6jyUOq0kOf9+WonkhtlIhh0RgHRnqj5gdNxW5j1EvAyYg6Q==
@@ -2513,7 +2513,7 @@ eslint-config-prettier@^6.11.0:
   dependencies:
     get-stdin "^6.0.0"
 
-eslint-config-seek@^7.0.8:
+eslint-config-seek@^7.0.9:
   version "7.0.9"
   resolved "https://registry.yarnpkg.com/eslint-config-seek/-/eslint-config-seek-7.0.9.tgz#5bf229dbbf4e14180750874ba5bd77c019dae2cb"
   integrity sha512-eIFI4wN5b3LwXYtlpEKVqCQ2gYolmeGSfL4C7cPClGWDjpeZ/EGswhGC36VQI78kV6T0kZT2SYbkWGI48OqpTQ==
@@ -2532,16 +2532,16 @@ eslint-config-seek@^7.0.8:
     eslint-plugin-react-hooks "^4.0.4"
     find-root "^1.1.0"
 
-eslint-config-skuba@1.0.11:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-1.0.11.tgz#55e24ca2b55648699fb692a0e600293c5ed74b3a"
-  integrity sha512-mQlCqSPC0AiQYlXG6ZUO0BGPgZJTXhhdXB4mgj5DTrha1J+uaAm1omTCf49tGMeOae6N5KffOy+oLkMz2O1H7A==
+eslint-config-skuba@1.0.12:
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-1.0.12.tgz#a039ffc0ef4da02e6375b03ed8eb8bda2ea0db0b"
+  integrity sha512-RGsz4giAfmKpwV5tTylUtwzCAFlfZNgLxZfFSw/tTgMO6gX/fhGt+H+w/7kRQrFg9ihJHZSENkK2+gPnbLvVSg==
   dependencies:
     "@types/eslint" "^7.2.12"
     "@typescript-eslint/eslint-plugin" "^4.26.0"
     "@typescript-eslint/parser" "^4.26.0"
-    eslint-config-seek "^7.0.8"
-    eslint-plugin-jest "^24.3.6"
+    eslint-config-seek "^7.0.9"
+    eslint-plugin-jest "^25.2.2"
     eslint-plugin-tsdoc "^0.2.14"
 
 eslint-import-resolver-node@^0.3.3, eslint-import-resolver-node@^0.3.6:
@@ -2602,13 +2602,6 @@ eslint-plugin-import@^2.21.2:
     object.values "^1.1.5"
     resolve "^1.20.0"
     tsconfig-paths "^3.11.0"
-
-eslint-plugin-jest@^24.3.6:
-  version "24.7.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-24.7.0.tgz#206ac0833841e59e375170b15f8d0955219c4889"
-  integrity sha512-wUxdF2bAZiYSKBclsUMrYHH6WxiBreNjyDxbRv345TIvPeoCEgPNEn3Sa+ZrSqsf1Dl9SqqSREXMHExlMMu1DA==
-  dependencies:
-    "@typescript-eslint/experimental-utils" "^4.0.1"
 
 eslint-plugin-jest@^25.2.2:
   version "25.2.4"
@@ -5697,7 +5690,7 @@ prepend-http@^2.0.0:
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-2.0.0.tgz#e92434bfa5ea8c19f41cdfd401d741a3c819d897"
   integrity sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc=
 
-prettier@2.4.1:
+prettier@~2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.4.1.tgz#671e11c89c14a4cfc876ce564106c4a6726c9f5c"
   integrity sha512-9fbDAXSBcc6Bs1mZrDYb3XKzDLm4EXXL9sC1LqKP5rZkT6KRr/rf9amVUcODVXgguK/isJz0d0hP72WeaKWsvA==
@@ -6278,18 +6271,20 @@ sisteransi@^1.0.5:
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
   integrity sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==
 
-skuba@3.15.2:
-  version "3.15.2"
-  resolved "https://registry.yarnpkg.com/skuba/-/skuba-3.15.2.tgz#c0df2d88ba76fe0d824254cad29997ae65627242"
-  integrity sha512-slSfCXofUGeIX6YzjskeXPcY1yHx4s1O8hR2bNWJnlEBPjp7nOZiBoLUXXEF8ELJ95IpEPc5vcGAw2ZGdJ0tLw==
+skuba@3.16.1:
+  version "3.16.1"
+  resolved "https://registry.yarnpkg.com/skuba/-/skuba-3.16.1.tgz#7c7d83b04c32fab909082d86c6a101b007f36327"
+  integrity sha512-fEASuDhZWKSz8i3cSIBcCga77sQLmSbgwkNAjd0gwHkzKOJswJI4B6GgDcMLU6ZfvnlaGjck6Nb/TQfMA4Wmxg==
   dependencies:
+    "@octokit/rest" "^18.12.0"
+    "@octokit/types" "^6.34.0"
     "@types/jest" "^27.0.1"
     chalk "^4.1.0"
     concurrently "^6.2.1"
     ejs "^3.1.6"
     enquirer "^2.3.6"
     eslint "^7.27.0"
-    eslint-config-skuba "1.0.11"
+    eslint-config-skuba "1.0.12"
     execa "^5.0.0"
     fdir "^5.0.0"
     fs-extra "^10.0.0"
@@ -6306,17 +6301,18 @@ skuba@3.15.2:
     npm-run-path "^4.0.1"
     npm-which "^3.0.1"
     picomatch "^2.2.2"
-    prettier "2.4.1"
+    prettier "~2.4.1"
     read-pkg-up "^7.0.1"
     runtypes "^6.0.0"
     semantic-release "^17.4.7"
     serialize-error "^8.0.1"
     source-map-support "^0.5.19"
+    strip-ansi "^6.0.1"
     ts-jest "^27.0.5"
     ts-node "^9.1.1"
-    ts-node-dev "1.1.8"
+    ts-node-dev "^1.1.8"
     tsconfig-seek "1.0.2"
-    typescript "4.4.3"
+    typescript "~4.4.4"
 
 slash@^3.0.0:
   version "3.0.0"
@@ -6854,7 +6850,7 @@ ts-jest@^27.0.5:
     semver "7.x"
     yargs-parser "20.x"
 
-ts-node-dev@1.1.8:
+ts-node-dev@^1.1.8:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/ts-node-dev/-/ts-node-dev-1.1.8.tgz#95520d8ab9d45fffa854d6668e2f8f9286241066"
   integrity sha512-Q/m3vEwzYwLZKmV6/0VlFxcZzVV/xcgOt+Tx/VjaaRHyiBcFlV0541yrT09QjzzCxlDZ34OzKjrFAynlmtflEg==
@@ -6987,10 +6983,10 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-typescript@4.4.3:
-  version "4.4.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.3.tgz#bdc5407caa2b109efd4f82fe130656f977a29324"
-  integrity sha512-4xfscpisVgqqDfPaJo5vkd+Qd/ItkoagnHpufr+i2QCHBsNYp+G7UAoyFl8aPtx879u38wPV65rZ8qbGZijalA==
+typescript@~4.4.4:
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.4.tgz#2cd01a1a1f160704d3101fd5a58ff0f9fcb8030c"
+  integrity sha512-DqGhF5IKoBl8WNf8C1gu8q0xZSInh9j1kJJMqT3a94w1JzVaBU4EXOSMrz9yDqMT0xt3selp83fuFMQ0uzv6qA==
 
 uglify-js@^3.1.4:
   version "3.14.3"
