@@ -153,9 +153,8 @@ import createLogger from '@seek/logger';
 
 const logger = createLogger({
   name: 'my-app',
-  transport: {
-    target: process.env.ENVIRONMENT === 'local' ? 'pino-pretty' : 'pino/file',
-  },
+  transport:
+    process.env.ENVIRONMENT === 'local' ? { target: 'pino-pretty' } : undefined,
 });
 ```
 
