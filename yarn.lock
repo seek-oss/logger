@@ -6271,10 +6271,10 @@ sisteransi@^1.0.5:
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
   integrity sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==
 
-skuba@3.16.1:
-  version "3.16.1"
-  resolved "https://registry.yarnpkg.com/skuba/-/skuba-3.16.1.tgz#7c7d83b04c32fab909082d86c6a101b007f36327"
-  integrity sha512-fEASuDhZWKSz8i3cSIBcCga77sQLmSbgwkNAjd0gwHkzKOJswJI4B6GgDcMLU6ZfvnlaGjck6Nb/TQfMA4Wmxg==
+skuba@3.16.2:
+  version "3.16.2"
+  resolved "https://registry.yarnpkg.com/skuba/-/skuba-3.16.2.tgz#5d3b7ed2005545d69693889b2baa2439c53795c1"
+  integrity sha512-6ba7vDacAZCFay/eUpwnmKZSJsOATFkFiB0gUvSL7k11x3MnREFFt4fmqzmpZvH+gTicRybzzrVee4Jd3uV8bQ==
   dependencies:
     "@octokit/rest" "^18.12.0"
     "@octokit/types" "^6.34.0"
