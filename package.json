@@ -46,6 +46,7 @@
     "clean": "rm -fr lib",
     "build": "skuba build-package",
     "test": "skuba test",
+    "test:ci": "skuba test --coverage",
     "prepush": "yarn test",
     "release": "yarn build && skuba release"
   },
