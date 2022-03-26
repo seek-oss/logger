@@ -17,7 +17,9 @@ export type Logger = pino.Logger;
  * @param destination - Destination stream. Default: `pino.destination(1)`.
  */
 export default (
+  // istanbul ignore next
   opts: LoggerOptions = {},
+  // istanbul ignore next
   destination: pino.DestinationStream = pino.destination(1),
 ): Logger => {
   const formatters = createFormatters(opts);
