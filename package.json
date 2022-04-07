@@ -14,11 +14,11 @@
   "devDependencies": {
     "@types/node": "11.15.54",
     "@types/split2": "3.2.1",
-    "skuba": "4.1.1",
+    "skuba": "4.2.0",
     "split2": "4.1.0"
   },
   "engines": {
-    "node": ">=8",
+    "node": ">=12",
     "npm": ">=5.5.0"
   },
   "files": [

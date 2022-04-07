@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    "lib": ["ES2019"],
     "outDir": "lib",
-    "removeComments": false
+    "removeComments": false,
+    "target": "ES2019"
   },
   "exclude": ["lib*/**/*"],
   "extends": "skuba/config/tsconfig.json"

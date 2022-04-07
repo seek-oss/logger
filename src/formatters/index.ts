@@ -14,6 +14,6 @@ export const createFormatters = (
   const trim = trimmer({ depth: opts.maxObjectDepth ?? 4 });
 
   return {
-    log: (input) => trim(input) as object, // eslint-disable-line @typescript-eslint/ban-types
+    log: (input) => trim(input) as object,
   };
 };
