@@ -1158,11 +1158,6 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.23.tgz#3b41a6e643589ac6442bdbd7a4a3ded62f33f7da"
   integrity sha512-UxDxWn7dl97rKVeVS61vErvw086aCYhDLyvRQZ5Rk65rZKepaFdm53GeqXaKBuOhED4e9uWq34IC3TdSdJJ2Gw==
 
-"@types/node@11.15.54":
-  version "11.15.54"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-11.15.54.tgz#59ed60e7b0d56905a654292e8d73275034eb6283"
-  integrity sha512-1RWYiq+5UfozGsU6MwJyFX6BtktcT10XRjvcAQmskCtMcW3tPske88lM/nHv7BQG1w9KBXI1zPGuu5PnNCX14g==
-
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.1.tgz#d3357479a0fdfdd5907fe67e17e0a85c906e1301"
@@ -5434,7 +5429,7 @@ pino-std-serializers@^5.0.0:
   resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-5.2.0.tgz#a94b02366dad92b3077aba263177497d3ca3bec3"
   integrity sha512-tnEZoW/OpiQoL0laBC0CWJ0HPeISW2lrjUK0twYjqdGnggM8ZYk1XG8ucvjMCV0R7kMxO7Z63a27UhpkQw7Rrg==
 
-pino@^7.0.2:
+pino@^7.10.0:
   version "7.10.0"
   resolved "https://registry.yarnpkg.com/pino/-/pino-7.10.0.tgz#c621a3acf3b7aa50a6156c1b3989d1703666b2b1"
   integrity sha512-T6R92jy/APDElEuOk0gqa4nds3ZgqFbHde2X0g8XorlyPlVGlr9T5KQphtp72a3ByKOdZMg/gM/0IprpGQfTWg==
