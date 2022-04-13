@@ -37,14 +37,14 @@ function testLog(
   testName: string,
   input: any,
   output: any,
-  method?: string,
+  method?: 'error' | 'info',
   loggerOptions?: LoggerOptions,
 ) {
   testFunc(testName, async () => {
     const inputString = JSON.stringify(input);
     const stream = sink();
     const logger = createLogger({ name: 'my-app', ...loggerOptions }, stream);
-    logger[method || 'info'](input);
+    logger[method ?? 'info'](input);
 
     const log: any = await once(stream, 'data');
     expect(log).toMatchObject(output);

@@ -7,12 +7,11 @@
   },
   "dependencies": {
     "dtrim": "^1.9.0",
-    "pino": "^7.0.2",
+    "pino": "^7.10.0",
     "pino-std-serializers": "^5.0.0"
   },
   "description": "Standardized logging",
   "devDependencies": {
-    "@types/node": "11.15.54",
     "@types/split2": "3.2.1",
     "skuba": "4.2.0",
     "split2": "4.1.0"

@@ -1,10 +1,10 @@
-import pino from 'pino';
+import type { LoggerOptions } from 'pino';
 
 // TODO: Redact cookies?
 export const defaultRedact = [];
 
 export const addDefaultRedactPathStrings = (
-  redact: string[] | pino.redactOptions | undefined,
+  redact?: LoggerOptions['redact'],
 ) => {
   if (!redact) {
     return defaultRedact;
