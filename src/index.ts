@@ -39,5 +39,5 @@ export default (
   };
   opts.timestamp = () => `,"timestamp":"${new Date().toISOString()}"`;
 
-  return pino(opts, withRedaction(destination, opts.redactLog));
+  return pino(opts, withRedaction(destination, opts.redactText));
 };

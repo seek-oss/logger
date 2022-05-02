@@ -409,11 +409,11 @@ testLog(
   },
   'info',
   {
-    redactLog: (input, redactedDummy) => {
+    redactText: (input, redactionPlaceholder) => {
       const regex = /\b(client_secret=)([^&]+)/gi;
       return input.replace(
         regex,
-        (_, group1) => `${group1 as unknown as string}${redactedDummy}`,
+        (_, group1) => `${group1 as unknown as string}${redactionPlaceholder}`,
       );
     },
   },

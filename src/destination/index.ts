@@ -7,13 +7,13 @@ const redactedDummy = '[Redacted]';
 
 export const withRedaction = (
   dest: pino.DestinationStream,
-  redactLog: FormatterOptions['redactLog'],
+  redactText: FormatterOptions['redactText'],
 ): pino.DestinationStream => {
   const write = dest.write.bind(dest);
 
   dest.write = (input) => {
     let redacted = input.replace(bearerMatcher, redactedDummy);
-    redacted = redactLog?.(redacted, redactedDummy) ?? redacted;
+    redacted = redactText?.(redacted, redactedDummy) ?? redacted;
     return write(redacted);
   };
 

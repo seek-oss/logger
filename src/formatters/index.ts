@@ -10,7 +10,7 @@ export interface FormatterOptions {
   /**
    * This allows finer control of redaction by providing access to the full text.
    */
-  redactLog?: (input: string, redactedDummy: string) => string;
+  redactText?: (input: string, redactionPlaceholder: string) => string;
 }
 
 export const createFormatters = (
