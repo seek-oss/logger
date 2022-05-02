@@ -6,6 +6,11 @@ export interface FormatterOptions {
    * Maximum property depth of objects being logged. Default: 4
    */
   maxObjectDepth?: number;
+
+  /**
+   * This allows finer control of redaction by providing access to the full text.
+   */
+  redactText?: (input: string, redactionPlaceholder: string) => string;
 }
 
 export const createFormatters = (

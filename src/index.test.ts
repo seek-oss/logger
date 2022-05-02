@@ -33,14 +33,14 @@ function once(emitter: any, name: any) {
 }
 
 function testLog(
-  testFunc: jest.It,
   testName: string,
   input: any,
   output: any,
   method?: 'error' | 'info',
   loggerOptions?: LoggerOptions,
 ) {
-  testFunc(testName, async () => {
+  // eslint-disable-next-line jest/valid-title
+  test(testName, async () => {
     const inputString = JSON.stringify(input);
     const stream = sink();
     const logger = createLogger({ name: 'my-app', ...loggerOptions }, stream);
@@ -68,7 +68,6 @@ test('it adds user defined base items to the log', async () => {
 });
 
 testLog(
-  test,
   'should log info',
   { key: { foo: 'bar' } },
   {
@@ -79,7 +78,6 @@ testLog(
 );
 
 testLog(
-  test,
   'should log error',
   { key: { foo: 'bar' } },
   {
@@ -91,21 +89,18 @@ testLog(
 );
 
 testLog(
-  test,
   'should serialise request when it is a string',
   { req: 'bar' },
   { req: 'bar' },
 );
 
 testLog(
-  test,
   'should serialise response when it is a string',
   { res: 'foo' },
   { res: 'foo' },
 );
 
 testLog(
-  test,
   'should serialise request when it is an object',
   {
     req: {
@@ -134,7 +129,6 @@ testLog(
 );
 
 testLog(
-  test,
   'should serialise response when it is an object',
   {
     res: {
@@ -152,14 +146,12 @@ testLog(
 );
 
 testLog(
-  test,
   'should truncate objects deeper than the default depth of 4 levels',
   { req: { url: { c: { d: { e: { f: { g: {} } } } } } } },
   { req: { url: { c: { d: '[Object]' } } } },
 );
 
 testLog(
-  test,
   'should truncate objects deeper than the configured object depth',
   { req: { url: { c: { d: { e: { f: { g: {} } } } } } } },
   { req: { url: { c: { d: { e: '[Object]' } } } } },
@@ -168,7 +160,6 @@ testLog(
 );
 
 testLog(
-  test,
   'should truncate Buffers',
   {
     res: {
@@ -179,14 +170,12 @@ testLog(
 );
 
 testLog(
-  test,
   'should truncate strings longer than 512 characters',
   { req: { url: 'a'.repeat(555) } },
   { req: { url: `${'a'.repeat(512)}...` } },
 );
 
 testLog(
-  test,
   'should truncate arrays containing more than 64 items',
   { err: { message: 'a'.repeat(64 + 10).split('') } },
   {
@@ -197,7 +186,6 @@ testLog(
 );
 
 testLog(
-  test,
   'should not truncate arrays containing up to 64 items',
   { err: { message: 'a'.repeat(64).split('') } },
   {
@@ -219,21 +207,18 @@ const manyProps = '?'
   );
 
 testLog(
-  test,
   'should allow up to 64 object properties',
   { props: manyProps },
   { props: manyProps },
 );
 
 testLog(
-  test,
   'should use string representation when object has more than 64 properties',
   { props: { ...manyProps, OneMoreProp: '>_<' } },
   { props: 'Object(65)' },
 );
 
 testLog(
-  test,
   'should log error',
   {
     error: new Error('Ooh oh! Something went wrong'),
@@ -248,7 +233,6 @@ testLog(
 );
 
 testLog(
-  test,
   'should redact reqHeaders object',
   {
     reqHeaders: {
@@ -282,7 +266,6 @@ testLog(
 );
 
 testLog(
-  test,
   'should redact ECONNABORTED error',
   {
     level: 40,
@@ -347,7 +330,6 @@ testLog(
 );
 
 testLog(
-  test,
   'should redact any bearer tokens',
   {
     reqHeaders: {
@@ -401,6 +383,38 @@ testLog(
           _header: getHeaderWithAuth(true),
         },
       },
+    },
+  },
+);
+
+testLog(
+  'allow consumers access to the full text log for redaction',
+  {
+    err: {
+      response: {
+        config: {
+          data: 'client_secret=super_secret_client_secret&audience=https%3A%2F%2Fseek%2Fapi%2Fcandidate',
+        },
+      },
+    },
+  },
+  {
+    err: {
+      response: {
+        config: {
+          data: 'client_secret=[Redacted]&audience=https%3A%2F%2Fseek%2Fapi%2Fcandidate',
+        },
+      },
+    },
+  },
+  'info',
+  {
+    redactText: (input, redactionPlaceholder) => {
+      const regex = /\b(client_secret=)([^&]+)/gi;
+      return input.replace(
+        regex,
+        (_, group1) => `${group1 as unknown as string}${redactionPlaceholder}`,
+      );
     },
   },
 );
