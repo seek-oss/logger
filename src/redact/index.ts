@@ -1,10 +1,17 @@
-import type { LoggerOptions } from 'pino';
-
 // TODO: Redact cookies?
 export const defaultRedact = [];
 
+/**
+ * Private interface vendored from `pino`
+ */
+interface redactOptions {
+  paths: string[];
+  censor?: string | ((value: any, path: string[]) => any);
+  remove?: boolean;
+}
+
 export const addDefaultRedactPathStrings = (
-  redact?: LoggerOptions['redact'],
+  redact: string[] | redactOptions | undefined,
 ) => {
   if (!redact) {
     return defaultRedact;
