@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "dtrim": "^1.9.0",
-    "pino": "^7.10.0",
+    "pino": "^8.0.0",
     "pino-std-serializers": "^6.0.0"
   },
   "description": "Standardized logging",
