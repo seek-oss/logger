@@ -14,13 +14,15 @@ export type Logger = pino.Logger;
 /**
  * Creates a logger that can enforce a strict logged object shape.
  * @param opts - Logger options.
- * @param destination - Destination stream. Default: `pino.destination(1)`.
+ * @param destination - Destination stream. Default: `pino.destination({ sync: true })`.
  */
 export default (
   // istanbul ignore next
   opts: LoggerOptions = {},
   // istanbul ignore next
-  destination: pino.DestinationStream = pino.destination(1),
+  destination: pino.DestinationStream = pino.destination({
+    sync: true,
+  }),
 ): Logger => {
   const formatters = createFormatters(opts);
 
