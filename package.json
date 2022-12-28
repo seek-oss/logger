@@ -13,7 +13,7 @@
   "description": "Standardized logging",
   "devDependencies": {
     "@types/split2": "3.2.1",
-    "skuba": "5.0.1",
+    "skuba": "5.1.0",
     "split2": "4.1.0"
   },
   "engines": {
