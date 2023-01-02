@@ -455,3 +455,54 @@ test('enforces a specified object interface', async () => {
   expect(log.propertyNotAllowed).toBe('Linting error');
   expect(log.input).toStrictEqual({ foo: 0xf00 });
 });
+
+test('should not log timestamp if timestamp logger option is false', async () => {
+  const stream = sink();
+  const logger = createLogger(
+    {
+      timestamp: false,
+    },
+    stream,
+  );
+
+  logger.info<ExampleMessageContext>(
+    {
+      activity: 'Testing Logger',
+      // @ts-expect-error
+      propertyNotAllowed: 'Linting error',
+      input: {
+        foo: 0xf00,
+      },
+    },
+    'Test log entry',
+  );
+  const log: any = await once(stream, 'data');
+  expect(log).not.toHaveProperty('timestamp');
+});
+
+test('should log customized timestamp if timestamp logger option is not false or undefined', async () => {
+  const mockTimestamp = '1672700973914';
+
+  const stream = sink();
+  const logger = createLogger(
+    {
+      timestamp: () => `,"timestamp":"${mockTimestamp}"`,
+    },
+    stream,
+  );
+
+  logger.info<ExampleMessageContext>(
+    {
+      activity: 'Testing Logger',
+      // @ts-expect-error
+      propertyNotAllowed: 'Linting error',
+      input: {
+        foo: 0xf00,
+      },
+    },
+    'Test log entry',
+  );
+  const log: any = await once(stream, 'data');
+
+  expect(log.timestamp).toBe(mockTimestamp);
+});
