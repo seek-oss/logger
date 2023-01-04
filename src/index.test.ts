@@ -478,7 +478,7 @@ test('should not log timestamp if timestamp logger option is false', async () =>
   expect(log).not.toHaveProperty('timestamp');
 });
 
-test('should log customized timestamp if timestamp logger option is not false or undefined', async () => {
+test('should log customized timestamp if timestamp logger option is supplied', async () => {
   const mockTimestamp = '1672700973914';
 
   const stream = sink();
