@@ -38,9 +38,7 @@ export default (
     ...opts.formatters,
   };
 
-  if (opts.timestamp === undefined) {
-    opts.timestamp = () => `,"timestamp":"${new Date().toISOString()}"`;
-  }
+  opts.timestamp ??= () => `,"timestamp":"${new Date().toISOString()}"`;
 
   return pino(opts, withRedaction(destination, opts.redactText));
 };
