@@ -468,8 +468,6 @@ test('should not log timestamp if timestamp logger option is false', async () =>
   logger.info<ExampleMessageContext>(
     {
       activity: 'Testing Logger',
-      // @ts-expect-error
-      propertyNotAllowed: 'Linting error',
       input: {
         foo: 0xf00,
       },
