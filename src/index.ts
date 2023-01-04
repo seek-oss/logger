@@ -37,7 +37,8 @@ export default (
     ...formatters,
     ...opts.formatters,
   };
-  opts.timestamp = () => `,"timestamp":"${new Date().toISOString()}"`;
+
+  opts.timestamp ??= () => `,"timestamp":"${new Date().toISOString()}"`;
 
   return pino(opts, withRedaction(destination, opts.redactText));
 };
