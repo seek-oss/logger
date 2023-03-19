@@ -1,9 +1,9 @@
 // TODO: Redact cookies?
 export const defaultRedact = [
   'req.headers.authorization',
-  'req.headers.authenticated-user',
+  'req.headers["authenticated-user"]',
   'req.headers.cookie',
-  'req.headers.x-seek-oidc-identity',
+  'req.headers["x-seek-oidc-identity"]',
 ];
 
 /**
