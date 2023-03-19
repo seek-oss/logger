@@ -1,6 +1,6 @@
 import stdSerializers from 'pino-std-serializers';
 
-interface Connection {
+interface Socket {
   remoteAddress?: string;
   remotePort?: string;
 }
@@ -8,7 +8,7 @@ interface Request extends Record<string, unknown> {
   method: string;
   url: string;
   headers: Record<string, string>;
-  connection: Connection;
+  socket: Socket;
 }
 
 interface Response extends Record<string, unknown> {
@@ -32,8 +32,8 @@ const req = (request: Request) =>
         method: request.method,
         url: request.url,
         headers: request.headers,
-        remoteAddress: request?.connection?.remoteAddress,
-        remotePort: request?.connection?.remotePort,
+        remoteAddress: request?.socket?.remoteAddress,
+        remotePort: request?.socket?.remotePort,
       }
     : request;
 

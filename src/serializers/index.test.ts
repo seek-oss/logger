@@ -49,16 +49,16 @@ describe('req', () => {
   });
 
   test.each`
-    scenario                                                         | inputRemoteAddress | inputRemotePort
-    ${'de-nests null connection.remoteAddress'}                      | ${null}            | ${undefined}
-    ${'de-nests null connection.remotePort'}                         | ${undefined}       | ${null}
-    ${'de-nests connection.remoteAddress'}                           | ${remoteAddress}   | ${undefined}
-    ${'de-nests connection.remotePort'}                              | ${undefined}       | ${remotePort}
-    ${'de-nests connection.remoteAddress and connection.remotePort'} | ${remoteAddress}   | ${remotePort}
+    scenario                                                 | inputRemoteAddress | inputRemotePort
+    ${'de-nests null socket.remoteAddress'}                  | ${null}            | ${undefined}
+    ${'de-nests null socket.remotePort'}                     | ${undefined}       | ${null}
+    ${'de-nests socket.remoteAddress'}                       | ${remoteAddress}   | ${undefined}
+    ${'de-nests socket.remotePort'}                          | ${undefined}       | ${remotePort}
+    ${'de-nests socket.remoteAddress and socket.remotePort'} | ${remoteAddress}   | ${remotePort}
   `('$scenario', ({ inputRemoteAddress, inputRemotePort }) => {
     const value = {
       ...requestBase,
-      connection: {
+      socket: {
         remoteAddress: inputRemoteAddress,
         remotePort: inputRemotePort,
       },
@@ -74,15 +74,15 @@ describe('req', () => {
   });
 
   test.each`
-    scenario                                   | value
-    ${'connection is missing'}                 | ${{ ...requestBase }}
-    ${'connection is null'}                    | ${{ ...requestBase, connection: null }}
-    ${'connection is undefined'}               | ${{ ...requestBase, connection: undefined }}
-    ${'connection is empty object'}            | ${{ ...requestBase, connection: {} }}
-    ${'connection.remoteAddress is undefined'} | ${{ ...requestBase, connection: { remoteAddress: undefined } }}
-    ${'connection.remotePort is undefined'}    | ${{ ...requestBase, connection: { remotePort: undefined } }}
-    ${'remoteAddress is a root property'}      | ${{ ...requestBase, remoteAddress }}
-    ${'remotePort is a root property'}         | ${{ ...requestBase, remotePort }}
+    scenario                               | value
+    ${'socket is missing'}                 | ${{ ...requestBase }}
+    ${'socket is null'}                    | ${{ ...requestBase, socket: null }}
+    ${'socket is undefined'}               | ${{ ...requestBase, socket: undefined }}
+    ${'socket is empty object'}            | ${{ ...requestBase, socket: {} }}
+    ${'socket.remoteAddress is undefined'} | ${{ ...requestBase, socket: { remoteAddress: undefined } }}
+    ${'socket.remotePort is undefined'}    | ${{ ...requestBase, socket: { remotePort: undefined } }}
+    ${'remoteAddress is a root property'}  | ${{ ...requestBase, remoteAddress }}
+    ${'remotePort is a root property'}     | ${{ ...requestBase, remotePort }}
   `('remoteAddress and remotePort is undefined when $scenario', ({ value }) => {
     const result = serializers.req(value);
 
