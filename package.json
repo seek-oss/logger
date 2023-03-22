@@ -46,7 +46,7 @@
     "split2": "4.1.0"
   },
   "engines": {
-    "node": ">=12",
+    "node": ">=16.11",
     "npm": ">=5.5.0"
   },
   "publishConfig": {

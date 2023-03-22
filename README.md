@@ -2,7 +2,7 @@
 
 [![GitHub Release](https://github.com/seek-oss/logger/workflows/Release/badge.svg?branch=master)](https://github.com/seek-oss/logger/actions?query=workflow%3ARelease)
 [![GitHub Validate](https://github.com/seek-oss/logger/workflows/Validate/badge.svg?branch=master)](https://github.com/seek-oss/logger/actions?query=workflow%3AValidate)
-[![Node.js version](https://img.shields.io/badge/node-%3E%3D%208-brightgreen)](https://nodejs.org/en/)
+[![Node.js version](https://img.shields.io/badge/node-%3E%3D%2016.11-brightgreen)](https://nodejs.org/en/)
 [![npm package](https://img.shields.io/npm/v/@seek/logger)](https://www.npmjs.com/package/@seek/logger)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
