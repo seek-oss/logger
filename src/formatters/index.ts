@@ -19,6 +19,6 @@ export const createFormatters = (
   const trim = trimmer({ depth: opts.maxObjectDepth ?? 4 });
 
   return {
-    log: (input) => trim(input) as object,
+    log: (input) => trim(input) as typeof input,
   };
 };

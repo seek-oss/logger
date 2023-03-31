@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "dtrim": "^1.9.0",
-    "pino": "^7.10.0",
+    "pino": "^8.0.0",
     "pino-std-serializers": "^6.0.0"
   },
   "devDependencies": {
@@ -56,6 +56,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "3.9.2"
+    "version": "6.0.2"
   }
 }
