@@ -111,7 +111,7 @@ testLog(
         authorization: bearerToken,
       },
       c: 3,
-      connection: { remoteAddress: '123.234', remotePort: 9999 },
+      socket: { remoteAddress: '123.234', remotePort: 9999 },
     },
   },
   {
