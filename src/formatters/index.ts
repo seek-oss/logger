@@ -1,8 +1,6 @@
 import { trimmer } from 'dtrim';
 import pino, { LoggerOptions } from 'pino';
 
-import serializers from '../serializers';
-
 export interface FormatterOptions {
   /**
    * Maximum property depth of objects being logged. Default: 4
@@ -20,7 +18,7 @@ export const createFormatters = (
 ): pino.LoggerOptions['formatters'] => {
   const trim = trimmer({
     depth: opts.maxObjectDepth ?? 4,
-    retain: new Set(Object.keys(serializers)),
+    retain: new Set(Object.keys(opts.serializers ?? {})),
   });
 
   return {
