@@ -1,5 +1,5 @@
 import { trimmer } from 'dtrim';
-import pino from 'pino';
+import pino, { LoggerOptions } from 'pino';
 
 export interface FormatterOptions {
   /**
@@ -14,9 +14,12 @@ export interface FormatterOptions {
 }
 
 export const createFormatters = (
-  opts: FormatterOptions,
+  opts: FormatterOptions & Pick<LoggerOptions, 'serializers'>,
 ): pino.LoggerOptions['formatters'] => {
-  const trim = trimmer({ depth: opts.maxObjectDepth ?? 4 });
+  const trim = trimmer({
+    depth: opts.maxObjectDepth ?? 4,
+    retain: new Set(Object.keys(opts.serializers ?? {})),
+  });
 
   return {
     log: (input) => trim(input) as typeof input,

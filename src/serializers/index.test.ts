@@ -122,3 +122,14 @@ describe('res', () => {
     });
   });
 });
+
+describe('serializers', () => {
+  test('it exports only err, errWithCause, req, res', () => {
+    expect(serializers).toStrictEqual({
+      err: expect.any(Function),
+      errWithCause: expect.any(Function),
+      req: expect.any(Function),
+      res: expect.any(Function),
+    });
+  });
+});

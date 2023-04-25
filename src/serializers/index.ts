@@ -1,4 +1,4 @@
-import stdSerializers from 'pino-std-serializers';
+import { err, errWithCause } from 'pino-std-serializers';
 
 interface Socket {
   remoteAddress?: string;
@@ -46,7 +46,8 @@ const res = (response: Response) =>
     : response;
 
 export default {
-  ...stdSerializers,
+  err,
+  errWithCause,
   res,
   req,
 };

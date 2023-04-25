@@ -147,14 +147,14 @@ testLog(
 
 testLog(
   'should truncate objects deeper than the default depth of 4 levels',
-  { req: { url: { c: { d: { e: { f: { g: {} } } } } } } },
-  { req: { url: { c: { d: '[Object]' } } } },
+  { foo: { url: { c: { d: { e: { f: { g: {} } } } } } } },
+  { foo: { url: { c: { d: '[Object]' } } } },
 );
 
 testLog(
   'should truncate objects deeper than the configured object depth',
-  { req: { url: { c: { d: { e: { f: { g: {} } } } } } } },
-  { req: { url: { c: { d: { e: '[Object]' } } } } },
+  { foo: { url: { c: { d: { e: { f: { g: {} } } } } } } },
+  { foo: { url: { c: { d: { e: '[Object]' } } } } },
   undefined,
   { maxObjectDepth: 5 },
 );
@@ -162,24 +162,24 @@ testLog(
 testLog(
   'should truncate Buffers',
   {
-    res: {
+    foo: {
       statusCode: Buffer.from('aaa'),
     },
   },
-  { res: { statusCode: 'Buffer(3)' } },
+  { foo: { statusCode: 'Buffer(3)' } },
 );
 
 testLog(
   'should truncate strings longer than 512 characters',
-  { req: { url: 'a'.repeat(555) } },
-  { req: { url: `${'a'.repeat(512)}...` } },
+  { foo: { url: 'a'.repeat(555) } },
+  { foo: { url: `${'a'.repeat(512)}...` } },
 );
 
 testLog(
   'should truncate arrays containing more than 64 items',
-  { err: { message: 'a'.repeat(64 + 10).split('') } },
+  { foo: { message: 'a'.repeat(64 + 10).split('') } },
   {
-    err: {
+    foo: {
       message: 'Array(74)',
     },
   },
@@ -322,7 +322,10 @@ testLog(
       request: {
         _options: {
           method: 'get',
-          headers: '[Object]',
+          headers: {
+            Accept: 'application/json, text/plain, */*',
+            authorization: '[Redacted]',
+          },
         },
       },
     },
@@ -502,3 +505,56 @@ test('should log customized timestamp if timestamp logger option is supplied', a
 
   expect(log.timestamp).toBe(mockTimestamp);
 });
+
+class Req {
+  get socket() {
+    return {
+      remoteAddress: 'localhost',
+      remotePort: '4000',
+    };
+  }
+}
+testLog(
+  'should not truncate objects with a serializer',
+  {
+    errWithCause: {
+      a: {
+        b: {},
+      },
+    },
+    err: {
+      a: {
+        b: {},
+      },
+    },
+    req: new Req(),
+    notSerialized: {
+      a: {
+        b: {},
+      },
+    },
+  },
+  {
+    errWithCause: {
+      a: {
+        b: {},
+      },
+    },
+    err: {
+      a: {
+        b: {},
+      },
+    },
+    req: {
+      remoteAddress: 'localhost',
+      remotePort: '4000',
+    },
+    notSerialized: {
+      a: '[Object]',
+    },
+  },
+  'info',
+  {
+    maxObjectDepth: 2,
+  },
+);
