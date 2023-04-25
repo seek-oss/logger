@@ -1,7 +1,5 @@
 import split from 'split2';
 
-import serializers from './serializers';
-
 import createLogger, { LoggerOptions } from '.';
 
 const bearerToken =
