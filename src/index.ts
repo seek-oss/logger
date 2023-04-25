@@ -24,13 +24,12 @@ export default (
     sync: true,
   }),
 ): Logger => {
-  const formatters = createFormatters(opts);
-
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
   opts.serializers = {
     ...serializers,
     ...opts.serializers,
   };
+  const formatters = createFormatters(opts);
   opts.base = {
     ...base,
     ...opts.base,

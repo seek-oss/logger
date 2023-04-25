@@ -36,9 +36,9 @@
     "test:ci": "skuba test --coverage"
   },
   "dependencies": {
-    "dtrim": "^1.9.0",
+    "dtrim": "^1.11.0",
     "pino": "^8.0.0",
-    "pino-std-serializers": "^6.0.0"
+    "pino-std-serializers": "^6.2.0"
   },
   "devDependencies": {
     "@types/split2": "3.2.1",
