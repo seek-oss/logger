@@ -2,7 +2,7 @@ import pino from 'pino';
 
 import base from './base';
 import { withRedaction } from './destination';
-import { FormatterOptions, createFormatters } from './formatters';
+import { type FormatterOptions, createFormatters } from './formatters';
 import * as redact from './redact';
 import serializers from './serializers';
 

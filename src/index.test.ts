@@ -1,6 +1,6 @@
 import split from 'split2';
 
-import createLogger, { LoggerOptions } from '.';
+import createLogger, { type LoggerOptions } from '.';
 
 const bearerToken =
   'Bearer 123asdh12312312312312323232123asdh12312312312312323232';
