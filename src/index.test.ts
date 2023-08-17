@@ -443,7 +443,7 @@ test('enforces a specified object interface', async () => {
   logger.info<ExampleMessageContext>(
     {
       activity: 'Testing Logger',
-      // @ts-expect-error
+      // @ts-expect-error - test assertion
       propertyNotAllowed: 'Linting error',
       input: {
         foo: 0xf00,
