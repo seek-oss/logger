@@ -19,9 +19,9 @@ interface Response extends Record<string, unknown> {
 const getHeaders = ({ _header, header, headers }: Response) =>
   _header || header || headers;
 const getStatus = ({ statusCode, status }: Response): number | undefined =>
-  statusCode || status;
+  statusCode ?? status;
 
-const isObject = (value: any): boolean => {
+const isObject = (value: unknown): boolean => {
   const type = typeof value;
   return value != null && (type === 'object' || type === 'function');
 };

@@ -34,7 +34,7 @@ describe('req', () => {
 
   test.each`
     scenario      | value
-    ${'function'} | ${() => {}}
+    ${'function'} | ${() => undefined}
     ${'array'}    | ${[{ answer: 42 }]}
   `('returns empty req when value is $scenario', ({ value }) => {
     const result = serializers.req(value);
