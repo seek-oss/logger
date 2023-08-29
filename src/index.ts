@@ -8,7 +8,8 @@ import serializers from './serializers';
 
 export { pino };
 
-export type LoggerOptions = pino.LoggerOptions & FormatterOptions;
+export type LoggerOptions = Omit<pino.LoggerOptions, 'redact'> &
+  FormatterOptions & { redact?: redact.ExtendedRedactOptions };
 export type Logger = pino.Logger;
 
 /**
@@ -25,6 +26,7 @@ export default (
   }),
 ): Logger => {
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
+  opts.redact = redact.addRemovePathsCensor(opts.redact);
   opts.serializers = {
     ...serializers,
     ...opts.serializers,

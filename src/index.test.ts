@@ -38,6 +38,7 @@ function testLog(
   output: any,
   method?: 'error' | 'info',
   loggerOptions?: LoggerOptions,
+  shouldNotHavePropertyPaths?: string[],
 ) {
   // eslint-disable-next-line jest/valid-title
   test(testName, async () => {
@@ -50,6 +51,9 @@ function testLog(
     expect(log).toMatchObject(output);
     expect(inputString).toEqual(JSON.stringify(input));
     expect(log).toHaveProperty('timestamp');
+    shouldNotHavePropertyPaths?.forEach((path) => {
+      expect(log).not.toHaveProperty(path);
+    });
   });
 }
 
@@ -420,6 +424,74 @@ testLog(
       );
     },
   },
+);
+
+testLog(
+  'should redact specified paths',
+  {
+    msg: 'allowed',
+    req: {
+      headers: {
+        ['x-leave-me']: 'Should be present',
+        secret: 'Should be redacted',
+      },
+    },
+  },
+  {
+    msg: 'allowed',
+    req: {
+      headers: { ['x-leave-me']: 'Should be present', secret: '[Redacted]' },
+    },
+  },
+  'info',
+  {
+    redact: ['req.headers.secret'],
+  },
+  ['req.headers.x-remove-me'],
+);
+
+testLog(
+  'should redact or remove specified paths',
+  {
+    msg: 'allowed',
+    req: {
+      headers: {
+        ['x-remove-me']: 'Should be removed',
+        secret: 'Should be redacted',
+      },
+    },
+  },
+  { msg: 'allowed', req: { headers: { secret: '[Redacted]' } } },
+  'info',
+  {
+    redact: {
+      paths: ['req.headers.secret'],
+      removePaths: ['req.headers["x-remove-me"]'],
+    },
+  },
+  ['req.headers.x-remove-me'],
+);
+
+testLog(
+  'should remove specified paths',
+  {
+    msg: 'allowed',
+    req: {
+      headers: {
+        ['x-remove-me']: 'Should be removed',
+        secret: 'Should be removed',
+      },
+    },
+  },
+  { msg: 'allowed', req: { headers: {} } },
+  'info',
+  {
+    redact: {
+      paths: [],
+      removePaths: ['req.headers.secret', 'req.headers["x-remove-me"]'],
+    },
+  },
+  ['req.headers.secret', 'req.headers.x-remove-me'],
 );
 
 interface ExampleMessageContext {

@@ -101,6 +101,26 @@ logger.error<Fields>(
 
 Bearer tokens are redacted regardless of their placement in the log object.
 
+#### Pino Redaction
+
+To redact other properties, use the `redact` logger options as per [pino redaction] docs.
+
+Pino has a limitation where you can either redact or remove specified `redact.paths` by setting `redact.remove` to `true` or `false`.
+
+A logger option has been added to allow you to redact some paths and remove other paths.
+
+Example:
+
+```typescript
+const logger = createLogger({
+  name: 'my-app',
+  redact: {
+    paths: ['req.headers["x-redact-this"]'],
+    removePaths: ['req.headers["x-remove-this"]'],
+  },
+});
+```
+
 ### Trimming
 
 The following trimming rules apply to all logging data:
@@ -162,3 +182,4 @@ const logger = createLogger({
 [pino]: https://github.com/pinojs/pino
 [pino options]: https://github.com/pinojs/pino/blob/master/docs/api.md#options
 [pino-pretty]: https://github.com/pinojs/pino-pretty
+[pino redaction]: https://github.com/pinojs/pino/blob/master/docs/api.md#redact-array--object

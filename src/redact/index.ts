@@ -1,18 +1,21 @@
+import type * as pino from 'pino';
+
 // TODO: Redact cookies?
 export const defaultRedact = [];
 
-/**
- * Private interface vendored from `pino`
- */
-interface redactOptions {
-  paths: string[];
-  censor?: string | ((value: unknown, path: string[]) => unknown);
-  remove?: boolean;
-}
+export type ExtendedRedactOptions = pino.LoggerOptions['redact'] & {
+  /**
+   * A list of paths to remove from the logged object instead of redacting them.
+   * Note that if you are only removing, rather use the `paths` property and set `remove` to `true`.
+   */
+  removePaths?: string[];
+};
+
+type ExtendedRedact = string[] | ExtendedRedactOptions | undefined;
 
 export const addDefaultRedactPathStrings = (
-  redact: string[] | redactOptions | undefined,
-) => {
+  redact: ExtendedRedact,
+): ExtendedRedact => {
   if (!redact) {
     return defaultRedact;
   }
@@ -20,4 +23,27 @@ export const addDefaultRedactPathStrings = (
     return redact.concat(defaultRedact);
   }
   return redact;
+};
+
+export const addRemovePathsCensor = (
+  redact: ExtendedRedact,
+): ExtendedRedact => {
+  if (
+    !redact ||
+    Array.isArray(redact) ||
+    !redact.removePaths ||
+    redact.removePaths.length === 0
+  ) {
+    return redact;
+  }
+
+  const { paths: redactPaths, removePaths } = redact;
+
+  return redactPaths.length === 0
+    ? { paths: removePaths, remove: true }
+    : {
+        paths: [...redactPaths, ...removePaths],
+        censor: (_value, path) =>
+          redactPaths.includes(path.join('.')) ? '[Redacted]' : undefined,
+      };
 };
