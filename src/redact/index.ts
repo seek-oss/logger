@@ -3,26 +3,42 @@ import type * as pino from 'pino';
 // TODO: Redact cookies?
 export const defaultRedact = [];
 
-export type ExtendedRedactOptions = pino.LoggerOptions['redact'] & {
+export const defaultRemovePaths: string[] = [];
+
+type redactOptions = Extract<pino.LoggerOptions['redact'], { paths: string[] }>;
+
+type extendedRedactOptions = redactOptions & {
   /**
    * A list of paths to remove from the logged object instead of redacting them.
    * Note that if you are only removing, rather use the `paths` property and set `remove` to `true`.
    */
   removePaths?: string[];
+
+  /**
+   * When `true`, the `defaultRemovePaths` will not be appended to the `removePaths` list.
+   */
+  ignoreDefaultRemovePaths?: true;
 };
 
-type ExtendedRedact = string[] | ExtendedRedactOptions | undefined;
+export type ExtendedRedact = string[] | extendedRedactOptions | undefined;
 
-const addDefaultRedactPathStrings = (
+const appendDefaultRedactAndRemove = (
   redact: ExtendedRedact,
-): ExtendedRedact => {
-  if (!redact) {
-    return defaultRedact;
-  }
-  if (Array.isArray(redact)) {
-    return redact.concat(defaultRedact);
-  }
-  return redact;
+): extendedRedactOptions | undefined => {
+  const inputRedact =
+    typeof redact !== 'undefined' && !Array.isArray(redact)
+      ? redact
+      : { paths: redact ?? [] };
+
+  const paths = inputRedact.paths.concat(defaultRedact);
+  const inputRemovePaths = inputRedact.removePaths ?? [];
+  const removePaths = inputRedact.ignoreDefaultRemovePaths
+    ? inputRemovePaths
+    : inputRemovePaths.concat(defaultRemovePaths);
+
+  return paths.length === 0 && removePaths.length === 0
+    ? undefined
+    : { ...inputRedact, paths, removePaths };
 };
 
 const STARTS_WITH_INVALID_CHARS = '^[^$_a-zA-Z]';
@@ -66,4 +82,4 @@ const configureRedactCensor = (redact: ExtendedRedact): ExtendedRedact => {
 };
 
 export const configureRedact = (redact: ExtendedRedact): ExtendedRedact =>
-  configureRedactCensor(addDefaultRedactPathStrings(redact));
+  configureRedactCensor(appendDefaultRedactAndRemove(redact));

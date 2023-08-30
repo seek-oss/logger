@@ -121,6 +121,24 @@ const logger = createLogger({
 });
 ```
 
+#### Removal of Default Properties
+
+The library will remove a set of default properties.  
+To bypass this, set `ignoreDefaultRemovePaths` to `true` on the `redact` options.
+
+Example:
+
+```typescript
+const logger = createLogger({
+  name: 'my-app',
+  redact: {
+    paths: ['req.headers["x-redact-this"]'],
+    removePaths: ['req.headers["x-remove-this"]'],
+    ignoreDefaultRemovePaths: true,
+  },
+});
+```
+
 ### Trimming
 
 The following trimming rules apply to all logging data:

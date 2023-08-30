@@ -1,5 +1,7 @@
 import split from 'split2';
 
+import { defaultRemovePaths } from './redact';
+
 import createLogger, { type LoggerOptions } from '.';
 
 const bearerToken =
@@ -472,35 +474,67 @@ testLog(
   ['req.headers.x-remove-me'],
 );
 
-testLog(
-  'should redact or remove specified paths where property names contain dots',
-  {
-    msg: 'allowed',
-    data: {
-      top: {
-        prop1: 'Should be redacted',
-        prop2: 'Should be removed',
+const buildObjectFromPath = (path: string): Record<string, unknown> =>
+  path
+    .split(/[.\[]/)
+    .reverse()
+    .reduce(
+      (previous, current) => {
+        const key = current.replace(/["\[\]]/g, '');
+        if (!previous) {
+          return { [key]: 'Default path property' };
+        }
+
+        return { [key]: previous };
       },
-      ['top.prop1']: 'Should be removed',
-      ['top.prop2']: 'Should be redacted',
-    },
+      undefined as unknown as Record<string, unknown>,
+    );
+
+const buildObjectFromDefaultRemovePaths = (): Record<string, unknown> =>
+  !defaultRemovePaths?.[0] ? {} : buildObjectFromPath(defaultRemovePaths[0]);
+
+testLog(
+  'should remove default paths when ignoreDefaultRemovePaths is missing',
+  {
+    redact: 'Should be redacted',
+    remove: 'Should be removed',
+    ...buildObjectFromDefaultRemovePaths(),
   },
   {
-    msg: 'allowed',
-    data: {
-      top: { prop1: '[Redacted]' },
-      ['top.prop2']: '[Redacted]',
-    },
+    redact: '[Redacted]',
   },
   'info',
   {
     maxObjectDepth: 20,
     redact: {
-      paths: ['data.top.prop1', 'data["top.prop2"]'],
-      removePaths: ['data.top.prop2', 'data["top.prop1"]'],
+      paths: ['redact'],
+      removePaths: ['remove'],
     },
   },
-  ['data.top.prop2', ['data', 'top.prop1']],
+  ['remove', ...defaultRemovePaths],
+);
+
+testLog(
+  'should not remove default paths when ignoreDefaultRemovePaths is true',
+  {
+    redact: 'Should be redacted',
+    remove: 'Should be removed',
+    ...buildObjectFromDefaultRemovePaths(),
+  },
+  {
+    redact: '[Redacted]',
+    ...buildObjectFromDefaultRemovePaths(),
+  },
+  'info',
+  {
+    maxObjectDepth: 20,
+    redact: {
+      paths: ['redact'],
+      removePaths: ['remove'],
+      ignoreDefaultRemovePaths: true,
+    },
+  },
+  ['remove'],
 );
 
 testLog(

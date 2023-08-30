@@ -9,7 +9,7 @@ import serializers from './serializers';
 export { pino };
 
 export type LoggerOptions = Omit<pino.LoggerOptions, 'redact'> &
-  FormatterOptions & { redact?: redact.ExtendedRedactOptions };
+  FormatterOptions & { redact?: redact.ExtendedRedact };
 export type Logger = pino.Logger;
 
 /**
