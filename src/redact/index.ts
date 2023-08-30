@@ -43,7 +43,7 @@ export const keyFromPath = (paths: string[]): string => {
   return path;
 };
 
-export const addRemovePathsCensor = (
+export const configureRedactCensor = (
   redact: ExtendedRedact,
 ): ExtendedRedact => {
   if (
