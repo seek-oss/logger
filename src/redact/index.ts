@@ -13,7 +13,7 @@ export type ExtendedRedactOptions = pino.LoggerOptions['redact'] & {
 
 type ExtendedRedact = string[] | ExtendedRedactOptions | undefined;
 
-export const addDefaultRedactPathStrings = (
+const addDefaultRedactPathStrings = (
   redact: ExtendedRedact,
 ): ExtendedRedact => {
   if (!redact) {
@@ -43,9 +43,7 @@ export const keyFromPath = (paths: string[]): string => {
   return path;
 };
 
-export const configureRedactCensor = (
-  redact: ExtendedRedact,
-): ExtendedRedact => {
+const configureRedactCensor = (redact: ExtendedRedact): ExtendedRedact => {
   if (
     !redact ||
     Array.isArray(redact) ||
@@ -66,3 +64,6 @@ export const configureRedactCensor = (
           redactSet.has(keyFromPath(path)) ? '[Redacted]' : undefined,
       };
 };
+
+export const configureRedact = (redact: ExtendedRedact): ExtendedRedact =>
+  configureRedactCensor(addDefaultRedactPathStrings(redact));

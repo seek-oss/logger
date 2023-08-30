@@ -25,8 +25,7 @@ export default (
     sync: true,
   }),
 ): Logger => {
-  opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
-  opts.redact = redact.configureRedactCensor(opts.redact);
+  opts.redact = redact.configureRedact(opts.redact);
   opts.serializers = {
     ...serializers,
     ...opts.serializers,
