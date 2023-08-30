@@ -38,7 +38,7 @@ function testLog(
   output: any,
   method?: 'error' | 'info',
   loggerOptions?: LoggerOptions,
-  shouldNotHavePropertyPaths?: string[],
+  shouldNotHavePropertyPaths?: Array<string | string[]>,
 ) {
   // eslint-disable-next-line jest/valid-title
   test(testName, async () => {
@@ -470,6 +470,37 @@ testLog(
     },
   },
   ['req.headers.x-remove-me'],
+);
+
+testLog(
+  'should redact or remove specified paths where property names contain dots',
+  {
+    msg: 'allowed',
+    data: {
+      top: {
+        prop1: 'Should be redacted',
+        prop2: 'Should be removed',
+      },
+      ['top.prop1']: 'Should be removed',
+      ['top.prop2']: 'Should be redacted',
+    },
+  },
+  {
+    msg: 'allowed',
+    data: {
+      top: { prop1: '[Redacted]' },
+      ['top.prop2']: '[Redacted]',
+    },
+  },
+  'info',
+  {
+    maxObjectDepth: 20,
+    redact: {
+      paths: ['data.top.prop1', 'data["top.prop2"]'],
+      removePaths: ['data.top.prop2', 'data["top.prop1"]'],
+    },
+  },
+  ['data.top.prop2', ['data', 'top.prop1']],
 );
 
 testLog(

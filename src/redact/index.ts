@@ -25,6 +25,24 @@ export const addDefaultRedactPathStrings = (
   return redact;
 };
 
+const STARTS_WITH_INVALID_CHARS = '^[^$_a-zA-Z]';
+const CONTAINS_INVALID_CHARS = '[^a-zA-Z0-9_$]+';
+const nonStandardIdentifierRegex = new RegExp(
+  `(${STARTS_WITH_INVALID_CHARS}|${CONTAINS_INVALID_CHARS})`,
+);
+
+export const keyFromPath = (paths: string[]): string => {
+  const path = paths.reduce((previous, current) => {
+    const dotDelimiter = previous === '' ? '' : '.';
+    const escapedPath = nonStandardIdentifierRegex.test(current)
+      ? `["${current}"]`
+      : `${dotDelimiter}${current}`;
+    return `${previous}${escapedPath}`;
+  }, '');
+
+  return path;
+};
+
 export const addRemovePathsCensor = (
   redact: ExtendedRedact,
 ): ExtendedRedact => {
@@ -49,6 +67,6 @@ export const addRemovePathsCensor = (
     : {
         paths: [...redactPaths, ...removePaths],
         censor: (_value, path) =>
-          redactMap[path.join('.')] ? '[Redacted]' : undefined,
+          redactMap[keyFromPath(path)] ? '[Redacted]' : undefined,
       };
 };
