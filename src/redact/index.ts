@@ -56,17 +56,13 @@ export const configureRedactCensor = (
   }
 
   const { paths: redactPaths, removePaths } = redact;
-
-  const redactMap = redactPaths.reduce(
-    (previous, current) => ({ ...previous, [current]: true }),
-    {} as Record<string, boolean>,
-  );
+  const redactSet = new Set(redactPaths);
 
   return redactPaths.length === 0
     ? { paths: removePaths, remove: true }
     : {
         paths: [...redactPaths, ...removePaths],
         censor: (_value, path) =>
-          redactMap[keyFromPath(path)] ? '[Redacted]' : undefined,
+          redactSet.has(keyFromPath(path)) ? '[Redacted]' : undefined,
       };
 };
