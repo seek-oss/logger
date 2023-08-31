@@ -538,6 +538,98 @@ testLog(
 );
 
 testLog(
+  'should use input censor when redacting',
+  {
+    redact: 'Should be redacted',
+  },
+  {
+    redact: '[SHHH]',
+  },
+  'info',
+  {
+    redact: {
+      paths: ['redact'],
+      censor: (_value, _path) => '[SHHH]',
+    },
+  },
+);
+
+testLog(
+  'should not use input censor when removing',
+  {
+    remove: 'Should be "removed"',
+  },
+  {},
+  'info',
+  {
+    redact: {
+      paths: ['remove'],
+      remove: true,
+      censor: (_value, _path) => 'You have been erased!',
+    },
+  },
+  ['remove'],
+);
+
+testLog(
+  'should not use input censor when redacting and removing with no redact paths',
+  {
+    remove: 'Should be "removed"',
+  },
+  {},
+  'info',
+  {
+    redact: {
+      paths: [],
+      removePaths: ['remove'],
+      censor: (_value, _path) => 'You have been erased!',
+    },
+  },
+  ['remove'],
+);
+
+testLog(
+  'should use input censor function to redact when redacting and removing',
+  {
+    redact: 'Should be redacted',
+    remove: 'Should be "removed"',
+  },
+  {
+    redact: '[SHHH]',
+  },
+  'info',
+  {
+    redact: {
+      paths: ['redact'],
+      removePaths: ['remove'],
+      censor: (_value, path) =>
+        path.includes('redact') ? '[SHHH]' : 'You have been erased!',
+    },
+  },
+  ['remove'],
+);
+
+testLog(
+  'should use input censor text to redact when redacting and removing',
+  {
+    redact: 'Should be redacted',
+    remove: 'Should be "removed"',
+  },
+  {
+    redact: '[SHHH]',
+  },
+  'info',
+  {
+    redact: {
+      paths: ['redact'],
+      removePaths: ['remove'],
+      censor: '[SHHH]',
+    },
+  },
+  ['remove'],
+);
+
+testLog(
   'should remove specified paths',
   {
     msg: 'allowed',

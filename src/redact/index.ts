@@ -69,15 +69,20 @@ const configureRedactCensor = (redact: ExtendedRedact): ExtendedRedact => {
     return redact;
   }
 
-  const { paths: redactPaths, removePaths } = redact;
-  const redactSet = new Set(redactPaths);
+  const { paths: redactPaths, removePaths, censor } = redact;
+  const removeSet = new Set(removePaths);
+  const censorText = typeof censor === 'string' ? censor : '[Redacted]';
+  const censorPath = (value: unknown, path: string[]): unknown =>
+    typeof censor === 'function' ? censor(value, path) : censorText;
 
   return redactPaths.length === 0
-    ? { paths: removePaths, remove: true }
+    ? { paths: removePaths, remove: true, censor }
     : {
         paths: [...redactPaths, ...removePaths],
-        censor: (_value, path) =>
-          redactSet.has(keyFromPath(path)) ? '[Redacted]' : undefined,
+        censor: (value, path) =>
+          removeSet.has(keyFromPath(path))
+            ? undefined
+            : censorPath(value, path),
       };
 };
 
