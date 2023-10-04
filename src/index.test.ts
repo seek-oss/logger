@@ -1,5 +1,7 @@
 import split from 'split2';
 
+import { defaultOmitHeaderNames } from './serializers';
+
 import createLogger, { type LoggerOptions } from '.';
 
 const bearerToken =
@@ -557,4 +559,47 @@ testLog(
   {
     maxObjectDepth: 2,
   },
+);
+
+const objectWithDefaultOmitHeaderNameKeys = defaultOmitHeaderNames.reduce(
+  (headers, key) => ({ ...headers, [key]: 'header value' }),
+  {},
+);
+
+testLog(
+  'should omit defaultOmitHeaderNames by default',
+  {
+    headers: {
+      ['authorization']: bearerToken,
+      ...objectWithDefaultOmitHeaderNameKeys,
+      ['x-request-id']: 'some-uuid',
+    },
+  },
+  {
+    headers: {
+      ['authorization']: redactedBearer,
+      ['x-request-id']: 'some-uuid',
+    },
+  },
+  'info',
+);
+
+testLog(
+  'should keep defaultOmitHeaderNames when omitHeaderNames option is empty',
+  {
+    headers: {
+      ['authorization']: bearerToken,
+      ...objectWithDefaultOmitHeaderNameKeys,
+      ['x-request-id']: 'some-uuid',
+    },
+  },
+  {
+    headers: {
+      ['authorization']: redactedBearer,
+      ...objectWithDefaultOmitHeaderNameKeys,
+      ['x-request-id']: 'some-uuid',
+    },
+  },
+  'info',
+  { omitHeaderNames: [] },
 );

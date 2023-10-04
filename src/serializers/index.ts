@@ -1,5 +1,20 @@
 import { err, errWithCause } from 'pino-std-serializers';
 
+export const defaultOmitHeaderNames = [
+  'x-envoy-attempt-count',
+  'x-envoy-decorator-operation',
+  'x-envoy-expected-rq-timeout-ms',
+  'x-envoy-external-address',
+  'x-envoy-internal',
+  'x-envoy-peer-metadata',
+  'x-envoy-peer-metadata-id',
+  'x-envoy-upstream-service-time',
+];
+
+export interface SerializerOptions {
+  omitHeaderNames?: string[];
+}
+
 interface Socket {
   remoteAddress?: string;
   remotePort?: string;

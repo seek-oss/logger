@@ -45,7 +45,7 @@ childLogger.error({ err }, 'Something bad happened');
 
 ### Standardised fields
 
-**@seek/logger** bundles custom `req` and `res` serializers along with [Pino]'s standard set.
+**@seek/logger** bundles custom `req`, `res` and `headers` serializers along with [Pino]'s standard set.
 User-defined serializers will take precedence over predefined ones.
 
 Use the following standardised logging fields to benefit from customised serialization:
@@ -62,6 +62,11 @@ Use the following standardised logging fields to benefit from customised seriali
 - `res` for HTTP responses.
 
   The response object is trimmed to a set of essential fields.
+
+- `headers` for tracing headers.
+
+  Certain headers are omitted by default (e.g. `x-envoy-peer-metadata`).  
+  To opt out of this behavior, set the `omitHeaderNames` logger option to an empty list `[]`.
 
 All other fields will be logged directly.
 
