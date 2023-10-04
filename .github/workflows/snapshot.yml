@@ -1,18 +1,14 @@
-name: Release
+name: Snapshot
 
-on:
-  push:
-    branches:
-      - beta
-      - master
+on: workflow_dispatch
 
 permissions: {}
 
 jobs:
-  release:
-    name: Publish & Deploy
+  publish:
+    name: Publish Snapshot
     permissions:
-      contents: write
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
@@ -30,10 +26,9 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Publish to npm
-        uses: changesets/action@v1
+        uses: seek-oss/changesets-snapshot@v0
         with:
-          publish: yarn release
-          version: yarn stage
+          pre-publish: yarn build
         env:
           GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.SEEK_OSS_CI_NPM_TOKEN }}
