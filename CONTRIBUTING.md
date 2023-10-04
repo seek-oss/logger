@@ -139,7 +139,6 @@ The Changesets CLI is interactive and follows [semantic versioning]:
 - Minor release `0.X.0`: new, backwards-compatible functionality
 - Major release `X.0.0`: backwards-incompatible modification
 
-
 The Changesets CLI will generate a Markdown file under [.changeset](https://github.com/seek-oss/logger/tree/master/.changeset),
 which you should include in your pull request.
 It doesn't need to be part of the same commit as the rest of your changes.
