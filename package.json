@@ -1,6 +1,6 @@
 {
   "name": "@seek/logger",
-  "version": "0.0.0-semantically-released",
+  "version": "6.1.1",
   "private": false,
   "description": "Standardized logging",
   "homepage": "https://github.com/seek-oss/logger#readme",
