@@ -4,11 +4,7 @@ import base from './base';
 import { withRedaction } from './destination';
 import { type FormatterOptions, createFormatters } from './formatters';
 import * as redact from './redact';
-import defaultSerializers, {
-  type SerializerOptions,
-  defaultOmitHeaderNames,
-} from './serializers';
-import { createOmitPropertiesSerializer } from './serializers/omitPropertiesSerializer';
+import { type SerializerOptions, createSerializers } from './serializers';
 
 export { pino };
 
@@ -31,14 +27,7 @@ export default (
   }),
 ): Logger => {
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
-  const omitHeaderNamesSerializer = createOmitPropertiesSerializer('headers', {
-    omitPropertyNames: opts.omitHeaderNames ?? defaultOmitHeaderNames,
-  });
-  opts.serializers = {
-    ...defaultSerializers,
-    ...omitHeaderNamesSerializer,
-    ...opts.serializers,
-  };
+  opts.serializers = createSerializers(opts);
   const formatters = createFormatters(opts);
   opts.base = {
     ...base,

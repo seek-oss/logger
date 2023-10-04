@@ -57,7 +57,10 @@ Use the following standardised logging fields to benefit from customised seriali
 
 - `req` for HTTP requests.
 
-  The request object is trimmed to a set of essential fields.
+  The request object is trimmed to a set of essential fields.  
+  Certain headers are omitted by default (e.g. `x-envoy-peer-metadata`).  
+  To opt out of this behavior, set the `omitHeaderNames` logger option to an empty list `[]`
+  or provide your own list.
 
 - `res` for HTTP responses.
 
@@ -66,7 +69,8 @@ Use the following standardised logging fields to benefit from customised seriali
 - `headers` for tracing headers.
 
   Certain headers are omitted by default (e.g. `x-envoy-peer-metadata`).  
-  To opt out of this behavior, set the `omitHeaderNames` logger option to an empty list `[]`.
+  To opt out of this behavior, set the `omitHeaderNames` logger option to an empty list `[]`
+  or provide your own list.
 
 All other fields will be logged directly.
 

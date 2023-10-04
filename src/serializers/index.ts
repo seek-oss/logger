@@ -1,4 +1,8 @@
+import type pino from 'pino';
 import { err, errWithCause } from 'pino-std-serializers';
+
+import { omitProperties } from './omitProperties';
+import { createOmitPropertiesSerializer } from './omitPropertiesSerializer';
 
 export const defaultOmitHeaderNames = [
   'x-envoy-attempt-count',
@@ -19,7 +23,7 @@ interface Socket {
   remoteAddress?: string;
   remotePort?: string;
 }
-interface Request extends Record<string, unknown> {
+export interface Request extends Record<string, unknown> {
   method: string;
   url: string;
   headers: Record<string, string>;
@@ -41,16 +45,20 @@ const isObject = (value: unknown): boolean => {
   return value != null && (type === 'object' || type === 'function');
 };
 
-const req = (request: Request) =>
-  isObject(request)
-    ? {
-        method: request.method,
-        url: request.url,
-        headers: request.headers,
-        remoteAddress: request?.socket?.remoteAddress,
-        remotePort: request?.socket?.remotePort,
-      }
-    : request;
+export const createReqSerializer =
+  (opts: SerializerOptions) => (request: Request) =>
+    isObject(request)
+      ? {
+          method: request.method,
+          url: request.url,
+          headers: omitProperties(
+            request.headers,
+            opts.omitHeaderNames ?? defaultOmitHeaderNames,
+          ),
+          remoteAddress: request?.socket?.remoteAddress,
+          remotePort: request?.socket?.remotePort,
+        }
+      : request;
 
 const res = (response: Response) =>
   isObject(response)
@@ -60,9 +68,25 @@ const res = (response: Response) =>
       }
     : response;
 
-export default {
+export const createSerializers = (
+  opts: SerializerOptions & Pick<pino.LoggerOptions, 'serializers'>,
+) => {
+  const omitHeaderNamesSerializer = createOmitPropertiesSerializer('headers', {
+    omitPropertyNames: opts.omitHeaderNames ?? defaultOmitHeaderNames,
+  });
+  return {
+    ...defaultSerializers,
+    req: createReqSerializer(opts),
+    ...omitHeaderNamesSerializer,
+    ...opts.serializers,
+  };
+};
+
+const defaultSerializers = {
   err,
   errWithCause,
   res,
-  req,
+  req: createReqSerializer({}),
 };
+
+export default defaultSerializers;

@@ -574,11 +574,24 @@ testLog(
       ...objectWithDefaultOmitHeaderNameKeys,
       ['x-request-id']: 'some-uuid',
     },
+    req: {
+      headers: {
+        ['authorization']: bearerToken,
+        ...objectWithDefaultOmitHeaderNameKeys,
+        ['x-request-id']: 'some-uuid',
+      },
+    },
   },
   {
     headers: {
       ['authorization']: redactedBearer,
       ['x-request-id']: 'some-uuid',
+    },
+    req: {
+      headers: {
+        ['authorization']: redactedBearer,
+        ['x-request-id']: 'some-uuid',
+      },
     },
   },
   'info',
@@ -592,12 +605,26 @@ testLog(
       ...objectWithDefaultOmitHeaderNameKeys,
       ['x-request-id']: 'some-uuid',
     },
+    req: {
+      headers: {
+        ['authorization']: bearerToken,
+        ...objectWithDefaultOmitHeaderNameKeys,
+        ['x-request-id']: 'some-uuid',
+      },
+    },
   },
   {
     headers: {
       ['authorization']: redactedBearer,
       ...objectWithDefaultOmitHeaderNameKeys,
       ['x-request-id']: 'some-uuid',
+    },
+    req: {
+      headers: {
+        ['authorization']: redactedBearer,
+        ...objectWithDefaultOmitHeaderNameKeys,
+        ['x-request-id']: 'some-uuid',
+      },
     },
   },
   'info',
