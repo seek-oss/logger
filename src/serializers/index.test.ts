@@ -1,4 +1,10 @@
-import serializers, { type Request, defaultOmitHeaderNames } from './index';
+import {
+  type Request,
+  createSerializers,
+  defaultOmitHeaderNames,
+} from './index';
+
+const serializers = createSerializers({});
 
 describe('req', () => {
   const remoteAddress = '::ffff:123.45.67.89';
@@ -105,6 +111,34 @@ describe('req', () => {
 
     expect(result).toStrictEqual({ ...expectedRequestBase });
   });
+
+  it('omits only specified headers when omitHeaderNames is provided', () => {
+    const objectWithDefaultOmitHeaderNameKeys = defaultOmitHeaderNames.reduce(
+      (headers, key) => ({ ...headers, [key]: 'header value' }),
+      {},
+    );
+    const request = {
+      ...requestBase,
+      headers: {
+        ...requestBase.headers,
+        ['omit-me']: 'header value',
+        ...objectWithDefaultOmitHeaderNameKeys,
+      },
+    } as Partial<Request> as Request;
+
+    const expectedRequest = {
+      ...expectedRequestBase,
+      headers: {
+        ...requestBase.headers,
+        ...objectWithDefaultOmitHeaderNameKeys,
+      },
+    };
+
+    const altSerializers = createSerializers({ omitHeaderNames: ['omit-me'] });
+    const result = altSerializers.req(request);
+
+    expect(result).toStrictEqual(expectedRequest);
+  });
 });
 
 describe('res', () => {
@@ -136,17 +170,6 @@ describe('res', () => {
     expect(result).toStrictEqual({
       statusCode: undefined,
       headers: { ...headersBase },
-    });
-  });
-});
-
-describe('serializers', () => {
-  test('it exports only err, errWithCause, req, res', () => {
-    expect(serializers).toStrictEqual({
-      err: expect.any(Function),
-      errWithCause: expect.any(Function),
-      req: expect.any(Function),
-      res: expect.any(Function),
     });
   });
 });

@@ -75,18 +75,11 @@ export const createSerializers = (
     omitPropertyNames: opts.omitHeaderNames ?? defaultOmitHeaderNames,
   });
   return {
-    ...defaultSerializers,
+    err,
+    errWithCause,
     req: createReqSerializer(opts),
+    res,
     ...omitHeaderNamesSerializer,
     ...opts.serializers,
   };
 };
-
-const defaultSerializers = {
-  err,
-  errWithCause,
-  res,
-  req: createReqSerializer({}),
-};
-
-export default defaultSerializers;
