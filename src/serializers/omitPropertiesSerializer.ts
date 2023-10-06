@@ -1,38 +1,19 @@
 import { omitProperties } from './omitProperties';
+import type { SerializerFn } from './types';
 
-export interface OmitPropertiesSerializerOptions {
+export const createOmitPropertiesSerializer = (
   /**
    * A list of properties that should not be logged.
    */
-  omitPropertyNames: string[];
-}
+  properties: string[],
+): SerializerFn => {
+  const uniquePropertySet = new Set(properties);
 
-type OmitHeaderNamesFn = (record: unknown) => unknown;
-type OmitHeaderNamesSerializer = Record<string, OmitHeaderNamesFn>;
-
-/** Creates a serializer that operates on the logged object's top-level property named `topLevelPropertyName`
- *  and omits the properties listed in `options.omitPropertyNames`.
- *  @param topLevelPropertyName - The name of the root property on the logged object that to omit properties from.
- *  @param options - Options for the serializer.
- */
-export const createOmitPropertiesSerializer = (
-  topLevelPropertyName: string,
-  options: OmitPropertiesSerializerOptions,
-): OmitHeaderNamesSerializer => {
-  const propertyNames = [...new Set(options.omitPropertyNames ?? [])].filter(
-    (propertyName) => typeof propertyName === 'string',
-  );
-
-  if (
-    !topLevelPropertyName ||
-    typeof topLevelPropertyName !== 'string' ||
-    topLevelPropertyName.length === 0 ||
-    propertyNames.length === 0
-  ) {
-    return {};
+  if (uniquePropertySet.size === 0) {
+    return (input) => input;
   }
 
-  return {
-    [topLevelPropertyName]: (record) => omitProperties(record, propertyNames),
-  };
+  const uniqueProperties = Array.from(uniquePropertySet);
+
+  return (input) => omitProperties(input, uniqueProperties);
 };

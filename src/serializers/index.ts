@@ -1,8 +1,8 @@
 import type pino from 'pino';
 import { err, errWithCause } from 'pino-std-serializers';
 
-import { omitProperties } from './omitProperties';
 import { createOmitPropertiesSerializer } from './omitPropertiesSerializer';
+import type { SerializerFn } from './types';
 
 export const defaultOmitHeaderNames = [
   'x-envoy-attempt-count',
@@ -45,19 +45,17 @@ const isObject = (value: unknown): boolean => {
   return value != null && (type === 'object' || type === 'function');
 };
 
-const createReqSerializer = (opts: SerializerOptions) => (request: Request) =>
-  isObject(request)
-    ? {
-        method: request.method,
-        url: request.url,
-        headers: omitProperties(
-          request.headers,
-          opts.omitHeaderNames ?? defaultOmitHeaderNames,
-        ),
-        remoteAddress: request?.socket?.remoteAddress,
-        remotePort: request?.socket?.remotePort,
-      }
-    : request;
+const createReqSerializer =
+  (serializeHeaders: SerializerFn) => (request: Request) =>
+    isObject(request)
+      ? {
+          method: request.method,
+          url: request.url,
+          headers: serializeHeaders(request.headers),
+          remoteAddress: request?.socket?.remoteAddress,
+          remotePort: request?.socket?.remotePort,
+        }
+      : request;
 
 const res = (response: Response) =>
   isObject(response)
@@ -70,15 +68,17 @@ const res = (response: Response) =>
 export const createSerializers = (
   opts: SerializerOptions & Pick<pino.LoggerOptions, 'serializers'>,
 ) => {
-  const omitHeaderNamesSerializer = createOmitPropertiesSerializer('headers', {
-    omitPropertyNames: opts.omitHeaderNames ?? defaultOmitHeaderNames,
-  });
-  return {
+  const serializeHeaders = createOmitPropertiesSerializer(
+    opts.omitHeaderNames ?? defaultOmitHeaderNames,
+  );
+
+  const serializers = {
     err,
     errWithCause,
-    req: createReqSerializer(opts),
+    req: createReqSerializer(serializeHeaders),
     res,
-    ...omitHeaderNamesSerializer,
-    ...opts.serializers,
-  };
+    headers: serializeHeaders,
+  } satisfies pino.LoggerOptions['serializers'];
+
+  return serializers;
 };

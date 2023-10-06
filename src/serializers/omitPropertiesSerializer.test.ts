@@ -9,21 +9,6 @@ import { createOmitPropertiesSerializer } from './omitPropertiesSerializer';
 const omitPropertyNamesBase = ['remove-prop', 'remove.prop'];
 
 it.each`
-  scenario       | topLevelPropertyName
-  ${'undefined'} | ${undefined}
-  ${'null'}      | ${null}
-`(
-  'returns empty object when topLevelPropertyName is $scenario',
-  ({ topLevelPropertyName }) => {
-    const serializer = createOmitPropertiesSerializer(topLevelPropertyName, {
-      omitPropertyNames: [...omitPropertyNamesBase],
-    });
-
-    expect(serializer).toStrictEqual({});
-  },
-);
-
-it.each`
   scenario                  | omitPropertyNames
   ${'undefined'}            | ${undefined}
   ${'null'}                 | ${null}
@@ -32,20 +17,16 @@ it.each`
 `(
   'returns empty object when omitPropertyNames is $scenario',
   ({ omitPropertyNames }) => {
-    const serializer = createOmitPropertiesSerializer('main', {
-      omitPropertyNames,
-    });
+    const serializer = createOmitPropertiesSerializer(omitPropertyNames);
 
-    expect(serializer).toStrictEqual({});
+    expect(serializer({})).toStrictEqual({});
   },
 );
 
 it('returns object with named property containing function', () => {
-  const serializer = createOmitPropertiesSerializer('main', {
-    omitPropertyNames: [...omitPropertyNamesBase],
-  });
+  const serializer = createOmitPropertiesSerializer(omitPropertyNamesBase);
 
-  expect(serializer).toStrictEqual({ main: expect.any(Function) });
+  expect(serializer).toStrictEqual(expect.any(Function));
 });
 
 const sink = () =>
@@ -71,9 +52,7 @@ function once(emitter: Transform, name: string) {
 }
 
 it('omits properties from logged object', async () => {
-  const serializer = createOmitPropertiesSerializer('main', {
-    omitPropertyNames: [...omitPropertyNamesBase],
-  });
+  const serializer = createOmitPropertiesSerializer(omitPropertyNamesBase);
 
   const input = {
     main: {
@@ -112,9 +91,7 @@ it.each`
 `(
   'does nothing when top-level property is $scenario',
   async ({ value, expected }) => {
-    const serializer = createOmitPropertiesSerializer('main', {
-      omitPropertyNames: ['keepProp'],
-    });
+    const serializer = createOmitPropertiesSerializer(['keepProp']);
 
     const input = {
       main: value,
