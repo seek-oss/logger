@@ -1,5 +1,5 @@
 ---
-'@seek/logger': major
+'@seek/logger': minor
 ---
 
 Omit a default set or the specified headers from the logged object
