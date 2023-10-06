@@ -45,20 +45,19 @@ const isObject = (value: unknown): boolean => {
   return value != null && (type === 'object' || type === 'function');
 };
 
-export const createReqSerializer =
-  (opts: SerializerOptions) => (request: Request) =>
-    isObject(request)
-      ? {
-          method: request.method,
-          url: request.url,
-          headers: omitProperties(
-            request.headers,
-            opts.omitHeaderNames ?? defaultOmitHeaderNames,
-          ),
-          remoteAddress: request?.socket?.remoteAddress,
-          remotePort: request?.socket?.remotePort,
-        }
-      : request;
+const createReqSerializer = (opts: SerializerOptions) => (request: Request) =>
+  isObject(request)
+    ? {
+        method: request.method,
+        url: request.url,
+        headers: omitProperties(
+          request.headers,
+          opts.omitHeaderNames ?? defaultOmitHeaderNames,
+        ),
+        remoteAddress: request?.socket?.remoteAddress,
+        remotePort: request?.socket?.remotePort,
+      }
+    : request;
 
 const res = (response: Response) =>
   isObject(response)
