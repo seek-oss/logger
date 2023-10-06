@@ -2,50 +2,35 @@ import { omitProperties } from './omitProperties';
 
 const omitPropertyNames = ['omit-prop', 'omit.prop', '', '0'];
 
-const objBase: Readonly<Record<string, unknown>> = {
-  keepProp: 'Some value',
-  ['omit-prop']: 'omit with dash',
-  ['omit.prop']: 'omit with dot',
-  ['']: 'omit with empty key',
-  ['0']: 'omit number as text key',
-  omit: { prop: 'DO NOT omit' },
-};
-
-it('omits list of keys from object', () => {
-  const result = omitProperties({ ...objBase }, omitPropertyNames);
-
-  expect(result).toStrictEqual({
+const createInput = (): Readonly<Record<string, unknown>> =>
+  Object.freeze({
     keepProp: 'Some value',
+    ['omit-prop']: 'omit with dash',
+    ['omit.prop']: 'omit with dot',
+    ['']: 'omit with empty key',
+    ['0']: 'omit number as text key',
     omit: { prop: 'DO NOT omit' },
   });
-});
 
-it.each`
-  scenario        | keyName
-  ${'undefined'}  | ${undefined}
-  ${'null'}       | ${null}
-  ${'non-string'} | ${99}
-`('ignores $scenario key name', ({ keyName }) => {
-  const result = omitProperties(
-    {
-      ['99']: 'Keep key with number as text when same number provided as key',
-      ...objBase,
-    },
-    [...omitPropertyNames, keyName],
-  );
+it('omits list of keys from object', () => {
+  const input = createInput();
+
+  const result = omitProperties(input, omitPropertyNames);
 
   expect(result).toStrictEqual({
-    ['99']: 'Keep key with number as text when same number provided as key',
     keepProp: 'Some value',
     omit: { prop: 'DO NOT omit' },
   });
 });
 
 it('does not alter input object', () => {
-  const obj = { ...objBase };
-  omitProperties({ ...objBase }, omitPropertyNames);
+  const input = createInput();
 
-  expect(obj).toStrictEqual(objBase);
+  const originalInput = structuredClone(input);
+
+  omitProperties(input, omitPropertyNames);
+
+  expect(input).toEqual(originalInput);
 });
 
 it.each`

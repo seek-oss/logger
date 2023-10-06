@@ -1,23 +1,20 @@
 export const omitProperties = (
-  record: Record<string, unknown>,
-  keyList: string[],
-): Record<string, unknown> => {
-  if (!record || typeof record !== 'object' || Array.isArray(record))
-    return record;
-
-  let reducedRecord = record;
-
-  /* eslint-disable-next-line @typescript-eslint/prefer-for-of --
-   * For loop is faster than `for of` and performance is preferred over readability here
-   **/
-  for (let keyIndex = 0; keyIndex < keyList.length; keyIndex++) {
-    const key = keyList[keyIndex];
-    if (typeof key !== 'string') continue;
-
-    const { [key]: _, ...keepRecord } = reducedRecord;
-
-    reducedRecord = keepRecord;
+  input: unknown,
+  properties: string[],
+): unknown => {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) {
+    return input;
   }
 
-  return reducedRecord;
+  // We can get away with a shallow clone as we only touch top-level properties.
+  const output: Record<PropertyKey, unknown> = {
+    ...input,
+  };
+
+  for (const property of properties) {
+    // Remove the property from our shallow clone.
+    delete output[property];
+  }
+
+  return output;
 };
