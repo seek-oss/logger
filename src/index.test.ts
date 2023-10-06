@@ -47,7 +47,12 @@ function testLog(
     logger[method ?? 'info'](input);
 
     const log: any = await once(stream, 'data');
-    expect(log).toMatchObject(output);
+    expect(log).toStrictEqual({
+      level: 30,
+      name: 'my-app',
+      timestamp: expect.any(String),
+      ...output,
+    });
     expect(inputString).toEqual(JSON.stringify(input));
     expect(log).toHaveProperty('timestamp');
   });
@@ -192,6 +197,7 @@ testLog(
     err: {
       message: 'a'.repeat(64).split(''),
     },
+    msg: new Array(64).fill('a'),
   },
 );
 
@@ -226,9 +232,22 @@ testLog(
     foo: new Error('Oh my, this is an error too!'),
   },
   {
-    error: { message: 'Ooh oh! Something went wrong' },
-    err: { message: 'Woot! Another one!' },
-    foo: { message: 'Oh my, this is an error too!' },
+    error: {
+      message: 'Ooh oh! Something went wrong',
+      name: 'Error',
+      stack: expect.stringMatching(/^Error: Ooh oh! Something went wrong\n/),
+    },
+    err: {
+      message: 'Woot! Another one!',
+      stack: expect.stringMatching(/^Error: Woot! Another one!\n/),
+      type: 'Error',
+    },
+    foo: {
+      message: 'Oh my, this is an error too!',
+      name: 'Error',
+      stack: expect.stringMatching(/^Error: Oh my, this is an error too!\n/),
+    },
+    msg: 'Woot! Another one!',
   },
 );
 
@@ -313,12 +332,15 @@ testLog(
       },
     },
     err: {
+      code: 'ECONNABORTED',
       config: {
         headers: {
           Accept: 'application/json, text/plain, */*',
           authorization: '[Redacted]',
         },
+        timeout: 400,
       },
+      message: 'timeout of 400ms exceeded',
       request: {
         _options: {
           method: 'get',
@@ -327,8 +349,15 @@ testLog(
             authorization: '[Redacted]',
           },
         },
+        domain: null,
       },
+      stack: expect.stringMatching(/^Error: timeout of 400ms exceeded\n/),
+      type: 'Object',
     },
+    level: 40,
+    meta: { message: 'timeout of 400ms exceeded', attempt: 0 },
+    msg: 'Retrying Request',
+    v: 1,
   },
 );
 
