@@ -7,9 +7,7 @@ export interface OmitPropertiesSerializerOptions {
   omitPropertyNames: string[];
 }
 
-type OmitHeaderNamesFn = (
-  record: Record<string, unknown>,
-) => Record<string, unknown>;
+type OmitHeaderNamesFn = (record: unknown) => unknown;
 type OmitHeaderNamesSerializer = Record<string, OmitHeaderNamesFn>;
 
 /** Creates a serializer that operates on the logged object's top-level property named `topLevelPropertyName`
@@ -35,7 +33,6 @@ export const createOmitPropertiesSerializer = (
   }
 
   return {
-    [topLevelPropertyName]: (record: Record<string, unknown>) =>
-      omitProperties(record, propertyNames),
+    [topLevelPropertyName]: (record) => omitProperties(record, propertyNames),
   };
 };
