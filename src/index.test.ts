@@ -561,9 +561,8 @@ testLog(
   },
 );
 
-const objectWithDefaultOmitHeaderNameKeys = defaultOmitHeaderNames.reduce(
-  (headers, key) => ({ ...headers, [key]: 'header value' }),
-  {},
+const objectWithDefaultOmitHeaderNameKeys = Object.fromEntries(
+  defaultOmitHeaderNames.map((headerName) => [headerName, 'header value']),
 );
 
 testLog(
