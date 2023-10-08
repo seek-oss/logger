@@ -92,31 +92,28 @@ describe('req', () => {
   `('remoteAddress and remotePort is undefined when $scenario', ({ value }) => {
     const result = serializers.req(value);
 
-    expect(result).toStrictEqual({ ...expectedRequestBase });
+    expect(result).toStrictEqual(expectedRequestBase);
   });
 
+  const objectWithDefaultOmitHeaderNameKeys = Object.fromEntries(
+    defaultOmitHeaderNames.map((headerName) => [headerName, 'header value']),
+  );
+
   it('omits defaultOmitHeaderNames by default', () => {
-    const objectWithDefaultOmitHeaderNameKeys = defaultOmitHeaderNames.reduce(
-      (headers, key) => ({ ...headers, [key]: 'header value' }),
-      {},
-    );
     const request = {
       ...requestBase,
       headers: {
         ...requestBase.headers,
         ...objectWithDefaultOmitHeaderNameKeys,
       },
-    } as Partial<Request> as Request;
+    } satisfies Request;
+
     const result = serializers.req(request);
 
-    expect(result).toStrictEqual({ ...expectedRequestBase });
+    expect(result).toStrictEqual(expectedRequestBase);
   });
 
   it('omits only specified headers when omitHeaderNames is provided', () => {
-    const objectWithDefaultOmitHeaderNameKeys = defaultOmitHeaderNames.reduce(
-      (headers, key) => ({ ...headers, [key]: 'header value' }),
-      {},
-    );
     const request = {
       ...requestBase,
       headers: {
@@ -124,7 +121,7 @@ describe('req', () => {
         ['omit-me']: 'header value',
         ...objectWithDefaultOmitHeaderNameKeys,
       },
-    } as Partial<Request> as Request;
+    } satisfies Request;
 
     const expectedRequest = {
       ...expectedRequestBase,

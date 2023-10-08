@@ -27,7 +27,7 @@ export interface Request extends Record<string, unknown> {
   method: string;
   url: string;
   headers: Record<string, string>;
-  socket: Socket;
+  socket?: Socket;
 }
 
 interface Response extends Record<string, unknown> {
