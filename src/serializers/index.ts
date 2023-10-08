@@ -65,9 +65,7 @@ const res = (response: Response) =>
       }
     : response;
 
-export const createSerializers = (
-  opts: SerializerOptions & Pick<pino.LoggerOptions, 'serializers'>,
-) => {
+export const createSerializers = (opts: SerializerOptions) => {
   const serializeHeaders = createOmitPropertiesSerializer(
     opts.omitHeaderNames ?? defaultOmitHeaderNames,
   );
