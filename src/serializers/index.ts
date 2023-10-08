@@ -23,7 +23,7 @@ interface Socket {
   remoteAddress?: string;
   remotePort?: string;
 }
-export interface Request extends Record<string, unknown> {
+interface Request extends Record<string, unknown> {
   method: string;
   url: string;
   headers: Record<string, string>;

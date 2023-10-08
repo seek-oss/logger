@@ -1,8 +1,4 @@
-import {
-  type Request,
-  createSerializers,
-  defaultOmitHeaderNames,
-} from './index';
+import { createSerializers, defaultOmitHeaderNames } from '.';
 
 const serializers = createSerializers({});
 
@@ -106,7 +102,7 @@ describe('req', () => {
         ...requestBase.headers,
         ...objectWithDefaultOmitHeaderNameKeys,
       },
-    } satisfies Request;
+    };
 
     const result = serializers.req(request);
 
@@ -121,7 +117,7 @@ describe('req', () => {
         ['omit-me']: 'header value',
         ...objectWithDefaultOmitHeaderNameKeys,
       },
-    } satisfies Request;
+    };
 
     const expectedRequest = {
       ...expectedRequestBase,
