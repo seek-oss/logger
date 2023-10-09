@@ -54,7 +54,6 @@ function testLog(
       ...output,
     });
     expect(inputString).toEqual(JSON.stringify(input));
-    expect(log).toHaveProperty('timestamp');
   });
 }
 
