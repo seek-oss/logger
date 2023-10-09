@@ -4,11 +4,15 @@ import base from './base';
 import { withRedaction } from './destination';
 import { type FormatterOptions, createFormatters } from './formatters';
 import * as redact from './redact';
-import serializers from './serializers';
+import { type SerializerOptions, createSerializers } from './serializers';
+
+export { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
 
 export { pino };
 
-export type LoggerOptions = pino.LoggerOptions & FormatterOptions;
+export type LoggerOptions = pino.LoggerOptions &
+  FormatterOptions &
+  SerializerOptions;
 export type Logger = pino.Logger;
 
 /**
@@ -25,10 +29,13 @@ export default (
   }),
 ): Logger => {
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
+
+  const serializers = createSerializers(opts);
   opts.serializers = {
     ...serializers,
     ...opts.serializers,
   };
+
   const formatters = createFormatters(opts);
   opts.base = {
     ...base,

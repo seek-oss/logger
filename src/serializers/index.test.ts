@@ -1,4 +1,6 @@
-import serializers from './index';
+import { DEFAULT_OMIT_HEADER_NAMES, createSerializers } from '.';
+
+const serializers = createSerializers({});
 
 describe('req', () => {
   const remoteAddress = '::ffff:123.45.67.89';
@@ -86,7 +88,49 @@ describe('req', () => {
   `('remoteAddress and remotePort is undefined when $scenario', ({ value }) => {
     const result = serializers.req(value);
 
-    expect(result).toStrictEqual({ ...expectedRequestBase });
+    expect(result).toStrictEqual(expectedRequestBase);
+  });
+
+  const objectWithDefaultOmitHeaderNameKeys = Object.fromEntries(
+    DEFAULT_OMIT_HEADER_NAMES.map((headerName) => [headerName, 'header value']),
+  );
+
+  it('omits defaultOmitHeaderNames by default', () => {
+    const request = {
+      ...requestBase,
+      headers: {
+        ...requestBase.headers,
+        ...objectWithDefaultOmitHeaderNameKeys,
+      },
+    };
+
+    const result = serializers.req(request);
+
+    expect(result).toStrictEqual(expectedRequestBase);
+  });
+
+  it('omits only specified headers when omitHeaderNames is provided', () => {
+    const request = {
+      ...requestBase,
+      headers: {
+        ...requestBase.headers,
+        ['omit-me']: 'header value',
+        ...objectWithDefaultOmitHeaderNameKeys,
+      },
+    };
+
+    const expectedRequest = {
+      ...expectedRequestBase,
+      headers: {
+        ...requestBase.headers,
+        ...objectWithDefaultOmitHeaderNameKeys,
+      },
+    };
+
+    const altSerializers = createSerializers({ omitHeaderNames: ['omit-me'] });
+    const result = altSerializers.req(request);
+
+    expect(result).toStrictEqual(expectedRequest);
   });
 });
 
@@ -124,12 +168,15 @@ describe('res', () => {
 });
 
 describe('serializers', () => {
-  test('it exports only err, errWithCause, req, res', () => {
-    expect(serializers).toStrictEqual({
-      err: expect.any(Function),
-      errWithCause: expect.any(Function),
-      req: expect.any(Function),
-      res: expect.any(Function),
-    });
+  test('it exports the expected properties', () => {
+    expect(serializers).toMatchInlineSnapshot(`
+      {
+        "err": [Function],
+        "errWithCause": [Function],
+        "headers": [Function],
+        "req": [Function],
+        "res": [Function],
+      }
+    `);
   });
 });

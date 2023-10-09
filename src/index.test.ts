@@ -1,5 +1,7 @@
 import split from 'split2';
 
+import { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
+
 import createLogger, { type LoggerOptions } from '.';
 
 const bearerToken =
@@ -586,3 +588,103 @@ testLog(
     maxObjectDepth: 2,
   },
 );
+
+const objectWithDefaultOmitHeaderNameKeys = Object.fromEntries(
+  DEFAULT_OMIT_HEADER_NAMES.map((headerName) => [headerName, 'header value']),
+);
+
+testLog(
+  'should omit defaultOmitHeaderNames by default',
+  {
+    headers: {
+      ['authorization']: bearerToken,
+      ...objectWithDefaultOmitHeaderNameKeys,
+      ['x-request-id']: 'some-uuid',
+    },
+    req: {
+      headers: {
+        ['authorization']: bearerToken,
+        ...objectWithDefaultOmitHeaderNameKeys,
+        ['x-request-id']: 'some-uuid',
+      },
+    },
+  },
+  {
+    headers: {
+      ['authorization']: redactedBearer,
+      ['x-request-id']: 'some-uuid',
+    },
+    req: {
+      headers: {
+        ['authorization']: redactedBearer,
+        ['x-request-id']: 'some-uuid',
+      },
+    },
+  },
+  'info',
+);
+
+testLog(
+  'should keep defaultOmitHeaderNames when omitHeaderNames option is empty',
+  {
+    headers: {
+      ['authorization']: bearerToken,
+      ...objectWithDefaultOmitHeaderNameKeys,
+      ['x-request-id']: 'some-uuid',
+    },
+    req: {
+      headers: {
+        ['authorization']: bearerToken,
+        ...objectWithDefaultOmitHeaderNameKeys,
+        ['x-request-id']: 'some-uuid',
+      },
+    },
+  },
+  {
+    headers: {
+      ['authorization']: redactedBearer,
+      ...objectWithDefaultOmitHeaderNameKeys,
+      ['x-request-id']: 'some-uuid',
+    },
+    req: {
+      headers: {
+        ['authorization']: redactedBearer,
+        ...objectWithDefaultOmitHeaderNameKeys,
+        ['x-request-id']: 'some-uuid',
+      },
+    },
+  },
+  'info',
+  { omitHeaderNames: [] },
+);
+
+test('it merges serializers', async () => {
+  const stream = sink();
+  const logger = createLogger(
+    {
+      name: 'my-app',
+      omitHeaderNames: ['omit'],
+      serializers: {
+        serialize: () => 'serialized',
+      },
+    },
+    stream,
+  );
+
+  logger.info(
+    { req: { headers: { omit: 'raw' } }, serialize: 'raw' },
+    'Test log entry',
+  );
+  const reqLog: any = await once(stream, 'data');
+
+  expect(reqLog).toHaveProperty('serialize', 'serialized');
+  expect(reqLog.req.headers).not.toHaveProperty('omit');
+  expect(reqLog).not.toHaveProperty('headers');
+
+  logger.info({ headers: { omit: 'raw' }, serialize: 'raw' }, 'Test log entry');
+  const rootLog: any = await once(stream, 'data');
+
+  expect(rootLog).toHaveProperty('serialize', 'serialized');
+  expect(rootLog.headers).not.toHaveProperty('omit');
+  expect(rootLog).not.toHaveProperty('req');
+});
