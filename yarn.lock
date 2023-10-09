@@ -1862,10 +1862,10 @@
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.5.3.tgz#9a726e116beb26c24f1ccd6850201e1246122e04"
   integrity sha512-OxepLK9EuNEIPxWNME+C6WwbRAOOI2o2BaQEGzz5Lu2e4Z5eDnEo+/aVEDMIXywoJitJ7xWd641wrGLZdtwRyw==
 
-"@types/split2@4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@types/split2/-/split2-4.2.0.tgz#8c2d336676391cf45166f52c56e4fd3ba924644a"
-  integrity sha512-rwV0tC3XGQvQ8zdeYDZ+dLn4CJLKnYPBrSU8dRXvzMVLUPMsYTsy3/ZbE4OlejsT2D7MTGP8ePk05C98xl2seQ==
+"@types/split2@4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@types/split2/-/split2-4.2.1.tgz#34fcca85e4b89f1aaa62c4adfd7324cc7a6665d8"
+  integrity sha512-QwkIwu4daHHpmRYhKIUxQjpVKxKMAniJOiu50ST7vHzFQFrvtGj3d8BJZfqgkAEir/oOcgg43WX5G2VHC6NFtw==
   dependencies:
     "@types/node" "*"
 
