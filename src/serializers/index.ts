@@ -4,7 +4,7 @@ import { err, errWithCause } from 'pino-std-serializers';
 import { createOmitPropertiesSerializer } from './omitPropertiesSerializer';
 import type { SerializerFn } from './types';
 
-export const DEFAULT_OMIT_HEADER_NAMES = [
+export const DEFAULT_OMIT_HEADER_NAMES = Object.freeze([
   'x-envoy-attempt-count',
   'x-envoy-decorator-operation',
   'x-envoy-expected-rq-timeout-ms',
@@ -13,7 +13,7 @@ export const DEFAULT_OMIT_HEADER_NAMES = [
   'x-envoy-peer-metadata',
   'x-envoy-peer-metadata-id',
   'x-envoy-upstream-service-time',
-];
+]);
 
 export interface SerializerOptions {
   /**
