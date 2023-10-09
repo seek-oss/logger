@@ -4,7 +4,7 @@ import { err, errWithCause } from 'pino-std-serializers';
 import { createOmitPropertiesSerializer } from './omitPropertiesSerializer';
 import type { SerializerFn } from './types';
 
-export const defaultOmitHeaderNames = [
+export const DEFAULT_OMIT_HEADER_NAMES = [
   'x-envoy-attempt-count',
   'x-envoy-decorator-operation',
   'x-envoy-expected-rq-timeout-ms',
@@ -16,6 +16,18 @@ export const defaultOmitHeaderNames = [
 ];
 
 export interface SerializerOptions {
+  /**
+   * The request headers to omit from serialized logs.
+   *
+   * The properties listed will be removed under `headers` and `req.headers`.
+   * Matching is currently case sensitive.
+   * You will typically express the header names in lowercase,
+   * as server frameworks normalise incoming headers.
+   *
+   * You can use this option to reduce logging costs.
+   * Defaults to `DEFAULT_OMIT_HEADER_NAMES`,
+   * and can be disabled by supplying an empty array `[]`.
+   */
   omitHeaderNames?: string[];
 }
 
@@ -67,7 +79,7 @@ const res = (response: Response) =>
 
 export const createSerializers = (opts: SerializerOptions) => {
   const serializeHeaders = createOmitPropertiesSerializer(
-    opts.omitHeaderNames ?? defaultOmitHeaderNames,
+    opts.omitHeaderNames ?? DEFAULT_OMIT_HEADER_NAMES,
   );
 
   const serializers = {

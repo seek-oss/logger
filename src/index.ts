@@ -6,6 +6,8 @@ import { type FormatterOptions, createFormatters } from './formatters';
 import * as redact from './redact';
 import { type SerializerOptions, createSerializers } from './serializers';
 
+export { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
+
 export { pino };
 
 export type LoggerOptions = pino.LoggerOptions &

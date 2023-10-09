@@ -1,4 +1,4 @@
-import { createSerializers, defaultOmitHeaderNames } from '.';
+import { DEFAULT_OMIT_HEADER_NAMES, createSerializers } from '.';
 
 const serializers = createSerializers({});
 
@@ -92,7 +92,7 @@ describe('req', () => {
   });
 
   const objectWithDefaultOmitHeaderNameKeys = Object.fromEntries(
-    defaultOmitHeaderNames.map((headerName) => [headerName, 'header value']),
+    DEFAULT_OMIT_HEADER_NAMES.map((headerName) => [headerName, 'header value']),
   );
 
   it('omits defaultOmitHeaderNames by default', () => {

@@ -1,6 +1,6 @@
 import split from 'split2';
 
-import { defaultOmitHeaderNames } from './serializers';
+import { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
 
 import createLogger, { type LoggerOptions } from '.';
 
@@ -562,7 +562,7 @@ testLog(
 );
 
 const objectWithDefaultOmitHeaderNameKeys = Object.fromEntries(
-  defaultOmitHeaderNames.map((headerName) => [headerName, 'header value']),
+  DEFAULT_OMIT_HEADER_NAMES.map((headerName) => [headerName, 'header value']),
 );
 
 testLog(

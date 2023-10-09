@@ -2,27 +2,36 @@
 '@seek/logger': minor
 ---
 
-Omit a default set or the specified headers from the logged object
+Omit request headers
 
-By default, the following headers in the `headers` and `req.headers`
-properties will be omitted from the logged object:
+`@seek/logger` now omits the following properties from `headers` and `req.headers` by default:
 
-- 'x-envoy-attempt-count'
-- 'x-envoy-decorator-operation'
-- 'x-envoy-expected-rq-timeout-ms'
-- 'x-envoy-external-address'
-- 'x-envoy-internal'
-- 'x-envoy-peer-metadata'
-- 'x-envoy-peer-metadata-id'
-- 'x-envoy-upstream-service-time'
+- `x-envoy-attempt-count`
+- `x-envoy-decorator-operation`
+- `x-envoy-expected-rq-timeout-ms`
+- `x-envoy-external-address`
+- `x-envoy-internal`
+- `x-envoy-peer-metadata`
+- `x-envoy-peer-metadata-id`
+- `x-envoy-upstream-service-time`
 
-If you would like to opt out of this, you can provide an empty list or your
-own list of headers to omit in the `omitHeaderNames` property when creating
-your logger e.g.
+If you would like to opt out of this behaviours, you can provide an empty list or your own list of request headers to `omitHeaderNames`:
 
-```typescript
+```diff
 const logger = createLogger({
   name: 'my-app',
-  omitHeaderNames: ['dnt', 'sec-fetch-dest'],
++ omitHeaderNames: ['dnt', 'sec-fetch-dest'],
+});
+```
+
+You can also extend the default list like so:
+
+```diff
+- import createLogger from '@seek/logger';
++ import createLogger, { DEFAULT_OMIT_HEADER_NAMES } from '@seek/logger';
+
+const logger = createLogger({
+  name: 'my-app',
++ omitHeaderNames: [...DEFAULT_OMIT_HEADER_NAMES, 'dnt', 'sec-fetch-dest']
 });
 ```
