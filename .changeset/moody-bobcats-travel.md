@@ -15,7 +15,7 @@ Omit request headers
 - `x-envoy-peer-metadata-id`
 - `x-envoy-upstream-service-time`
 
-If you would like to opt out of this behaviours, you can provide an empty list or your own list of request headers to `omitHeaderNames`:
+To opt out of this behaviour, provide an empty list or your own list of omissible request headers to `omitHeaderNames`:
 
 ```diff
 const logger = createLogger({
