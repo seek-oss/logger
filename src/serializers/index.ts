@@ -28,7 +28,7 @@ export interface SerializerOptions {
    * Defaults to `DEFAULT_OMIT_HEADER_NAMES`,
    * and can be disabled by supplying an empty array `[]`.
    */
-  omitHeaderNames?: string[];
+  omitHeaderNames?: readonly string[];
 }
 
 interface Socket {
