@@ -629,3 +629,34 @@ testLog(
   'info',
   { omitHeaderNames: [] },
 );
+
+test('it merges serializers', async () => {
+  const stream = sink();
+  const logger = createLogger(
+    {
+      name: 'my-app',
+      omitHeaderNames: ['omit'],
+      serializers: {
+        serialize: () => 'serialized',
+      },
+    },
+    stream,
+  );
+
+  logger.info(
+    { req: { headers: { omit: 'raw' } }, serialize: 'raw' },
+    'Test log entry',
+  );
+  const reqLog: any = await once(stream, 'data');
+
+  expect(reqLog).toHaveProperty('serialize', 'serialized');
+  expect(reqLog.req.headers).not.toHaveProperty('omit');
+  expect(reqLog).not.toHaveProperty('headers');
+
+  logger.info({ headers: { omit: 'raw' }, serialize: 'raw' }, 'Test log entry');
+  const rootLog: any = await once(stream, 'data');
+
+  expect(rootLog).toHaveProperty('serialize', 'serialized');
+  expect(rootLog.headers).not.toHaveProperty('omit');
+  expect(rootLog).not.toHaveProperty('req');
+});
