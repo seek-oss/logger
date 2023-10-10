@@ -19,6 +19,7 @@ It implements several SEEK customisations over [Pino], including:
   - [Typed fields](#typed-fields)
 - [Features](#features)
   - [Redaction](#redaction)
+  - [Omitting Headers]
   - [Trimming](#trimming)
   - [Pino customisation](#pino-customisation)
   - [Pretty printing](#pretty-printing)
@@ -58,9 +59,7 @@ Use the following standardised logging fields to benefit from customised seriali
 - `req` for HTTP requests.
 
   The request object is trimmed to a set of essential fields.  
-  Certain headers are omitted by default (e.g. `x-envoy-peer-metadata`).  
-  To opt out of this behavior, set the `omitHeaderNames` logger option to an empty list `[]`
-  or provide your own list.
+  Certain headers are omitted by default; see [Omitting Headers] for details.
 
 - `res` for HTTP responses.
 
@@ -68,9 +67,7 @@ Use the following standardised logging fields to benefit from customised seriali
 
 - `headers` for tracing headers.
 
-  Certain headers are omitted by default (e.g. `x-envoy-peer-metadata`).  
-  To opt out of this behavior, set the `omitHeaderNames` logger option to an empty list `[]`
-  or provide your own list.
+  Certain headers are omitted by default; see [Omitting Headers] for details.
 
 All other fields will be logged directly.
 
@@ -108,6 +105,44 @@ logger.error<Fields>(
 ### Redaction
 
 Bearer tokens are redacted regardless of their placement in the log object.
+
+Additional property paths can be redacted using the `redact` logger option as per
+[pino redaction].
+
+Note that `pino` only supports either redaction or removal of the properties, not
+redaction of some properties and removal of other properties.
+
+If you would like to redact some properties and remove others, you are recommended to
+configure `redact` with the list of paths to redact and provide a custom serializer to
+omit specific properties from the logged object.
+
+Custom serializers can be provided with the `serializers` logger option as described in
+[pino serializers] and is the strategy used for omitting default headers.
+
+### Omitting Headers
+
+Specific headers defined in `DEFAULT_OMIT_HEADER_NAMES` are omitted from the following properties:
+
+- `headers`
+- `req.headers`
+
+This behaviour can be configured with the `omitHeaderNames` option.
+
+- Opt out by providing an empty list.
+- Only omit specific headers by providing your own list.
+- Extend the defaults by spreading the `DEFAULT_OMIT_HEADER_NAMES` list and appending your own list.
+
+Example of extending the default header list:
+
+```diff
+-import createLogger from '@seek/logger';
++import createLogger, { DEFAULT_OMIT_HEADER_NAMES } from '@seek/logger';
+
+const logger = createLogger({
+  name: 'my-app',
++ omitHeaderNames: [...DEFAULT_OMIT_HEADER_NAMES, 'dnt' , 'sec-fetch-dest']
+});
+```
 
 ### Trimming
 
@@ -167,6 +202,9 @@ const logger = createLogger({
 ```
 
 [error]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
+[Omitting Headers]: #omitting-headers
 [pino]: https://github.com/pinojs/pino
 [pino options]: https://github.com/pinojs/pino/blob/master/docs/api.md#options
 [pino-pretty]: https://github.com/pinojs/pino-pretty
+[pino redaction]: https://github.com/pinojs/pino/blob/master/docs/redaction.md
+[pino serializers]: https://github.com/pinojs/pino/blob/master/docs/api.md#serializers-object
