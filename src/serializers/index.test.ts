@@ -2,6 +2,29 @@ import { DEFAULT_OMIT_HEADER_NAMES, createSerializers } from '.';
 
 const serializers = createSerializers({});
 
+describe('DEFAULT_OMIT_HEADER_NAMES', () => {
+  it('disallows mutation', () => {
+    const firstElement = DEFAULT_OMIT_HEADER_NAMES[0];
+
+    expect(() => {
+      // @ts-expect-error - We're trying to break the read-only array (TS2542).
+      DEFAULT_OMIT_HEADER_NAMES[0] = 'badness!';
+    }).toThrowErrorMatchingInlineSnapshot(
+      `"Cannot assign to read only property '0' of object '[object Array]'"`,
+    );
+
+    expect(() => {
+      // @ts-expect-error - We're trying to break the read-only array (TS2542).
+      delete DEFAULT_OMIT_HEADER_NAMES[0];
+    }).toThrowErrorMatchingInlineSnapshot(
+      `"Cannot delete property '0' of [object Array]"`,
+    );
+
+    // Assignment didn't take effect!
+    expect(DEFAULT_OMIT_HEADER_NAMES[0]).toBe(firstElement);
+  });
+});
+
 describe('req', () => {
   const remoteAddress = '::ffff:123.45.67.89';
   const remotePort = 12345;

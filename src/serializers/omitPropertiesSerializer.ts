@@ -5,7 +5,7 @@ export const createOmitPropertiesSerializer = (
   /**
    * A list of properties that should not be logged.
    */
-  properties: string[],
+  properties: readonly string[],
 ): SerializerFn => {
   const uniquePropertySet = new Set(properties);
 
