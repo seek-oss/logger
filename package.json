@@ -36,7 +36,7 @@
     "test:ci": "skuba test --coverage"
   },
   "dependencies": {
-    "dtrim": "^1.11.0",
+    "dtrim": "^1.11.2",
     "pino": "^8.0.0",
     "pino-std-serializers": "^6.2.0"
   },

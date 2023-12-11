@@ -3119,7 +3119,7 @@ dotenv@^16.0.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.3.1.tgz#369034de7d7e5b120972693352a3bf112172cc3e"
   integrity sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==
 
-dtrim@^1.11.0:
+dtrim@^1.11.2:
   version "1.11.2"
   resolved "https://registry.yarnpkg.com/dtrim/-/dtrim-1.11.2.tgz#6bf460474fbc981f5ad8f0b7263b61f9dd638cdc"
   integrity sha512-i6Q3s/KUEaybdjwIj2H5HdEUai/nhz/lfM4k1BqJj1T4nyNvuTmdfle7tIsVBkZayXiK8VlLMJYz1+ckQJqxrA==
