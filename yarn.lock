@@ -1738,10 +1738,10 @@
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.5.6.tgz#c65b2bfce1bec346582c07724e3f8c1017a20339"
   integrity sha512-dn1l8LaMea/IjDoHNd9J52uBbInB796CDffS6VdIxvqYCPSG0V0DzHp76GpaWnlhg88uYyPbXCDIowa86ybd5A==
 
-"@types/split2@4.2.2":
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/@types/split2/-/split2-4.2.2.tgz#1037b94ed77dca17bbdc6614472e2bc9e23fd979"
-  integrity sha512-jKo76iDQja9V5FTNFXhZfSThQFTIpI+7SrRjcIZwbaDgg6xhDAyx35s7w6E5h7A3pQbu11Kwo9H7HAH0JYDn1Q==
+"@types/split2@4.2.3":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@types/split2/-/split2-4.2.3.tgz#ddd9b6b8518df6e0a7825851fcd98de12e415f0b"
+  integrity sha512-59OXIlfUsi2k++H6CHgUQKEb2HKRokUA39HY1i1dS8/AIcqVjtAAFdf8u+HxTWK/4FUHMJQlKSZ4I6irCBJ1Zw==
   dependencies:
     "@types/node" "*"
 
