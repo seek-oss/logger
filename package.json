@@ -52,7 +52,8 @@
     "npm": ">=5.5.0"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "skuba": {
     "entryPoint": "src/index.ts",
