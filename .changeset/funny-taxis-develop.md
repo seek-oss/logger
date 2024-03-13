@@ -22,5 +22,4 @@ console.log({ props });
 // { props: { name: '???' } }
 ```
 
-If you suspect that your project meets these criteria,
-consider reviewing your lock file to ensure that `fast-redact@3.4.0` is not installed before merging this upgrade or a subsequent lock file maintenance PR.
+If you suspect that your project meets these criteria, consider reviewing your lock file to ensure that `fast-redact@3.4.0` is not installed before merging this upgrade or a subsequent lock file maintenance PR.
