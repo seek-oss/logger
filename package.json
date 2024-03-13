@@ -45,7 +45,7 @@
     "@changesets/cli": "2.27.1",
     "@changesets/get-github-info": "0.6.0",
     "@types/split2": "4.2.3",
-    "skuba": "7.3.1",
+    "skuba": "7.5.0",
     "split2": "4.2.0"
   },
   "engines": {
@@ -60,6 +60,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "6.0.2"
+    "version": "7.5.0"
   }
 }
