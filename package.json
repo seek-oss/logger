@@ -33,11 +33,12 @@
     "release": "yarn build && changeset publish",
     "stage": "changeset version && yarn format",
     "test": "skuba test",
-    "test:ci": "skuba test --coverage"
+    "test:ci": "skuba test --coverage",
+    "test:watch": "skuba test --watch"
   },
   "dependencies": {
     "dtrim": "^1.11.0",
-    "fast-redact": "^3.4.1",
+    "fast-redact": "^3.5.0",
     "pino": "^8.0.0",
     "pino-std-serializers": "^6.2.0"
   },
@@ -63,3 +64,4 @@
     "version": "7.5.0"
   }
 }
+
