@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "dtrim": "^1.11.0",
-    "fast-redact": "3.3.0",
+    "fast-redact": "^3.4.1",
     "pino": "^8.0.0",
     "pino-std-serializers": "^6.2.0"
   },
@@ -63,3 +63,4 @@
     "version": "7.5.0"
   }
 }
+
