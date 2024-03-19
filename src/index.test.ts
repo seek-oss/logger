@@ -286,6 +286,25 @@ testLog(
 );
 
 testLog(
+  'should handle redaction path at max object depth + 1',
+  {
+    a: { b: [{ name: 'Bob' }] },
+  },
+  {
+    name: 'my-app',
+    a: { b: '[Object]' },
+    level: 30,
+  },
+  'info',
+  {
+    redact: {
+      paths: ['a.b.*'],
+    },
+    maxObjectDepth: 2,
+  },
+);
+
+testLog(
   'should redact ECONNABORTED error',
   {
     level: 40,
