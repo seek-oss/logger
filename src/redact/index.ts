@@ -23,5 +23,5 @@ export const addDefaultRedactPathStrings = (
   if (Array.isArray(redact)) {
     return redact.concat(defaultRedact);
   }
-  return redact;
+  return { ...redact, paths: [...defaultRedact, ...redact.paths] };
 };
