@@ -1,5 +1,9 @@
 // TODO: Redact cookies?
-export const defaultRedact = [];
+export const defaultRedact = [
+  "header['user-email']",
+  "headers['user-email']",
+  "req.headers['user-email']",
+];
 
 /**
  * Private interface vendored from `pino`

@@ -286,6 +286,39 @@ testLog(
 );
 
 testLog(
+  'should redact default paths in object',
+  {
+    header: { 'user-email': 'user_test@test.com' },
+    headers: { 'user-email': 'user_test@test.com' },
+    req: { headers: { 'user-email': 'user_test@test.com' } },
+  },
+  {
+    header: { 'user-email': '[Redacted]' },
+    headers: { 'user-email': '[Redacted]' },
+    req: { headers: { 'user-email': '[Redacted]' } },
+  },
+  undefined,
+);
+
+testLog(
+  'should redact default paths in object when custom redact paths are provided',
+  {
+    header: { 'user-email': 'user_test@test.com' },
+    headers: { 'user-email': 'user_test@test.com' },
+    req: { headers: { 'user-email': 'user_test@test.com' } },
+    data: { auth: 'secret' },
+  },
+  {
+    header: { 'user-email': '[Redacted]' },
+    headers: { 'user-email': '[Redacted]' },
+    req: { headers: { 'user-email': '[Redacted]' } },
+    data: { auth: '[Redacted]' },
+  },
+  undefined,
+  { redact: ['data.auth'] },
+);
+
+testLog(
   'should handle redaction path at max object depth + 1',
   {
     a: { b: [{ name: 'Bob' }] },
