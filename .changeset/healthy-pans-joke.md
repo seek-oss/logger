@@ -2,11 +2,8 @@
 '@seek/logger': major
 ---
 
-fix: Merging default redact paths with custom redact options
+Add default redact paths
 
-Default redact paths were added.
+`@seek/logger` now redacts a set of [built-in paths](https://github.com/seek-oss/logger/blob/add-default-header-redacts/src/redact/index.ts) by default.
 
-Tests revealed that creating the logger with a custom redact options object
-instead of an array of strings would override the default redact paths.
-
-This change concatenates the default redact paths and the custom `redact.paths`.
+These default paths cannot be disabled, and are concatenated to custom redact paths provided via `redact: ['custom.path']` or `redact: { paths: ['custom.path'] }`.
