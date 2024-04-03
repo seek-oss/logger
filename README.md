@@ -106,6 +106,9 @@ logger.error<Fields>(
 
 Bearer tokens are redacted regardless of their placement in the log object.
 
+Some property paths are redacted by default. See `defaultRedact` in
+[src/redact/index.ts](src/redact/index.ts) for the path list.
+
 Additional property paths can be redacted using the `redact` logger option as per
 [pino redaction].
 
