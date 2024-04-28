@@ -39,7 +39,7 @@
   "dependencies": {
     "dtrim": "^1.11.0",
     "fast-redact": "^3.5.0",
-    "pino": "^8.0.0",
+    "pino": "^9.0.0",
     "pino-std-serializers": "^6.2.0"
   },
   "devDependencies": {
@@ -50,7 +50,7 @@
     "split2": "4.2.0"
   },
   "engines": {
-    "node": ">=16.11",
+    "node": ">=18.18",
     "npm": ">=5.5.0"
   },
   "publishConfig": {
