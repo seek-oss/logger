@@ -3560,7 +3560,7 @@ eslint-visitor-keys@^3.0.0, eslint-visitor-keys@^3.3.0, eslint-visitor-keys@^3.4
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-3.4.3.tgz#0cd72fe8550e3c2eae156a96a4dddcd1c8ac5800"
   integrity sha512-wpc+LXeiyiisxPlEkUzU6svyS1frIO3Mgxj1fdy7Pm8Ygzguax2N3Fa/D/ag1WqbOprdI+uY6wMUl8/a2G+iag==
 
-eslint@^8.11.0:
+eslint@^8.56.0:
   version "8.57.0"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.57.0.tgz#c786a6fd0e0b68941aaf624596fb987089195668"
   integrity sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==
@@ -7394,17 +7394,17 @@ skin-tone@^2.0.0:
   dependencies:
     unicode-emoji-modifier-base "^1.0.0"
 
-skuba@8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/skuba/-/skuba-8.0.0.tgz#e68392d15782c3f524c2d536536a958b2d107d2e"
-  integrity sha512-5kY0ujXIPmxbyBT4pPFLiYJLlFPRHsydGaCdPVhe4/+Xq6Aoxvaa/4/vHxCwCVlEzlyx40J3Sb9dfMIbRqKn8Q==
+skuba@8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/skuba/-/skuba-8.0.1.tgz#9f546780c9e0cd679a0d513e59db8244f914c379"
+  integrity sha512-HPcZG+OlQsDfrqdx99rT5Bri9ftoV10z3GPjwz8oe98pJMyaDfsZ/Vr/ADqqMTpL6mmuslq/TSH31FEo5USQCw==
   dependencies:
     "@esbuild-plugins/tsconfig-paths" "^0.1.0"
     "@jest/types" "^29.0.0"
     "@octokit/graphql" "^8.0.0"
     "@octokit/graphql-schema" "^15.3.0"
     "@octokit/rest" "^20.0.0"
-    "@octokit/types" "^12.0.0"
+    "@octokit/types" "^13.0.0"
     "@types/jest" "^29.0.0"
     "@types/node" ">=18.12"
     chalk "^4.1.0"
@@ -7414,7 +7414,7 @@ skuba@8.0.0:
     ejs "^3.1.6"
     enquirer "^2.3.6"
     esbuild "~0.20.0"
-    eslint "^8.11.0"
+    eslint "^8.56.0"
     eslint-config-skuba "4.0.0"
     execa "^5.0.0"
     fast-glob "^3.3.2"
