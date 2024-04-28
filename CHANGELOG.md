@@ -1,5 +1,13 @@
 # @seek/logger
 
+## 8.0.0
+
+### Major Changes
+
+- **deps:** pino 9 ([#128](https://github.com/seek-oss/logger/pull/128))
+
+  Our minimum Node.js version is now 18.18.
+
 ## 7.0.0
 
 ### Major Changes
