@@ -204,6 +204,10 @@ const logger = createLogger({
 });
 ```
 
+### Testing
+
+See [docs/testing.md](docs/testing.md).
+
 [error]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
 [Omitting Headers]: #omitting-headers
 [pino]: https://github.com/pinojs/pino
