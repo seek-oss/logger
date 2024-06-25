@@ -57,12 +57,12 @@ This had a few downsides:
 
 ## `createDestination`
 
-`@seek/logger` now bundles a convenient mechanism for recording logging calls.
-This is built on Pino's support for customisable [destinations].
+`@seek/logger` now bundles a convenient mechanism for recording logging calls,
+built on Pino's support for customisable [destinations].
 
 [destinations]: https://github.com/pinojs/pino/blob/v9.2.1/docs/api.md#destination
 
-In practice, this may look like the following:
+In practice, this looks like the following:
 
 ```typescript
 import createLogger, { createDestination } from '@seek/logger';
@@ -88,7 +88,6 @@ afterEach(stdoutMock.clear);
 
 // ...
 
-expect(infoSpy).toHaveBeenCalledTimes(1);
 expect(stdoutMock.onlyCall()).toMatchObject({
   id: '123',
   level: 30,
