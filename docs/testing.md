@@ -47,11 +47,11 @@ This had a few downsides:
    There are many logging levels and corresponding methods to account for,
    and it's tedious to mock features such as [`logger.child()`].
 
-- It doesn't cover internal processing logic within `@seek/logger` and Pino.
+3. It doesn't cover internal processing logic within `@seek/logger` and Pino.
 
-  For example, the `maxObjectDepth` logger option may reduce the effective
-  effectiveness (ha) of a log message, but a `logger.info()` spy would not pick
-  this up.
+   For example, the `maxObjectDepth` logger option may reduce the effective
+   effectiveness (ha) of a log message, but a `logger.info()` spy would not pick
+   this up.
 
 [`logger.child()`]: https://github.com/pinojs/pino/blob/v9.2.1/docs/child-loggers.md
 
