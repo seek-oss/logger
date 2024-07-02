@@ -1,11 +1,13 @@
 import pino from 'pino';
 
 import base from './base';
-import { withRedaction } from './destination';
+import { createDestination } from './destination/create';
+import { withRedaction } from './destination/redact';
 import { type FormatterOptions, createFormatters } from './formatters';
 import * as redact from './redact';
 import { type SerializerOptions, createSerializers } from './serializers';
 
+export { createDestination } from './destination/create';
 export { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
 
 export { pino };
@@ -24,9 +26,8 @@ export default (
   // istanbul ignore next
   opts: LoggerOptions = {},
   // istanbul ignore next
-  destination: pino.DestinationStream = pino.destination({
-    sync: true,
-  }),
+  destination: pino.DestinationStream = createDestination({ mock: false })
+    .destination,
 ): Logger => {
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
 
