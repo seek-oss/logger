@@ -1,5 +1,17 @@
 # @seek/logger
 
+## 8.1.0
+
+### Minor Changes
+
+- **createDestination:** Implement logging integration testing ([#134](https://github.com/seek-oss/logger/pull/134))
+
+  `@seek/logger` now bundles a convenient mechanism for recording logging calls, built on Pino's support for customisable destinations. See [docs/testing.md](https://github.com/seek-oss/logger/blob/master/docs/testing.md) for more information.
+
+### Patch Changes
+
+- **deps:** pino-std-serializers ^7.0.0 ([#130](https://github.com/seek-oss/logger/pull/130))
+
 ## 8.0.0
 
 ### Major Changes
