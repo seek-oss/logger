@@ -105,16 +105,18 @@ export const logger = createLogger(
 ```
 
 ```typescript
-import { stdoutMock } from './logging';
+import { logger, stdoutMock } from './logging';
 
 afterEach(stdoutMock.clear);
 
-// ...
+test('stdoutMock', () => {
+  logger.info({ id: '123' }, 'Something happened');
 
-expect(stdoutMock.onlyCall()).toMatchObject({
-  id: '123',
-  level: 30,
-  msg: 'Something happened',
+  expect(stdoutMock.onlyCall()).toMatchObject({
+    id: '123',
+    level: 30,
+    msg: 'Something happened',
+  });
 });
 ```
 
