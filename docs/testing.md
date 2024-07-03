@@ -16,7 +16,8 @@ Testing the logging behaviour of your project may be useful to:
 
 ## Manual mocks and spies
 
-Previously, the de facto testing pattern was to set up mocks or spies manually:
+Previously, the de facto testing pattern was to set up mocks or spies manually.
+This may be sufficient to run targeted assertions in a pinch.
 
 ```typescript
 import createLogger from '@seek/logger';
@@ -24,21 +25,43 @@ import createLogger from '@seek/logger';
 export const logger = createLogger();
 ```
 
+### `jest.mock()`
+
 ```typescript
 import { logger } from './logging';
 
-const infoSpy = jest.fn();
-jest.spyOn(logger, 'info').mockImplementation(info);
+jest.mock('./logging');
 
-afterEach(infoSpy.mockClear);
+const { info } = jest.mocked(logger);
 
-// ...
+afterEach(info.mockClear);
 
-expect(infoSpy).toHaveBeenCalledTimes(1);
-expect(infoSpy).toHaveBeenNthCalledWith(1, { id: '123' }, 'Something happened');
+test('mock', () => {
+  logger.info({ id: '123' }, 'Something happened');
+
+  expect(info).toHaveBeenCalledTimes(1);
+  expect(info).toHaveBeenNthCalledWith(1, { id: '123' }, 'Something happened');
+});
 ```
 
-This had a few downsides:
+### `jest.spyOn()`
+
+```typescript
+import { logger } from './logging';
+
+const info = jest.spyOn(logger, 'info').mockImplementation(jest.fn);
+
+afterEach(info.mockClear);
+
+test('spy', () => {
+  logger.info({ id: '123' }, 'Something happened');
+
+  expect(info).toHaveBeenCalledTimes(1);
+  expect(info).toHaveBeenNthCalledWith(1, { id: '123' }, 'Something happened');
+});
+```
+
+### Limitations
 
 1. It's a lot of manual fiddling to perform in each project.
 
