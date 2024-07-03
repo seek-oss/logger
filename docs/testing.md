@@ -78,7 +78,9 @@ test('spy', () => {
 
 [`logger.child()`]: https://github.com/pinojs/pino/blob/v9.2.1/docs/child-loggers.md
 
-## `createDestination`
+## `createDestination` <sup>beta</sup>
+
+> This feature is ready for adoption, but based on initial feedback, its interface may be revised in a future major version.
 
 `@seek/logger` now bundles a convenient mechanism for recording logging calls,
 built on Pino's support for customisable [destinations].
