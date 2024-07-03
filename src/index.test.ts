@@ -3,6 +3,32 @@ import split from 'split2';
 import { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
 
 import createLogger, { type LoggerOptions } from '.';
+import * as rootModule from '.';
+
+test('exports', () =>
+  expect(rootModule).toMatchInlineSnapshot(`
+{
+  "DEFAULT_OMIT_HEADER_NAMES": [
+    "x-envoy-attempt-count",
+    "x-envoy-decorator-operation",
+    "x-envoy-expected-rq-timeout-ms",
+    "x-envoy-external-address",
+    "x-envoy-internal",
+    "x-envoy-peer-metadata",
+    "x-envoy-peer-metadata-id",
+    "x-envoy-upstream-service-time",
+  ],
+  "createDestination": [Function],
+  "default": [Function],
+  "pino": [Function],
+}
+`));
+
+test('parameterless initialisation', () => {
+  const logger = createLogger();
+
+  expect(logger.silent('Invisible')).toBeUndefined();
+});
 
 const bearerToken =
   'Bearer 123asdh12312312312312323232123asdh12312312312312323232';

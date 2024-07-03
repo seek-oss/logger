@@ -23,21 +23,20 @@ export type Logger = pino.Logger;
  * @param destination - Destination stream. Default: `pino.destination({ sync: true })`.
  */
 export default (
-  // istanbul ignore next
   opts: LoggerOptions = {},
-  // istanbul ignore next
   destination: pino.DestinationStream = createDestination({ mock: false })
     .destination,
 ): Logger => {
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
 
-  const serializers = createSerializers(opts);
-  opts.serializers = {
-    ...serializers,
+  const serializers = {
+    ...createSerializers(opts),
     ...opts.serializers,
   };
 
-  const formatters = createFormatters(opts);
+  opts.serializers = serializers;
+
+  const formatters = createFormatters({ ...opts, serializers });
   opts.base = {
     ...base,
     ...opts.base,
