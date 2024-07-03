@@ -27,12 +27,20 @@ It implements several SEEK customisations over [Pino], including:
 ## Usage
 
 ```typescript
-import createLogger from '@seek/logger';
+import createLogger, { createDestination } from '@seek/logger';
 
-// Initialize the logger. By default, this will log to stdout.
-const logger = createLogger({
-  name: 'my-app',
+const { destination, stdoutMock } = createDestination({
+  mock: config.environment === 'test',
 });
+
+// Initialize the logger.
+// This will log to stdout if `createDestination` is not mocked.
+const logger = createLogger(
+  {
+    name: 'my-app',
+  },
+  destination,
+);
 
 // Write an informational (`level` 30) log with a `msg`.
 logger.info('Something good happened');
@@ -42,6 +50,10 @@ const childLogger = logger.child({ requestId });
 
 // Write an error (`level` 50) log with `err`, `msg` and `requestId`.
 childLogger.error({ err }, 'Something bad happened');
+
+// Introspect mocked calls in your test environment.
+// See the Testing section for more information.
+stdoutMock.calls;
 ```
 
 ### Standardised fields
@@ -203,6 +215,10 @@ const logger = createLogger({
     process.env.ENVIRONMENT === 'local' ? { target: 'pino-pretty' } : undefined,
 });
 ```
+
+### Testing
+
+See [docs/testing.md](docs/testing.md).
 
 [error]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
 [Omitting Headers]: #omitting-headers
