@@ -1,5 +1,10 @@
 import fastRedact from 'fast-redact';
 
+type Call = Readonly<Record<PropertyKey, unknown>>;
+
+const isCall = (value: unknown): value is Call =>
+  value !== null && typeof value === 'object' && !Array.isArray(value);
+
 export type MockOptions = {
   /**
    * Properties to replace with a static `-` before recording the logging call.
@@ -50,7 +55,7 @@ export const createStdoutMock = (opts: MockOptions) => {
     strict: true,
   });
 
-  const calls: object[] = [];
+  const calls: Call[] = [];
 
   return {
     /**
@@ -88,7 +93,7 @@ export const createStdoutMock = (opts: MockOptions) => {
      * expect(stdoutMock.onlyCall()).toMatchSnapshot();
      * ```
      */
-    onlyCall: (): object => {
+    onlyCall: (): Call => {
       const { 0: first, length } = calls;
 
       if (!first || length > 1) {
@@ -110,7 +115,7 @@ export const createStdoutMock = (opts: MockOptions) => {
 
       call = JSON.parse(String(result));
 
-      if (call === null || typeof call !== 'object' || Array.isArray(call)) {
+      if (!isCall(call)) {
         throw new Error(
           `@seek/logger mocking failed to process a log message: ${msg}`,
         );
