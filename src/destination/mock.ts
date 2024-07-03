@@ -110,7 +110,7 @@ export const createStdoutMock = (opts: MockOptions) => {
 
       call = JSON.parse(String(result));
 
-      if (call === null || typeof call !== 'object') {
+      if (call === null || typeof call !== 'object' || Array.isArray(call)) {
         throw new Error(
           `@seek/logger mocking failed to process a log message: ${msg}`,
         );
