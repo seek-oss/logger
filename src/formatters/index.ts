@@ -14,11 +14,11 @@ export interface FormatterOptions {
 }
 
 export const createFormatters = (
-  opts: FormatterOptions & Pick<LoggerOptions, 'serializers'>,
+  opts: FormatterOptions & Required<Pick<LoggerOptions, 'serializers'>>,
 ): LoggerOptions['formatters'] => {
   const trim = trimmer({
     depth: opts.maxObjectDepth ?? 4,
-    retain: new Set(Object.keys(opts.serializers ?? {})),
+    retain: new Set(Object.keys(opts.serializers)),
   });
 
   return {
