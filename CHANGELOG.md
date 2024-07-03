@@ -1,5 +1,17 @@
 # @seek/logger
 
+## 8.1.1
+
+### Patch Changes
+
+- **createDestination:** Use `Record` type for `stdoutMock.calls` and `stdoutMock.onlyCall()` ([#137](https://github.com/seek-oss/logger/pull/137))
+
+  This allows you to destructure a call in your test code without the TypeScript compiler complaining:
+
+  ```typescript
+  const { level, ...rest } = stdoutMock.onlyCall();
+  ```
+
 ## 8.1.0
 
 ### Minor Changes
