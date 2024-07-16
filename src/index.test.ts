@@ -641,18 +641,8 @@ class Req {
   }
 }
 testLog(
-  'should not truncate objects with a serializer',
+  'should not truncate objects with a non error serializer',
   {
-    errWithCause: {
-      a: {
-        b: {},
-      },
-    },
-    err: {
-      a: {
-        b: {},
-      },
-    },
     req: new Req(),
     notSerialized: {
       a: {
@@ -661,16 +651,6 @@ testLog(
     },
   },
   {
-    errWithCause: {
-      a: {
-        b: {},
-      },
-    },
-    err: {
-      a: {
-        b: {},
-      },
-    },
     req: {
       remoteAddress: 'localhost',
       remotePort: '4000',
@@ -682,6 +662,66 @@ testLog(
   'info',
   {
     maxObjectDepth: 2,
+  },
+);
+
+testLog(
+  'should truncate objects with error serializers',
+  {
+    errWithCause: {
+      a: {
+        b: {},
+      },
+    },
+    err: {
+      a: {
+        b: {},
+      },
+    },
+  },
+  {
+    errWithCause: {
+      a: {
+        b: '[Object]',
+      },
+    },
+    err: {
+      a: {
+        b: '[Object]',
+      },
+    },
+  },
+  'info',
+  {
+    maxObjectDepth: 2,
+  },
+);
+
+testLog(
+  'should truncate strings longer than 512 characters with error serializers',
+  {
+    err: {
+      anyField: {
+        anyField: 'a'.repeat(555),
+      },
+    },
+    errWithCause: {
+      anyField: {
+        anyField: 'a'.repeat(555),
+      },
+    },
+  },
+  {
+    err: {
+      anyField: {
+        anyField: `${'a'.repeat(512)}...`,
+      },
+    },
+    errWithCause: {
+      anyField: {
+        anyField: `${'a'.repeat(512)}...`,
+      },
+    },
   },
 );
 

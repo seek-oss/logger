@@ -1,5 +1,8 @@
+import { trimmer } from 'dtrim';
 import type pino from 'pino';
-import { err, errWithCause } from 'pino-std-serializers';
+import { type SerializedError, err, errWithCause } from 'pino-std-serializers';
+
+import type { FormatterOptions } from '../formatters';
 
 import { createOmitPropertiesSerializer } from './omitPropertiesSerializer';
 import type { SerializerFn } from './types';
@@ -77,14 +80,26 @@ const res = (response: Response) =>
       }
     : response;
 
-export const createSerializers = (opts: SerializerOptions) => {
+const createErrSerializer =
+  (
+    serializer: (error: Error) => SerializedError,
+    opts: FormatterOptions,
+  ): SerializerFn =>
+  (error: unknown): unknown =>
+    trimmer({
+      depth: opts.maxObjectDepth ?? 4,
+    })(serializer(error as Error));
+
+export const createSerializers = (
+  opts: SerializerOptions & FormatterOptions,
+) => {
   const serializeHeaders = createOmitPropertiesSerializer(
     opts.omitHeaderNames ?? DEFAULT_OMIT_HEADER_NAMES,
   );
 
   const serializers = {
-    err,
-    errWithCause,
+    err: createErrSerializer(err, opts),
+    errWithCause: createErrSerializer(errWithCause, opts),
     req: createReqSerializer(serializeHeaders),
     res,
     headers: serializeHeaders,
