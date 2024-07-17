@@ -632,60 +632,65 @@ test('should log customized timestamp if timestamp logger option is supplied', a
   expect(log.timestamp).toBe(mockTimestamp);
 });
 
-class Req {
-  get socket() {
-    return {
-      remoteAddress: 'localhost',
-      remotePort: '4000',
-    };
-  }
-}
 testLog(
-  'should not truncate objects with a non error serializer',
+  'should truncate objects with serializers',
   {
-    req: new Req(),
-    notSerialized: {
+    errWithCause: {
       a: {
         b: {},
       },
+      anyField: 'a'.repeat(555),
     },
-  },
-  {
+    err: {
+      a: {
+        b: {},
+      },
+      anyField: 'a'.repeat(555),
+    },
     req: {
+      method: 'GET',
+      url: 'a'.repeat(555),
+      headers: [],
+      socket: { remoteAddress: 'localhost', remotePort: '4000' },
+    },
+    res: {
+      headers: { Origin: 'a'.repeat(555) },
+      status: 500,
+      foo: 'baz',
+    },
+    headers: {
+      'test-header': 'a'.repeat(555),
+      a: {
+        b: {},
+      },
+    },
+  },
+  {
+    errWithCause: {
+      a: {
+        b: '[Object]',
+      },
+      anyField: `${'a'.repeat(512)}...`,
+    },
+    err: {
+      a: {
+        b: '[Object]',
+      },
+      anyField: `${'a'.repeat(512)}...`,
+    },
+    req: {
+      method: 'GET',
+      url: `${'a'.repeat(512)}...`,
+      headers: [],
       remoteAddress: 'localhost',
       remotePort: '4000',
     },
-    notSerialized: {
-      a: '[Object]',
+    res: {
+      headers: { Origin: `${'a'.repeat(512)}...` },
+      statusCode: 500,
     },
-  },
-  'info',
-  {
-    maxObjectDepth: 2,
-  },
-);
-
-testLog(
-  'should truncate objects with error serializers',
-  {
-    errWithCause: {
-      a: {
-        b: {},
-      },
-    },
-    err: {
-      a: {
-        b: {},
-      },
-    },
-  },
-  {
-    errWithCause: {
-      a: {
-        b: '[Object]',
-      },
-    },
-    err: {
+    headers: {
+      'test-header': `${'a'.repeat(512)}...`,
       a: {
         b: '[Object]',
       },
@@ -694,34 +699,6 @@ testLog(
   'info',
   {
     maxObjectDepth: 2,
-  },
-);
-
-testLog(
-  'should truncate strings longer than 512 characters with error serializers',
-  {
-    err: {
-      anyField: {
-        anyField: 'a'.repeat(555),
-      },
-    },
-    errWithCause: {
-      anyField: {
-        anyField: 'a'.repeat(555),
-      },
-    },
-  },
-  {
-    err: {
-      anyField: {
-        anyField: `${'a'.repeat(512)}...`,
-      },
-    },
-    errWithCause: {
-      anyField: {
-        anyField: `${'a'.repeat(512)}...`,
-      },
-    },
   },
 );
 

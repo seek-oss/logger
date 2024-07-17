@@ -1,11 +1,11 @@
 import { trimmer } from 'dtrim';
 import type pino from 'pino';
-import { type SerializedError, err, errWithCause } from 'pino-std-serializers';
+import { err, errWithCause } from 'pino-std-serializers';
 
-import type { FormatterOptions } from '../formatters';
+import { DEFAULT_MAX_OBJECT_DEPTH, type FormatterOptions } from '../formatters';
 
 import { createOmitPropertiesSerializer } from './omitPropertiesSerializer';
-import type { SerializerFn } from './types';
+import type { SerializerFn, TrimmerFn } from './types';
 
 export const DEFAULT_OMIT_HEADER_NAMES = Object.freeze([
   'x-envoy-attempt-count',
@@ -61,7 +61,7 @@ const isObject = (value: unknown): boolean => {
 };
 
 const createReqSerializer =
-  (serializeHeaders: SerializerFn) => (request: Request) =>
+  (serializeHeaders: SerializerFn<unknown>) => (request: Request) =>
     isObject(request)
       ? {
           method: request.method,
@@ -80,15 +80,10 @@ const res = (response: Response) =>
       }
     : response;
 
-const createErrSerializer =
-  (
-    serializer: (error: Error) => SerializedError,
-    opts: FormatterOptions,
-  ): SerializerFn =>
-  (error: unknown): unknown =>
-    trimmer({
-      depth: opts.maxObjectDepth ?? 4,
-    })(serializer(error as Error));
+const trimSerializerOutput =
+  <T>(serializer: SerializerFn<T>, trim: TrimmerFn) =>
+  (input: T): unknown =>
+    trim(serializer(input));
 
 export const createSerializers = (
   opts: SerializerOptions & FormatterOptions,
@@ -97,12 +92,16 @@ export const createSerializers = (
     opts.omitHeaderNames ?? DEFAULT_OMIT_HEADER_NAMES,
   );
 
+  const trim = trimmer({
+    depth: opts.maxObjectDepth ?? DEFAULT_MAX_OBJECT_DEPTH,
+  });
+
   const serializers = {
-    err: createErrSerializer(err, opts),
-    errWithCause: createErrSerializer(errWithCause, opts),
-    req: createReqSerializer(serializeHeaders),
-    res,
-    headers: serializeHeaders,
+    err: trimSerializerOutput(err, trim),
+    errWithCause: trimSerializerOutput(errWithCause, trim),
+    req: trimSerializerOutput(createReqSerializer(serializeHeaders), trim),
+    res: trimSerializerOutput(res, trim),
+    headers: trimSerializerOutput(serializeHeaders, trim),
   } satisfies pino.LoggerOptions['serializers'];
 
   return serializers;
