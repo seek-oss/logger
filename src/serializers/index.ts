@@ -1,8 +1,5 @@
-import { trimmer } from 'dtrim';
-import type pino from 'pino';
+import type { pino } from 'pino';
 import { err, errWithCause } from 'pino-std-serializers';
-
-import { DEFAULT_MAX_OBJECT_DEPTH, type FormatterOptions } from '../formatters';
 
 import { createOmitPropertiesSerializer } from './omitPropertiesSerializer';
 import type { SerializerFn, TrimmerFn } from './types';
@@ -85,16 +82,10 @@ const trimSerializerOutput =
   (input: T): unknown =>
     trim(serializer(input));
 
-export const createSerializers = (
-  opts: SerializerOptions & FormatterOptions,
-) => {
+export const createSerializers = (opts: SerializerOptions, trim: TrimmerFn) => {
   const serializeHeaders = createOmitPropertiesSerializer(
     opts.omitHeaderNames ?? DEFAULT_OMIT_HEADER_NAMES,
   );
-
-  const trim = trimmer({
-    depth: opts.maxObjectDepth ?? DEFAULT_MAX_OBJECT_DEPTH,
-  });
 
   const serializers = {
     err: trimSerializerOutput(err, trim),
@@ -106,3 +97,19 @@ export const createSerializers = (
 
   return serializers;
 };
+
+export const trimCustomSerializers = (
+  customSerializers: Record<string, SerializerFn<unknown>> | undefined,
+  trim: TrimmerFn,
+) =>
+  customSerializers
+    ? Object.keys(customSerializers).reduce(
+        (acc: Record<string, SerializerFn<unknown>>, key: string) => {
+          if (customSerializers[key]) {
+            acc[key] = trimSerializerOutput(customSerializers[key], trim);
+          }
+          return acc;
+        },
+        {},
+      )
+    : {};

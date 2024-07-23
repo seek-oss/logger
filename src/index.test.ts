@@ -441,10 +441,7 @@ testLog(
       request: {
         _options: {
           method: 'get',
-          headers: {
-            Accept: 'application/json, text/plain, */*',
-            authorization: '[Redacted]',
-          },
+          headers: '[Object]',
         },
         domain: null,
       },
@@ -633,7 +630,7 @@ test('should log customized timestamp if timestamp logger option is supplied', a
 });
 
 testLog(
-  'should truncate objects with serializers',
+  'should trim default serializers',
   {
     errWithCause: {
       a: {
@@ -698,7 +695,36 @@ testLog(
   },
   'info',
   {
-    maxObjectDepth: 2,
+    maxObjectDepth: 3,
+  },
+);
+
+testLog(
+  'should trim custom serializer',
+  {
+    serialize: {
+      a: {
+        b: {
+          c: {},
+        },
+      },
+      anyField: 'a'.repeat(555),
+    },
+  },
+  {
+    serialize: {
+      a: {
+        b: '[Object]',
+      },
+      anyField: `${'a'.repeat(512)}...`,
+    },
+  },
+  'info',
+  {
+    serializers: {
+      serialize: (input: unknown) => input,
+    },
+    maxObjectDepth: 3,
   },
 );
 

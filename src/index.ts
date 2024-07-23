@@ -1,11 +1,20 @@
+import { trimmer } from 'dtrim';
 import pino from 'pino';
 
 import base from './base';
 import { createDestination } from './destination/create';
 import { withRedaction } from './destination/redact';
-import { type FormatterOptions, createFormatters } from './formatters';
+import {
+  DEFAULT_MAX_OBJECT_DEPTH,
+  type FormatterOptions,
+  createFormatters,
+} from './formatters';
 import * as redact from './redact';
-import { type SerializerOptions, createSerializers } from './serializers';
+import {
+  type SerializerOptions,
+  createSerializers,
+  trimCustomSerializers,
+} from './serializers';
 
 export { createDestination } from './destination/create';
 export { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
@@ -29,9 +38,13 @@ export default (
 ): Logger => {
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
 
+  const trim = trimmer({
+    depth: (opts.maxObjectDepth ?? DEFAULT_MAX_OBJECT_DEPTH) - 1,
+  });
+
   const serializers = {
-    ...createSerializers(opts),
-    ...opts.serializers,
+    ...createSerializers(opts, trim),
+    ...trimCustomSerializers(opts.serializers, trim),
   };
 
   opts.serializers = serializers;
