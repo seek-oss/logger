@@ -6,11 +6,11 @@ export const createOmitPropertiesSerializer = (
    * A list of properties that should not be logged.
    */
   properties: readonly string[],
-): SerializerFn<unknown> => {
+): SerializerFn => {
   const uniquePropertySet = new Set(properties);
 
   if (uniquePropertySet.size === 0) {
-    return (input) => input;
+    return (input): unknown => input;
   }
 
   const uniqueProperties = Array.from(uniquePropertySet);

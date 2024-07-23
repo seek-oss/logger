@@ -58,7 +58,7 @@ const isObject = (value: unknown): boolean => {
 };
 
 const createReqSerializer =
-  (serializeHeaders: SerializerFn<unknown>) => (request: Request) =>
+  (serializeHeaders: SerializerFn) => (request: Request) =>
     isObject(request)
       ? {
           method: request.method,
@@ -77,39 +77,34 @@ const res = (response: Response) =>
       }
     : response;
 
-const trimSerializerOutput =
-  <T>(serializer: SerializerFn<T>, trim: TrimmerFn) =>
-  (input: T): unknown =>
+export const trimSerializerOutput =
+  (serializer: SerializerFn, trim: TrimmerFn) =>
+  (input: unknown): unknown =>
     trim(serializer(input));
 
-export const createSerializers = (opts: SerializerOptions, trim: TrimmerFn) => {
+export const createSerializers = (opts: SerializerOptions) => {
   const serializeHeaders = createOmitPropertiesSerializer(
     opts.omitHeaderNames ?? DEFAULT_OMIT_HEADER_NAMES,
   );
 
   const serializers = {
-    err: trimSerializerOutput(err, trim),
-    errWithCause: trimSerializerOutput(errWithCause, trim),
-    req: trimSerializerOutput(createReqSerializer(serializeHeaders), trim),
-    res: trimSerializerOutput(res, trim),
-    headers: trimSerializerOutput(serializeHeaders, trim),
+    err,
+    errWithCause,
+    req: createReqSerializer(serializeHeaders),
+    res,
+    headers: serializeHeaders,
   } satisfies pino.LoggerOptions['serializers'];
 
   return serializers;
 };
 
-export const trimCustomSerializers = (
-  customSerializers: Record<string, SerializerFn<unknown>> | undefined,
+export const trimSerializers = (
+  serializers: Record<string, SerializerFn>,
   trim: TrimmerFn,
 ) =>
-  customSerializers
-    ? Object.keys(customSerializers).reduce(
-        (acc: Record<string, SerializerFn<unknown>>, key: string) => {
-          if (customSerializers[key]) {
-            acc[key] = trimSerializerOutput(customSerializers[key], trim);
-          }
-          return acc;
-        },
-        {},
-      )
-    : {};
+  Object.fromEntries(
+    Object.entries(serializers).map(
+      ([property, serializer]) =>
+        [property, trimSerializerOutput(serializer, trim)] as const,
+    ),
+  );

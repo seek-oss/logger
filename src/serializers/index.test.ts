@@ -1,15 +1,6 @@
-import { trimmer } from 'dtrim';
-
-import { DEFAULT_MAX_OBJECT_DEPTH } from '../formatters';
-
 import { DEFAULT_OMIT_HEADER_NAMES, createSerializers } from '.';
 
-const serializers = createSerializers(
-  {},
-  trimmer({
-    depth: DEFAULT_MAX_OBJECT_DEPTH - 1,
-  }),
-);
+const serializers = createSerializers({});
 
 describe('DEFAULT_OMIT_HEADER_NAMES', () => {
   it('disallows mutation', () => {
@@ -159,12 +150,7 @@ describe('req', () => {
       },
     };
 
-    const altSerializers = createSerializers(
-      { omitHeaderNames: ['omit-me'] },
-      trimmer({
-        depth: DEFAULT_MAX_OBJECT_DEPTH - 1,
-      }),
-    );
+    const altSerializers = createSerializers({ omitHeaderNames: ['omit-me'] });
     const result = altSerializers.req(request);
 
     expect(result).toStrictEqual(expectedRequest);

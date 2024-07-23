@@ -13,7 +13,7 @@ import * as redact from './redact';
 import {
   type SerializerOptions,
   createSerializers,
-  trimCustomSerializers,
+  trimSerializers,
 } from './serializers';
 
 export { createDestination } from './destination/create';
@@ -42,10 +42,13 @@ export default (
     depth: (opts.maxObjectDepth ?? DEFAULT_MAX_OBJECT_DEPTH) - 1,
   });
 
-  const serializers = {
-    ...createSerializers(opts, trim),
-    ...trimCustomSerializers(opts.serializers, trim),
-  };
+  const serializers = trimSerializers(
+    {
+      ...createSerializers(opts),
+      ...opts.serializers,
+    },
+    trim,
+  );
 
   opts.serializers = serializers;
 
