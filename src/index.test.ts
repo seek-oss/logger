@@ -637,12 +637,14 @@ testLog(
         b: {},
       },
       anyField: 'a'.repeat(555),
+      stack: 'a'.repeat(555),
     },
     err: {
       a: {
         b: {},
       },
       anyField: 'a'.repeat(555),
+      stack: 'a'.repeat(555),
     },
     req: {
       method: 'GET',
@@ -668,12 +670,14 @@ testLog(
         b: '[Object]',
       },
       anyField: `${'a'.repeat(512)}...`,
+      stack: 'a'.repeat(555),
     },
     err: {
       a: {
         b: '[Object]',
       },
       anyField: `${'a'.repeat(512)}...`,
+      stack: 'a'.repeat(555),
     },
     req: {
       method: 'GET',

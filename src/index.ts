@@ -40,6 +40,7 @@ export default (
 
   const trim = trimmer({
     depth: (opts.maxObjectDepth ?? DEFAULT_MAX_OBJECT_DEPTH) - 1,
+    retain: new Set(['stack']),
   });
 
   const serializers = trimSerializers(
