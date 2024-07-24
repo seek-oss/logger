@@ -85,13 +85,11 @@ const res = (response: Response) =>
     : response;
 
 export const trimSerializerOutput =
-  (serializer: SerializerFn, trim: TrimmerFn) =>
-  (input: unknown): unknown =>
+  (serializer: SerializerFn, trim: TrimmerFn): SerializerFn =>
+  (input) =>
     trim(serializer(input));
 
-export const createSerializers = (
-  opts: SerializerOptions,
-): NonNullable<pino.LoggerOptions['serializers']> => {
+export const createSerializers = (opts: SerializerOptions) => {
   const serializeHeaders = createOmitPropertiesSerializer(
     opts.omitHeaderNames ?? DEFAULT_OMIT_HEADER_NAMES,
   );
@@ -121,19 +119,21 @@ export const createSerializers = (
     trimmer({ depth }),
   );
 
-  return {
+  const serializers = {
     ...errSerializers,
     ...restSerializers,
-  };
+  } satisfies pino.LoggerOptions['serializers'];
+
+  return serializers;
 };
 
-const trimSerializers = (
-  serializers: Record<string, SerializerFn>,
+const trimSerializers = <T extends string>(
+  serializers: Record<T, SerializerFn>,
   trim: TrimmerFn,
 ) =>
   Object.fromEntries(
-    Object.entries(serializers).map(
+    Object.entries<SerializerFn>(serializers).map(
       ([property, serializer]) =>
         [property, trimSerializerOutput(serializer, trim)] as const,
     ),
-  );
+  ) as Record<T, SerializerFn>;
