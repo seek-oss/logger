@@ -1,5 +1,8 @@
+import { trimmer } from 'dtrim';
 import type { pino } from 'pino';
 import { err, errWithCause } from 'pino-std-serializers';
+
+import { DEFAULT_MAX_OBJECT_DEPTH } from '../formatters';
 
 import { createOmitPropertiesSerializer } from './omitPropertiesSerializer';
 import type { SerializerFn, TrimmerFn } from './types';
@@ -29,6 +32,10 @@ export interface SerializerOptions {
    * and can be disabled by supplying an empty array `[]`.
    */
   omitHeaderNames?: readonly string[];
+
+  maxObjectDepth?: number;
+
+  serializers?: pino.LoggerOptions['serializers'];
 }
 
 interface Socket {
@@ -82,23 +89,45 @@ export const trimSerializerOutput =
   (input: unknown): unknown =>
     trim(serializer(input));
 
-export const createSerializers = (opts: SerializerOptions) => {
+export const createSerializers = (
+  opts: SerializerOptions,
+): NonNullable<pino.LoggerOptions['serializers']> => {
   const serializeHeaders = createOmitPropertiesSerializer(
     opts.omitHeaderNames ?? DEFAULT_OMIT_HEADER_NAMES,
   );
 
-  const serializers = {
-    err,
-    errWithCause,
-    req: createReqSerializer(serializeHeaders),
-    res,
-    headers: serializeHeaders,
-  } satisfies pino.LoggerOptions['serializers'];
+  // We are trimming inside one level of property nesting.
+  const depth = Math.max(
+    0,
+    (opts.maxObjectDepth ?? DEFAULT_MAX_OBJECT_DEPTH) - 1,
+  );
 
-  return serializers;
+  const errSerializers = trimSerializers(
+    {
+      err,
+      errWithCause,
+    },
+    // Retain long stack traces for troubleshooting purposes.
+    trimmer({ depth, retain: new Set(['stack']) }),
+  );
+
+  const restSerializers = trimSerializers(
+    {
+      req: createReqSerializer(serializeHeaders),
+      res,
+      headers: serializeHeaders,
+      ...opts.serializers,
+    },
+    trimmer({ depth }),
+  );
+
+  return {
+    ...errSerializers,
+    ...restSerializers,
+  };
 };
 
-export const trimSerializers = (
+const trimSerializers = (
   serializers: Record<string, SerializerFn>,
   trim: TrimmerFn,
 ) =>
