@@ -29,10 +29,7 @@ export default (
 ): Logger => {
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
 
-  const serializers = {
-    ...createSerializers(opts),
-    ...opts.serializers,
-  };
+  const serializers = createSerializers(opts);
 
   opts.serializers = serializers;
 

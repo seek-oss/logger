@@ -1,11 +1,11 @@
 import { trimmer } from 'dtrim';
-import type pino from 'pino';
-import { type SerializedError, err, errWithCause } from 'pino-std-serializers';
+import type { pino } from 'pino';
+import { err, errWithCause } from 'pino-std-serializers';
 
-import type { FormatterOptions } from '../formatters';
+import { DEFAULT_MAX_OBJECT_DEPTH } from '../formatters';
 
 import { createOmitPropertiesSerializer } from './omitPropertiesSerializer';
-import type { SerializerFn } from './types';
+import type { SerializerFn, TrimmerFn } from './types';
 
 export const DEFAULT_OMIT_HEADER_NAMES = Object.freeze([
   'x-envoy-attempt-count',
@@ -32,6 +32,10 @@ export interface SerializerOptions {
    * and can be disabled by supplying an empty array `[]`.
    */
   omitHeaderNames?: readonly string[];
+
+  maxObjectDepth?: number;
+
+  serializers?: pino.LoggerOptions['serializers'];
 }
 
 interface Socket {
@@ -80,30 +84,56 @@ const res = (response: Response) =>
       }
     : response;
 
-const createErrSerializer =
-  (
-    serializer: (error: Error) => SerializedError,
-    opts: FormatterOptions,
-  ): SerializerFn =>
-  (error: unknown): unknown =>
-    trimmer({
-      depth: opts.maxObjectDepth ?? 4,
-    })(serializer(error as Error));
+export const trimSerializerOutput =
+  (serializer: SerializerFn, trim: TrimmerFn): SerializerFn =>
+  (input) =>
+    trim(serializer(input));
 
-export const createSerializers = (
-  opts: SerializerOptions & FormatterOptions,
-) => {
+export const createSerializers = (opts: SerializerOptions) => {
   const serializeHeaders = createOmitPropertiesSerializer(
     opts.omitHeaderNames ?? DEFAULT_OMIT_HEADER_NAMES,
   );
 
+  // We are trimming inside one level of property nesting.
+  const depth = Math.max(
+    0,
+    (opts.maxObjectDepth ?? DEFAULT_MAX_OBJECT_DEPTH) - 1,
+  );
+
+  const errSerializers = trimSerializers(
+    {
+      err,
+      errWithCause,
+    },
+    // Retain long stack traces for troubleshooting purposes.
+    trimmer({ depth, retain: new Set(['stack']) }),
+  );
+
+  const restSerializers = trimSerializers(
+    {
+      req: createReqSerializer(serializeHeaders),
+      res,
+      headers: serializeHeaders,
+      ...opts.serializers,
+    },
+    trimmer({ depth }),
+  );
+
   const serializers = {
-    err: createErrSerializer(err, opts),
-    errWithCause: createErrSerializer(errWithCause, opts),
-    req: createReqSerializer(serializeHeaders),
-    res,
-    headers: serializeHeaders,
+    ...errSerializers,
+    ...restSerializers,
   } satisfies pino.LoggerOptions['serializers'];
 
   return serializers;
 };
+
+const trimSerializers = <T extends string>(
+  serializers: Record<T, SerializerFn>,
+  trim: TrimmerFn,
+) =>
+  Object.fromEntries(
+    Object.entries<SerializerFn>(serializers).map(
+      ([property, serializer]) =>
+        [property, trimSerializerOutput(serializer, trim)] as const,
+    ),
+  ) as Record<T, SerializerFn>;

@@ -10,7 +10,7 @@ export const createOmitPropertiesSerializer = (
   const uniquePropertySet = new Set(properties);
 
   if (uniquePropertySet.size === 0) {
-    return (input) => input;
+    return (input): unknown => input;
   }
 
   const uniqueProperties = Array.from(uniquePropertySet);
