@@ -173,4 +173,22 @@ const environmentConfigs = {
 };
 ```
 
-[`level`]: https://github.com/pinojs/pino/blob/v9.2.1/docs/api.md#logger-level
+You may also need to disable custom [transports] in your test environment:
+
+```diff
+createLogger(
+  {
+    // ...
+
+    transport:
+-     environment === 'local' || environment === 'test'
++     environment === 'local'
+        ? { target: 'pino-pretty' }
+        : undefined,
+  },
+  destination,
+)
+```
+
+[`level`]: https://github.com/pinojs/pino/blob/v9.4.0/docs/api.md#logger-level
+[transports]: https://github.com/pinojs/pino/blob/v9.4.0/docs/transports.md
