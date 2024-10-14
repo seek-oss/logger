@@ -15,6 +15,7 @@ describe('DEFAULT_OMIT_HEADER_NAMES', () => {
 
     expect(() => {
       // @ts-expect-error - We're trying to break the read-only array (TS2542).
+      // eslint-disable-next-line @typescript-eslint/no-array-delete
       delete DEFAULT_OMIT_HEADER_NAMES[0];
     }).toThrowErrorMatchingInlineSnapshot(
       `"Cannot delete property '0' of [object Array]"`,
