@@ -1378,11 +1378,6 @@
   dependencies:
     postcss-selector-parser "^6.1.2"
 
-"@npmcli/redact@^2.0.0":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@npmcli/redact/-/redact-2.0.1.tgz#95432fd566e63b35c04494621767a4312c316762"
-  integrity sha512-YgsR5jCQZhVmTJvjduTOIHph0L73pK8xwMVaDY0PatySqVM9AZj93jpoXYSJqfHFxFkN9dmqTw6OiqExsS3LPw==
-
 "@npmcli/redact@^3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@npmcli/redact/-/redact-3.0.0.tgz#ab3b6413355be7f3c02e87c36c2b0c2f9773fce4"
@@ -5412,13 +5407,6 @@ libnpmpublish@^10.0.0:
     sigstore "^2.2.0"
     ssri "^12.0.0"
 
-libnpmsearch@^7.0.0:
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/libnpmsearch/-/libnpmsearch-7.0.6.tgz#03c375f69284f0732175ce1d4af6e239b2fb2f2a"
-  integrity sha512-PmiER4bgiIqN9OjBtgPn2/PxwU+OdJWtLBFM+vewOrn4VmaNAHSUKDt/wxOOkZSDLyMICVUBp61Ji1+XxhSrKw==
-  dependencies:
-    npm-registry-fetch "^17.0.1"
-
 libnpmsearch@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/libnpmsearch/-/libnpmsearch-8.0.0.tgz#ce2e28ad05a152c736d5ae86356aedd5a52406a5"
@@ -5967,16 +5955,6 @@ npm-normalize-package-bin@^4.0.0:
   resolved "https://registry.yarnpkg.com/npm-normalize-package-bin/-/npm-normalize-package-bin-4.0.0.tgz#df79e70cd0a113b77c02d1fe243c96b8e618acb1"
   integrity sha512-TZKxPvItzai9kN9H/TkmCtx/ZN/hvr3vUycjlfmH0ootY9yFBzNOpiXAdIn1Iteqsvk4lQn6B5PTrt+n6h8k/w==
 
-npm-package-arg@^11.0.0:
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/npm-package-arg/-/npm-package-arg-11.0.3.tgz#dae0c21199a99feca39ee4bfb074df3adac87e2d"
-  integrity sha512-sHGJy8sOC1YraBywpzQlIKBE4pBbGbiF95U6Auspzyem956E0+FtDtsx1ZxlOJkQCZ1AFXAY/yuvtFYrOxF+Bw==
-  dependencies:
-    hosted-git-info "^7.0.0"
-    proc-log "^4.0.0"
-    semver "^7.3.5"
-    validate-npm-package-name "^5.0.0"
-
 npm-package-arg@^12.0.0:
   version "12.0.0"
   resolved "https://registry.yarnpkg.com/npm-package-arg/-/npm-package-arg-12.0.0.tgz#c2a6631c09d244c6bc35a46c38cbd94d53e9829a"
@@ -6018,20 +5996,6 @@ npm-profile@^11.0.1:
   dependencies:
     npm-registry-fetch "^18.0.0"
     proc-log "^5.0.0"
-
-npm-registry-fetch@^17.0.1:
-  version "17.1.0"
-  resolved "https://registry.yarnpkg.com/npm-registry-fetch/-/npm-registry-fetch-17.1.0.tgz#fb69e8e762d456f08bda2f5f169f7638fb92beb1"
-  integrity sha512-5+bKQRH0J1xG1uZ1zMNvxW0VEyoNWgJpY9UDuluPFLKDfJ9u2JmmjmTJV1srBGQOROfdBMiVvnH2Zvpbm+xkVA==
-  dependencies:
-    "@npmcli/redact" "^2.0.0"
-    jsonparse "^1.3.1"
-    make-fetch-happen "^13.0.0"
-    minipass "^7.0.2"
-    minipass-fetch "^3.0.0"
-    minizlib "^2.1.2"
-    npm-package-arg "^11.0.0"
-    proc-log "^4.0.0"
 
 npm-registry-fetch@^18.0.0, npm-registry-fetch@^18.0.1:
   version "18.0.2"
@@ -6636,7 +6600,7 @@ pretty-format@^29.0.0, pretty-format@^29.7.0:
     ansi-styles "^5.0.0"
     react-is "^18.0.0"
 
-proc-log@^4.0.0, proc-log@^4.1.0, proc-log@^4.2.0:
+proc-log@^4.1.0, proc-log@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/proc-log/-/proc-log-4.2.0.tgz#b6f461e4026e75fdfe228b265e9f7a00779d7034"
   integrity sha512-g8+OnU/L2v+wyiVK+D5fA34J7EH8jZ8DDlvwhRCMxmMj7UCBvxiO1mGeN+36JXIKF4zevU4kRBd8lVgG9vLelA==
@@ -7241,10 +7205,10 @@ skin-tone@^2.0.0:
   dependencies:
     unicode-emoji-modifier-base "^1.0.0"
 
-skuba@9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/skuba/-/skuba-9.0.1.tgz#5d797a00c63d966ff4115a870d946ddfe79d1357"
-  integrity sha512-7Cv0a+0b1zUr/MvwxG8vK/cQLz+FfGe4x1DK/K8jtpNOlj4FBJy/Ld27+RqpGtXmen5p46WmcJG0Pos4DS1Atw==
+skuba@9.1.0:
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/skuba/-/skuba-9.1.0.tgz#51054f9eb10783893ae1745959921e61be2a903e"
+  integrity sha512-Tb4nvmbWCE9Ace+N0zwuouj7p27bHO7hWuGfjyxDGGGnZJHAzB5QBK8i/PIn6oHBvLshUNyArfIVQOBsDF+EEg==
   dependencies:
     "@esbuild-plugins/tsconfig-paths" "^0.1.0"
     "@eslint/migrate-config" "^1.2.0"
@@ -7275,7 +7239,7 @@ skuba@9.0.1:
     isomorphic-git "^1.11.1"
     jest "^29.0.1"
     jest-watch-typeahead "^2.1.1"
-    libnpmsearch "^7.0.0"
+    libnpmsearch "^8.0.0"
     lodash.mergewith "^4.6.2"
     minimist "^1.2.6"
     normalize-package-data "^7.0.0"
@@ -7288,7 +7252,6 @@ skuba@9.0.1:
     semantic-release "^22.0.12"
     serialize-error "^8.0.1"
     simple-git "^3.5.0"
-    strip-ansi "^6.0.1"
     ts-dedent "^2.2.0"
     ts-jest "^29.1.0"
     ts-node "^10.9.2"
@@ -8163,11 +8126,6 @@ validate-npm-package-license@^3.0.1, validate-npm-package-license@^3.0.4:
   dependencies:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
-
-validate-npm-package-name@^5.0.0:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/validate-npm-package-name/-/validate-npm-package-name-5.0.1.tgz#a316573e9b49f3ccd90dbb6eb52b3f06c6d604e8"
-  integrity sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==
 
 validate-npm-package-name@^6.0.0:
   version "6.0.0"
