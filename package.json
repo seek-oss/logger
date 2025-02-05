@@ -1,6 +1,6 @@
 {
   "name": "@seek/logger",
-  "version": "9.0.0",
+  "version": "9.1.0",
   "private": false,
   "description": "Standardized logging",
   "homepage": "https://github.com/seek-oss/logger#readme",
@@ -63,6 +63,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "9.0.1"
+    "version": "9.1.0"
   }
 }
