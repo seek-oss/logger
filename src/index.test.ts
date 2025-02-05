@@ -831,3 +831,53 @@ test('it merges serializers', async () => {
   expect(rootLog.headers).not.toHaveProperty('omit');
   expect(rootLog).not.toHaveProperty('req');
 });
+
+test('allows custom levels', async () => {
+  const stream = sink();
+  const logger = createLogger(
+    {
+      name: 'my-app',
+      customLevels: {
+        something: 35,
+      },
+    },
+    stream,
+  );
+
+  logger.something('foo');
+
+  const somethingLog: any = await once(stream, 'data');
+  expect(somethingLog.level).toBe(35);
+  expect(somethingLog.msg).toBe('foo');
+  expect(somethingLog.name).toBe('my-app');
+
+  logger.info('info');
+
+  const infoLog: any = await once(stream, 'data');
+  expect(infoLog.level).toBe(30);
+  expect(infoLog.msg).toBe('info');
+  expect(infoLog.name).toBe('my-app');
+});
+
+test('using custom levels does not leak into types or runtypes of other loggers', () => {
+  const stream = sink();
+
+  createLogger(
+    { name: 'custom-logger', customLevels: { something: 35 } },
+    stream,
+  );
+
+  const logger = createLogger({ name: 'my-app' }, stream);
+
+  expect(() => {
+    // @ts-expect-error - should not work
+    logger.something('foo');
+  }).toThrow();
+
+  logger.info('info');
+
+  const infoLog: any = stream.read();
+  expect(infoLog.level).toBe(30);
+  expect(infoLog.msg).toBe('info');
+  expect(infoLog.name).toBe('my-app');
+});
