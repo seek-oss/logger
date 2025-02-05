@@ -12,21 +12,22 @@ export { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
 
 export { pino };
 
-export type LoggerOptions = pino.LoggerOptions &
-  FormatterOptions &
-  SerializerOptions;
-export type Logger = pino.Logger;
+export type LoggerOptions<CustomLevels extends string = never> =
+  pino.LoggerOptions<CustomLevels> & FormatterOptions & SerializerOptions;
+
+export type Logger<CustomLevels extends string = never> =
+  pino.Logger<CustomLevels>;
 
 /**
  * Creates a logger that can enforce a strict logged object shape.
  * @param opts - Logger options.
  * @param destination - Destination stream. Default: `pino.destination({ sync: true })`.
  */
-export default (
-  opts: LoggerOptions = {},
+export default <CustomLevels extends string = never>(
+  opts: LoggerOptions<CustomLevels> = {},
   destination: pino.DestinationStream = createDestination({ mock: false })
     .destination,
-): Logger => {
+): Logger<CustomLevels> => {
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
 
   const serializers = createSerializers(opts);
