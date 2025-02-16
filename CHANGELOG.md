@@ -1,5 +1,24 @@
 # @seek/logger
 
+## 9.1.0
+
+### Minor Changes
+
+- Add support for configuring custom log levels: ([#164](https://github.com/seek-oss/logger/pull/164))
+
+  ```ts
+  import createLogger from '@seek/logger';
+
+  const logger = createLogger({
+    name: 'my-app',
+    customLevels: {
+      foo: 35,
+    },
+  });
+
+  logger.foo('Bar');
+  ```
+
 ## 9.0.0
 
 ### Major Changes
