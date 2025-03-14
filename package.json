@@ -47,7 +47,7 @@
     "@changesets/get-github-info": "0.6.0",
     "@types/fast-redact": "3.0.4",
     "@types/split2": "4.2.3",
-    "skuba": "9.1.0",
+    "skuba": "10.0.1",
     "split2": "4.2.0"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
@@ -63,6 +63,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "9.1.0"
+    "version": "10.0.1"
   }
 }
