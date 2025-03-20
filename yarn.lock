@@ -1729,12 +1729,12 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.15.tgz#596a1747233694d50f6ad8a7869fcb6f56cf5841"
   integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
 
-"@types/node@*", "@types/node@^20.16.5":
-  version "20.17.19"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.17.19.tgz#0f2869555719bef266ca6e1827fcdca903c1a697"
-  integrity sha512-LEwC7o1ifqg/6r2gn9Dns0f1rhK+fPFDoMiceTJ6kWmVk6bgXBI/9IOWfVan4WiAavK9pIVWdX0/e3J+eEUh5A==
+"@types/node@*", "@types/node@^22.0.0":
+  version "22.13.10"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.13.10.tgz#df9ea358c5ed991266becc3109dc2dc9125d77e4"
+  integrity sha512-I6LPUvlRH+O6VRUqYOcMudhaIdUVWfsjnZavnsraHvpBwaEyMN29ry+0UVJhImYL16xsscu0aske3yA+uPOWfw==
   dependencies:
-    undici-types "~6.19.2"
+    undici-types "~6.20.0"
 
 "@types/node@^12.7.1":
   version "12.20.55"
@@ -3128,32 +3128,32 @@ eslint-compat-utils@^0.6.0:
   dependencies:
     semver "^7.5.4"
 
-eslint-config-prettier@^9.1.0:
-  version "9.1.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-9.1.0.tgz#31af3d94578645966c082fcb71a5846d3c94867f"
-  integrity sha512-NSWl5BFQWEPi1j4TjVNItzYV7dZXZ+wP6I6ZhrBGpChQhZRUaElihE9uRRkcbRnNb76UMKDF3r+WTmNcGPKsqw==
+eslint-config-prettier@^10.0.0:
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-10.1.1.tgz#cf0ff6e5c4e7e15f129f1f1ce2a5ecba92dec132"
+  integrity sha512-4EQQr6wXwS+ZJSzaR5ZCrYgLxqvUjdXctaEtBqHcbkW944B1NQyO4qpdHQbXBONfwxXdkAY81HH4+LUfrg+zPw==
 
-eslint-config-seek@^14.0.1:
-  version "14.2.2"
-  resolved "https://registry.yarnpkg.com/eslint-config-seek/-/eslint-config-seek-14.2.2.tgz#c77584d6a95d549a995002fcbd0b3740da76a757"
-  integrity sha512-TjhiBHatPAxdm1WeoGt2VK+sbvZieK16Aam02HKNV3czU9bat0bGES9soPQ377ADS8q6fYP2mKeEs2xsljWCBw==
+eslint-config-seek@14.3.2:
+  version "14.3.2"
+  resolved "https://registry.yarnpkg.com/eslint-config-seek/-/eslint-config-seek-14.3.2.tgz#73c30ad6d17e74ebd4be7c0abf22b60ec65f7c74"
+  integrity sha512-7m/w3h9p2akxDm1oIEN0UfACp2GJ7KFxqVFexwEvAWG+0LyPCenuJ7x+d/HuDRKrbYyiJG7ilgKbnvls7uo5Tw==
   dependencies:
-    eslint-config-prettier "^9.1.0"
+    eslint-config-prettier "^10.0.0"
     eslint-import-resolver-typescript "^3.6.3"
     eslint-plugin-cypress "^4.0.0"
-    eslint-plugin-import-x "^4.2.1"
+    eslint-plugin-import-x "4.6.1"
     eslint-plugin-jest "^28.8.0"
     eslint-plugin-react "^7.35.0"
     eslint-plugin-react-hooks "^5.0.0"
-    globals "^15.9.0"
+    globals "^16.0.0"
     typescript-eslint "^8.6.0"
 
-eslint-config-skuba@5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-5.1.0.tgz#4f8d24ce152cefda21b056ea4f200e273d3b4c76"
-  integrity sha512-1ONm1ugxUtdb9a3p9AD/YCEe+QnbsjpA3X4itLOmh9/OUzWOT+0E5Xfe+8ytF7Vwa2A0OcTAZN3Ho6FN7OYeMg==
+eslint-config-skuba@5.1.3:
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-5.1.3.tgz#29c0b2c3e4aa0f7eb1f62d56196a6586a7871084"
+  integrity sha512-P8x3wUPVaPZAQQU1hqFzGrq1PyNdBnqt8eVGagg9Yl/vHR2GEwQoiXLE5UiJxLg+o1U+Zs67NIuXcFjSQIWLLQ==
   dependencies:
-    eslint-config-seek "^14.0.1"
+    eslint-config-seek "14.3.2"
     eslint-plugin-yml "^1.14.0"
     typescript-eslint "^8.26.0"
 
@@ -3186,7 +3186,7 @@ eslint-plugin-cypress@^4.0.0:
   dependencies:
     globals "^15.11.0"
 
-eslint-plugin-import-x@^4.2.1:
+eslint-plugin-import-x@4.6.1:
   version "4.6.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-import-x/-/eslint-plugin-import-x-4.6.1.tgz#2fdb9a25addd92247f5d9b198bfa654eeaea2f52"
   integrity sha512-wluSUifMIb7UfwWXqx7Yx0lE/SGCcGXECLx/9bCmbY2nneLwvAZ4vkd1IXDjPKFvdcdUgr1BaRnaRpx3k2+Pfw==
@@ -3809,10 +3809,15 @@ globals@^14.0.0:
   resolved "https://registry.yarnpkg.com/globals/-/globals-14.0.0.tgz#898d7413c29babcf6bafe56fcadded858ada724e"
   integrity sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==
 
-globals@^15.11.0, globals@^15.9.0:
+globals@^15.11.0:
   version "15.15.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-15.15.0.tgz#7c4761299d41c32b075715a4ce1ede7897ff72a8"
   integrity sha512-7ACyT3wmyp3I61S4fG682L0VA2RGD9otkqGJIwNUMF1SWUombIIk+af1unuDYgMm082aHYwD+mzJvv9Iu8dsgg==
+
+globals@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/globals/-/globals-16.0.0.tgz#3d7684652c5c4fbd086ec82f9448214da49382d8"
+  integrity sha512-iInW14XItCXET01CQFqudPOWP2jYMl7T+QRQT+UNcR/iQncN/F0UNpgd76iFkBPgNQb4+X3LV9tLJYzwh+Gl3A==
 
 globalthis@^1.0.4:
   version "1.0.4"
@@ -6938,10 +6943,10 @@ skin-tone@^2.0.0:
   dependencies:
     unicode-emoji-modifier-base "^1.0.0"
 
-skuba@10.0.1:
-  version "10.0.1"
-  resolved "https://registry.yarnpkg.com/skuba/-/skuba-10.0.1.tgz#8092214035525312d49d5e545e902a192bda3b59"
-  integrity sha512-z+ku/d0g40SY+ERjhEQ5kq9Qt7YpcDr5BmguJuJ3gaS6L+zdwUYf/zeb0gnbUT1N5Vorqu73mjBN8t3CX8FViQ==
+skuba@10.1.0:
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/skuba/-/skuba-10.1.0.tgz#813e22996cc4640511db02d27f054c1eaec98123"
+  integrity sha512-8RCG5jkIY/nqx3nFroD21gOySV4aFa16rnQfoFsCuf1qkeB64jF3zTZda5spu3t0vaXyP1ZGkWUN36dh1IHeQQ==
   dependencies:
     "@esbuild-plugins/tsconfig-paths" "^0.1.0"
     "@eslint/migrate-config" "^1.2.0"
@@ -6951,7 +6956,7 @@ skuba@10.0.1:
     "@octokit/rest" "^21.0.0"
     "@octokit/types" "^13.0.0"
     "@types/jest" "^29.0.0"
-    "@types/node" "^20.16.5"
+    "@types/node" "^22.0.0"
     chalk "^4.1.0"
     concurrently "^9.0.0"
     dotenv "^16.0.0"
@@ -6959,7 +6964,7 @@ skuba@10.0.1:
     enquirer "^2.3.6"
     esbuild "~0.25.0"
     eslint "^9.11.1"
-    eslint-config-skuba "5.1.0"
+    eslint-config-skuba "5.1.3"
     execa "^5.0.0"
     fast-glob "^3.3.2"
     find-up "^5.0.0"
@@ -7724,10 +7729,10 @@ unbox-primitive@^1.1.0:
     has-symbols "^1.1.0"
     which-boxed-primitive "^1.1.1"
 
-undici-types@~6.19.2:
-  version "6.19.8"
-  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.19.8.tgz#35111c9d1437ab83a7cdc0abae2f26d88eda0a02"
-  integrity sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==
+undici-types@~6.20.0:
+  version "6.20.0"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.20.0.tgz#8171bf22c1f588d1554d55bf204bc624af388433"
+  integrity sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==
 
 unicode-emoji-modifier-base@^1.0.0:
   version "1.0.0"
