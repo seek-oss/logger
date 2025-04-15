@@ -31,8 +31,10 @@ export const DEFAULT_MOCK_OPTIONS = Object.freeze({
   redact: [
     'headers["host"]',
     'headers["x-request-id"]',
+    'headers["x-session-id"]',
     'latency',
     '["x-request-id"]',
+    '["x-session-id"]',
   ],
 
   remove: ['environment', 'name', 'timestamp', 'version'],
