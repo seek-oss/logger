@@ -1,4 +1,4 @@
-const skuba = require('eslint-config-skuba');
+const skuba = require('skuba/config/eslint');
 
 module.exports = [
   {
