@@ -30,6 +30,14 @@ test('parameterless initialisation', () => {
   expect(logger.silent('Invisible')).toBeUndefined();
 });
 
+test('createDestination interop', () => {
+  const { destination } = rootModule.createDestination({ mock: true });
+
+  const logger = createLogger({}, destination);
+
+  expect(logger.silent('Invisible')).toBeUndefined();
+});
+
 const bearerToken =
   'Bearer 123asdh12312312312312323232123asdh12312312312312323232';
 const redactedBearer = '[Redacted]';

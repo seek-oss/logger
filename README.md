@@ -1,9 +1,9 @@
 # @seek/logger
 
-[![GitHub Release](https://github.com/seek-oss/logger/workflows/Release/badge.svg?branch=master)](https://github.com/seek-oss/logger/actions?query=workflow%3ARelease)
-[![GitHub Validate](https://github.com/seek-oss/logger/workflows/Validate/badge.svg?branch=master)](https://github.com/seek-oss/logger/actions?query=workflow%3AValidate)
-[![Node.js version](https://img.shields.io/badge/node-%3E%3D%2016.11-brightgreen)](https://nodejs.org/en/)
-[![npm package](https://img.shields.io/npm/v/@seek/logger)](https://www.npmjs.com/package/@seek/logger)
+[![Validate](https://github.com/seek-oss/logger/actions/workflows/validate.yml/badge.svg)](https://github.com/seek-oss/logger/actions/workflows/validate.yml)
+[![Release](https://github.com/seek-oss/logger/actions/workflows/release.yml/badge.svg)](https://github.com/seek-oss/logger/actions/workflows/release.yml)
+[![npm package](https://img.shields.io/npm/v/@seek/logger?labelColor=cb0000&color=5b5b5b)](https://www.npmjs.com/package/@seek/logger)
+[![Node.js version](https://img.shields.io/node/v/@seek/logger?labelColor=5fa04e&color=5b5b5b)](https://www.npmjs.com/package/@seek/logger)
 
 **@seek/logger** is a JSON logger for Node.js applications.
 It implements several SEEK customisations over [Pino], including:

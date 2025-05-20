@@ -36,7 +36,7 @@ export const createDestination = Object.assign(
       typeof opts.mock === 'object' ? opts.mock : DEFAULT_MOCK_OPTIONS,
     );
 
-    const destination = opts.mock
+    const destination: pino.DestinationStream = opts.mock
       ? stdoutMock
       : pino.destination({ sync: true });
 
