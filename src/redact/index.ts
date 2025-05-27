@@ -8,14 +8,14 @@ export const defaultRedact = [
 /**
  * Private interface vendored from `pino`
  */
-interface redactOptions {
+interface RedactOptions {
   paths: string[];
   censor?: string | ((value: unknown, path: string[]) => unknown);
   remove?: boolean;
 }
 
 export const addDefaultRedactPathStrings = (
-  redact: string[] | redactOptions | undefined,
+  redact: string[] | RedactOptions | undefined,
 ) => {
   if (!redact) {
     return defaultRedact;
