@@ -1,5 +1,11 @@
 # @seek/logger
 
+## 9.1.1
+
+### Patch Changes
+
+- **createDestination:** Tweak returned `destination` type ([#177](https://github.com/seek-oss/logger/pull/177))
+
 ## 9.1.0
 
 ### Minor Changes
