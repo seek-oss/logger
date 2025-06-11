@@ -26,7 +26,14 @@ interface LogFn {
 
 export type Logger<CustomLevels extends string = never> = Omit<
   pino.Logger<CustomLevels>,
-  'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | CustomLevels
+  | 'fatal'
+  | 'error'
+  | 'warn'
+  | 'info'
+  | 'debug'
+  | 'trace'
+  | 'child'
+  | CustomLevels
 > & {
   fatal: LogFn;
   error: LogFn;
@@ -34,6 +41,10 @@ export type Logger<CustomLevels extends string = never> = Omit<
   info: LogFn;
   debug: LogFn;
   trace: LogFn;
+  child: <ChildCustomLevels extends string = never>(
+    bindings: pino.Bindings,
+    options?: pino.ChildLoggerOptions<ChildCustomLevels>,
+  ) => Logger<CustomLevels | ChildCustomLevels>;
 } & Record<CustomLevels, LogFn>;
 
 /**
