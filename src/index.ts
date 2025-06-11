@@ -15,8 +15,26 @@ export { pino };
 export type LoggerOptions<CustomLevels extends string = never> =
   pino.LoggerOptions<CustomLevels> & FormatterOptions & SerializerOptions;
 
-export type Logger<CustomLevels extends string = never> =
-  pino.Logger<CustomLevels>;
+// https://github.com/pinojs/pino/blob/427cbaf30d4717e7df5795c5ede7fdf3fa01eb5c/pino.d.ts#L322-L328
+interface LogFn {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  <T extends object>(obj: T, msg?: string, ...args: any[]): void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (obj: unknown, msg?: string, ...args: any[]): void;
+  (msg: string): void;
+}
+
+export type Logger<CustomLevels extends string = never> = Omit<
+  pino.Logger<CustomLevels>,
+  'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | CustomLevels
+> & {
+  fatal: LogFn;
+  error: LogFn;
+  warn: LogFn;
+  info: LogFn;
+  debug: LogFn;
+  trace: LogFn;
+} & Record<CustomLevels, LogFn>;
 
 /**
  * Creates a logger that can enforce a strict logged object shape.
