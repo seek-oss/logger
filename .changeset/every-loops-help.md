@@ -14,7 +14,7 @@ Existing code that passes metadata as part of an object after the message will n
 logger.error('my message', { error, metadata });
 ```
 
-In this pattern, the metadata within the object `{ error, metadata }` will be lost.
+In this pattern, any metadata passed after the message string is not captured by the logger.
 
 **After (correct usage):**
 
