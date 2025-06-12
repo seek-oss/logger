@@ -4,7 +4,7 @@
 
 Enforce stricter typing for logger methods
 
-This is a **breaking change** that improves type safety by enforcing stricter parameter typing on all logger methods.
+This is a **breaking change** to the types, improving type safety by enforcing stricter parameter typing on all logger methods. 
 
 Existing code that passes metadata as part of an object after the message will need to be updated.
 
