@@ -26,8 +26,7 @@ type PlaceholderTypeMapping<T extends PlaceholderSpecifier> = T extends 'd'
 
 type ParseLogFnArgs<
   T,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Acc extends any[] = [],
+  Acc extends unknown[] = [],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 > = T extends `${infer _}%${infer Placeholder}${infer Rest}`
   ? Placeholder extends PlaceholderSpecifier
