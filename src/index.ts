@@ -28,6 +28,7 @@ type ParseLogFnArgs<
   T,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Acc extends any[] = [],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 > = T extends `${infer _}%${infer Placeholder}${infer Rest}`
   ? Placeholder extends PlaceholderSpecifier
     ? ParseLogFnArgs<Rest, [...Acc, PlaceholderTypeMapping<Placeholder>]>
