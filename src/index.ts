@@ -56,6 +56,7 @@ export type Logger<CustomLevels extends string = never> = Omit<
   | 'info'
   | 'debug'
   | 'trace'
+  | 'silent'
   | 'child'
   | CustomLevels
 > & {
@@ -65,6 +66,7 @@ export type Logger<CustomLevels extends string = never> = Omit<
   info: LogFn;
   debug: LogFn;
   trace: LogFn;
+  silent: LogFn;
   child: <ChildCustomLevels extends string = never>(
     bindings: pino.Bindings,
     options?: pino.ChildLoggerOptions<ChildCustomLevels>,
