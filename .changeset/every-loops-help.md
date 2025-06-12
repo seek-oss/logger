@@ -11,7 +11,7 @@ Existing code that passes metadata after the message string will need to be upda
 **Before (no longer works):**
 
 ```ts
-logger.error('my message', { error, metadata });
+logger.error('my message', { err, metadata });
 ```
 
 In this pattern, any metadata passed after the message string is not captured by the logger.
@@ -19,7 +19,7 @@ In this pattern, any metadata passed after the message string is not captured by
 **After (correct usage):**
 
 ```ts
-logger.error({ error, metadata }, 'my message');
+logger.error({ err, metadata }, 'my message');
 ```
 
 This ensures all metadata is properly captured and logged.
@@ -29,13 +29,23 @@ The change also enforces type checking for placeholder arguments:
 **Before (no longer works):**
 
 ```ts
-logger.error('my message with string: %s and number: %d', 99, 'string');
+logger.error(
+  { err },
+  'my message with string: %s and number: %d',
+  99,
+  'string',
+);
 ```
 
 **After (correct usage):**
 
 ```ts
-logger.error('my message with string: %s and number: %d', 'string', 99);
+logger.error(
+  { err },
+  'my message with string: %s and number: %d',
+  'string',
+  99,
+);
 ```
 
 This prevents type mismatches between placeholders and their corresponding arguments.
