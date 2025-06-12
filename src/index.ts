@@ -1,4 +1,4 @@
-import pino from 'pino';
+import pino, { type LoggerExtras } from 'pino';
 
 import base from './base';
 import { createDestination } from './destination/create';
@@ -72,7 +72,8 @@ export type Logger<CustomLevels extends string = never> = Omit<
     bindings: pino.Bindings,
     options?: pino.ChildLoggerOptions<ChildCustomLevels>,
   ) => Logger<CustomLevels | ChildCustomLevels>;
-} & Record<CustomLevels, LogFn>;
+} & Record<CustomLevels, LogFn> &
+  LoggerExtras<CustomLevels>;
 
 /**
  * Creates a logger that can enforce a strict logged object shape.
