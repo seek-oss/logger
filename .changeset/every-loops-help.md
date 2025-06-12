@@ -6,7 +6,7 @@ Enforce stricter typing for logger methods
 
 This is a **breaking change** to the types, improving type safety by enforcing stricter parameter typing on all logger methods.
 
-Existing code that passes metadata as part of an object after the message will need to be updated.
+Existing code that passes metadata after the message string will need to be updated. This pattern was previously silently ignoring the metadata, but now triggers a type error to prevent data loss.
 
 **Before (no longer works):**
 
