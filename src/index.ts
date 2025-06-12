@@ -37,8 +37,8 @@ type ParseLogFnArgs<
 // FIXME: Remove if pinojs/pino#2230 lands in a release.
 interface LogFn {
   <T, TMsg extends string = string>(
-    obj: Exclude<T, string>,
-    msg?: TMsg,
+    obj: T,
+    msg?: T extends string ? never : TMsg,
     ...args: ParseLogFnArgs<TMsg> | []
   ): void;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
