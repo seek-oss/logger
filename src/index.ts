@@ -60,6 +60,7 @@ export type Logger<CustomLevels extends string = never> = Omit<
   | 'child'
   | CustomLevels
 > & {
+  level: pino.LevelWithSilentOrString;
   fatal: LogFn;
   error: LogFn;
   warn: LogFn;
