@@ -15,8 +15,61 @@ export { pino };
 export type LoggerOptions<CustomLevels extends string = never> =
   pino.LoggerOptions<CustomLevels> & FormatterOptions & SerializerOptions;
 
-export type Logger<CustomLevels extends string = never> =
-  pino.Logger<CustomLevels>;
+type PlaceholderSpecifier = 'd' | 's' | 'j' | 'o' | 'O';
+type PlaceholderTypeMapping<T extends PlaceholderSpecifier> = T extends 'd'
+  ? number
+  : T extends 's'
+    ? string
+    : T extends 'j' | 'o' | 'O'
+      ? object
+      : never;
+
+type ParseLogFnArgs<
+  T,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Acc extends any[] = [],
+> = T extends `${infer _}%${infer Placeholder}${infer Rest}`
+  ? Placeholder extends PlaceholderSpecifier
+    ? ParseLogFnArgs<Rest, [...Acc, PlaceholderTypeMapping<Placeholder>]>
+    : ParseLogFnArgs<Rest, Acc>
+  : Acc;
+
+// FIXME: Remove if pinojs/pino#2230 lands in a release.
+interface LogFn {
+  <T, TMsg extends string = string>(
+    obj: Exclude<T, string>,
+    msg?: TMsg,
+    ...args: ParseLogFnArgs<TMsg> | []
+  ): void;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  <_, TMsg extends string = string>(
+    msg: TMsg,
+    ...args: ParseLogFnArgs<TMsg> | []
+  ): void;
+}
+
+export type Logger<CustomLevels extends string = never> = Omit<
+  pino.Logger<CustomLevels>,
+  | 'fatal'
+  | 'error'
+  | 'warn'
+  | 'info'
+  | 'debug'
+  | 'trace'
+  | 'child'
+  | CustomLevels
+> & {
+  fatal: LogFn;
+  error: LogFn;
+  warn: LogFn;
+  info: LogFn;
+  debug: LogFn;
+  trace: LogFn;
+  child: <ChildCustomLevels extends string = never>(
+    bindings: pino.Bindings,
+    options?: pino.ChildLoggerOptions<ChildCustomLevels>,
+  ) => Logger<CustomLevels | ChildCustomLevels>;
+} & Record<CustomLevels, LogFn>;
 
 /**
  * Creates a logger that can enforce a strict logged object shape.
