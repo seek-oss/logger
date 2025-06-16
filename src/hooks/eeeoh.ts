@@ -103,24 +103,30 @@ export const configToOutputter = ({ datadog }: EeeohConfig): EeeohOutputter => {
   };
 };
 
-export const createEeeohHooks = (
+export const createEeeohHooks = <CustomLevels extends string = never>(
   opts: Extract<EeeohOptions, { eeeoh: EeeohConfig }> &
-    Pick<pino.LoggerOptions, 'hooks'>,
+    Pick<pino.LoggerOptions<CustomLevels>, 'mixin'>,
 ) => {
   const outputDefault: EeeohOutputter = configToOutputter(opts.eeeoh);
 
-  const inputToOutputter = (input: object): EeeohOutputter => {
-    if (!('eeeoh' in input && typeof input.eeeoh === 'object' && input.eeeoh)) {
-      return outputDefault;
-    }
-
-    // TODO: cache on `input.eeeoh` here?
-    // This would be work with `WeakMap` if we encourage and/or enforce use of
+  const inputToOutputter = (
+    input: object,
+    logger: pino.Logger<CustomLevels>,
+  ): EeeohOutputter => {
+    // TODO: cache on `logger.bindings().eeeoh` and `input.eeeoh`?
+    // This would work with `WeakMap` if we encourage and/or enforce use of
     // exported singletons, but not if there are inline declarations.
     // Good: logger.info(eeeoh.datadog.silver);
     // Bad: logger.info({ eeeoh: { datadog: 'silver' } });
 
-    const result = parseEeeohConfig(input.eeeoh);
+    let result: ReturnType<typeof parseEeeohConfig> | undefined;
+
+    if ('eeeoh' in input && typeof input.eeeoh === 'object' && input.eeeoh) {
+      result = parseEeeohConfig(input.eeeoh);
+    }
+    if (!result || result.error) {
+      result = parseEeeohConfig(logger.bindings().eeeoh);
+    }
     if (result.error) {
       return outputDefault;
     }
@@ -130,31 +136,13 @@ export const createEeeohHooks = (
     return configToOutputter(config);
   };
 
-  const logMethod = function logMethod(
-    this: pino.Logger,
-    originalArgs: unknown[],
-    method: pino.LogFn,
+  return (
+    mergeObject: object,
     level: number,
-  ): void {
-    // TODO: should we mutate `originalArgs` instead of shallow cloning `args`
-    // to improve performance?
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const args: [any, ...any] =
-      originalArgs[0] && typeof originalArgs[0] === 'object'
-        ? [
-            {
-              ...originalArgs[0],
-              ...inputToOutputter(originalArgs[0])(level),
-            },
-            ...originalArgs.slice(1),
-          ]
-        : [outputDefault(level), ...originalArgs];
-
-    if (opts.hooks?.logMethod) {
-      return opts.hooks.logMethod.apply(this, [args, method, level]);
-    }
-
-    return method.apply(this, args);
-  };
-  return { ...opts.hooks, logMethod };
+    logger: pino.Logger<CustomLevels>,
+  ): object => ({
+    // TODO: which mixin should take precedence?
+    ...(opts.mixin?.(mergeObject, level, logger) ?? {}),
+    ...inputToOutputter(mergeObject, logger)(level),
+  });
 };

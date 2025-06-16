@@ -73,7 +73,7 @@ export type Logger<CustomLevels extends string = never> = Omit<
   trace: LogFn;
   silent: LogFn;
   child: <ChildCustomLevels extends string = never>(
-    bindings: pino.Bindings,
+    bindings: HookFields & pino.Bindings,
     options?: pino.ChildLoggerOptions<ChildCustomLevels>,
   ) => Logger<CustomLevels | ChildCustomLevels>;
 } & Record<CustomLevels, LogFn> &
@@ -92,7 +92,22 @@ export default <CustomLevels extends string = never>(
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
 
   if (eeeoh) {
-    opts.hooks = createHooks({ eeeoh, hooks: opts.hooks, service });
+    const originalMergeStrategy = opts.mixinMergeStrategy;
+
+    opts.mixin = createHooks({ eeeoh, mixin: opts.mixin, service });
+
+    opts.mixinMergeStrategy = (mergeObject, mixinObject) => {
+      // istanbul ignore next
+      // Defensive programming for a scenario that should never happen
+      const retain = 'eeeoh' in mixinObject ? { eeeoh: mixinObject.eeeoh } : {};
+
+      const merged =
+        originalMergeStrategy?.(mergeObject, mixinObject) ??
+        Object.assign(mixinObject, mergeObject);
+
+      // TODO: should we mutate for performance or shallow clone for safety?
+      return { ...merged, ...retain };
+    };
   }
 
   const serializers = createSerializers(opts);

@@ -915,6 +915,17 @@ describe('eeeoh', () => {
       'silver from inline object',
     );
 
+    logger
+      .child({
+        eeeoh: { datadog: 'bronze' },
+      })
+      .info(
+        {
+          eeeoh: { datadog: 'silver' },
+        },
+        'silver from inline object over child bindings',
+      );
+
     logger.info(
       {
         eeeoh: { datadog: ['bronze', { info: 'silver' }] },
@@ -945,7 +956,7 @@ describe('eeeoh', () => {
 
     logger
       .child({ eeeoh: { datadog: 'silver' } })
-      .info('tin from root option as child bindings are not supported yet');
+      .info('silver from child bindings ');
 
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
 [
@@ -973,6 +984,19 @@ describe('eeeoh', () => {
     },
     "level": 30,
     "msg": "silver from inline object",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "silver",
+        },
+      },
+    },
+    "level": 30,
+    "msg": "silver from inline object over child bindings",
     "service": "deployment-service-name",
   },
   {
@@ -1031,12 +1055,12 @@ describe('eeeoh', () => {
       "logs": {
         "datadog": {
           "enabled": true,
-          "tier": "tin",
+          "tier": "silver",
         },
       },
     },
     "level": 30,
-    "msg": "tin from root option as child bindings are not supported yet",
+    "msg": "silver from child bindings ",
     "service": "deployment-service-name",
   },
 ]
@@ -1163,19 +1187,12 @@ describe('eeeoh', () => {
 `);
   });
 
-  test('existing logMethod hook', () => {
+  // TODO: consider more complex mixins and merge strategies here.
+  test('existing mixin', () => {
     const logger = createLogger(
       {
         eeeoh: { datadog: false },
-        hooks: {
-          logMethod(args, method, level) {
-            if (level === 50) {
-              return method.apply(this, [args[0], 'override for error']);
-            }
-
-            method.apply(this, args);
-          },
-        },
+        mixin: (_, level) => (level === 50 ? { extra: 'key' } : {}),
         service: 'deployment-service-name',
       },
       destination,
@@ -1183,7 +1200,7 @@ describe('eeeoh', () => {
 
     logger.info('retain for info');
     logger.warn('retain for warn');
-    logger.error('this does not apply for error');
+    logger.error('extra key for error');
 
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
 [
@@ -1219,8 +1236,9 @@ describe('eeeoh', () => {
         },
       },
     },
+    "extra": "key",
     "level": 50,
-    "msg": "override for error",
+    "msg": "extra key for error",
     "service": "deployment-service-name",
   },
 ]
