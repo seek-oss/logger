@@ -889,3 +889,341 @@ test('using custom levels does not leak into types or runtypes of other loggers'
   expect(infoLog.msg).toBe('info');
   expect(infoLog.name).toBe('my-app');
 });
+
+describe('eeeoh', () => {
+  const { destination, stdoutMock } = rootModule.createDestination({
+    mock: true,
+  });
+
+  afterEach(stdoutMock.clear);
+
+  test('static root config', () => {
+    const logger = createLogger(
+      {
+        eeeoh: { datadog: 'tin' },
+        service: 'deployment-service-name',
+      },
+      destination,
+    );
+
+    logger.info('tin from root option');
+
+    logger.info(
+      {
+        eeeoh: { datadog: 'silver' },
+      },
+      'silver from inline object',
+    );
+
+    logger.info(
+      {
+        eeeoh: { datadog: ['bronze', { info: 'silver' }] },
+      },
+      'silver from inline equal to level',
+    );
+
+    logger.info(
+      {
+        eeeoh: { datadog: ['bronze', { debug: 'silver' }] },
+      },
+      'silver from inline greater than level',
+    );
+
+    logger.info(
+      {
+        eeeoh: { datadog: ['bronze', { warn: 'silver' }] },
+      },
+      'bronze from inline less than level',
+    );
+
+    logger.info(
+      {
+        eeeoh: { datadog: false },
+      },
+      'disabled from inline object',
+    );
+
+    logger
+      .child({ eeeoh: { datadog: 'silver' } })
+      .info('tin from root option as child bindings are not supported yet');
+
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
+[
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "tin",
+        },
+      },
+    },
+    "level": 30,
+    "msg": "tin from root option",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "silver",
+        },
+      },
+    },
+    "level": 30,
+    "msg": "silver from inline object",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "silver",
+        },
+      },
+    },
+    "level": 30,
+    "msg": "silver from inline equal to level",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "silver",
+        },
+      },
+    },
+    "level": 30,
+    "msg": "silver from inline greater than level",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "bronze",
+        },
+      },
+    },
+    "level": 30,
+    "msg": "bronze from inline less than level",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": false,
+        },
+      },
+    },
+    "level": 30,
+    "msg": "disabled from inline object",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "tin",
+        },
+      },
+    },
+    "level": 30,
+    "msg": "tin from root option as child bindings are not supported yet",
+    "service": "deployment-service-name",
+  },
+]
+`);
+  });
+
+  test('level-based root config', () => {
+    const logger = createLogger(
+      {
+        eeeoh: {
+          datadog: [
+            'tin',
+            {
+              info: 'bronze',
+              warn: 'silver',
+            },
+          ],
+        },
+        level: 'debug',
+        service: 'deployment-service-name',
+      },
+      destination,
+    );
+
+    logger.debug('tin from default');
+    logger.info('bronze from info level');
+    logger.warn({}, 'silver from warn level');
+    logger.error('silver from warn level');
+    logger.error(
+      {
+        eeeoh: { datadog: 'zero' },
+      },
+      'zero from inline override',
+    );
+    logger.debug(
+      {
+        // @ts-expect-error - testing unsafe runtime behaviour
+        eeeoh: { datadog: NaN },
+      },
+      'tin from default because invalid inline config is ignored',
+    );
+
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
+[
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "tin",
+        },
+      },
+    },
+    "level": 20,
+    "msg": "tin from default",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "bronze",
+        },
+      },
+    },
+    "level": 30,
+    "msg": "bronze from info level",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "silver",
+        },
+      },
+    },
+    "level": 40,
+    "msg": "silver from warn level",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "silver",
+        },
+      },
+    },
+    "level": 50,
+    "msg": "silver from warn level",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "zero",
+        },
+      },
+    },
+    "level": 50,
+    "msg": "zero from inline override",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "tin",
+        },
+      },
+    },
+    "level": 20,
+    "msg": "tin from default because invalid inline config is ignored",
+    "service": "deployment-service-name",
+  },
+]
+`);
+  });
+
+  test('existing logMethod hook', () => {
+    const logger = createLogger(
+      {
+        eeeoh: { datadog: false },
+        hooks: {
+          logMethod(args, method, level) {
+            if (level === 50) {
+              return method.apply(this, [args[0], 'override for error']);
+            }
+
+            method.apply(this, args);
+          },
+        },
+        service: 'deployment-service-name',
+      },
+      destination,
+    );
+
+    logger.info('retain for info');
+    logger.warn('retain for warn');
+    logger.error('this does not apply for error');
+
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
+[
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": false,
+        },
+      },
+    },
+    "level": 30,
+    "msg": "retain for info",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": false,
+        },
+      },
+    },
+    "level": 40,
+    "msg": "retain for warn",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": false,
+        },
+      },
+    },
+    "level": 50,
+    "msg": "override for error",
+    "service": "deployment-service-name",
+  },
+]
+`);
+  });
+});

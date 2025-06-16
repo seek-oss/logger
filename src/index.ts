@@ -4,6 +4,7 @@ import base from './base';
 import { createDestination } from './destination/create';
 import { withRedaction } from './destination/redact';
 import { type FormatterOptions, createFormatters } from './formatters';
+import { type HookFields, type HookOptions, createHooks } from './hooks/create';
 import * as redact from './redact';
 import { type SerializerOptions, createSerializers } from './serializers';
 
@@ -13,7 +14,10 @@ export { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
 export { pino };
 
 export type LoggerOptions<CustomLevels extends string = never> =
-  pino.LoggerOptions<CustomLevels> & FormatterOptions & SerializerOptions;
+  pino.LoggerOptions<CustomLevels> &
+    HookOptions &
+    FormatterOptions &
+    SerializerOptions;
 
 type PlaceholderSpecifier = 'd' | 's' | 'j' | 'o' | 'O';
 type PlaceholderTypeMapping<T extends PlaceholderSpecifier> = T extends 'd'
@@ -37,7 +41,7 @@ type ParseLogFnArgs<
 // FIXME: Remove if pinojs/pino#2230 lands in a release.
 interface LogFn {
   <T, TMsg extends string = string>(
-    obj: T,
+    obj: HookFields & T,
     msg?: T extends string ? never : TMsg,
     ...args: ParseLogFnArgs<TMsg> | []
   ): void;
@@ -81,11 +85,15 @@ export type Logger<CustomLevels extends string = never> = Omit<
  * @param destination - Destination stream. Default: `pino.destination({ sync: true })`.
  */
 export default <CustomLevels extends string = never>(
-  opts: LoggerOptions<CustomLevels> = {},
+  { eeeoh, service, ...opts }: LoggerOptions<CustomLevels> = {},
   destination: pino.DestinationStream = createDestination({ mock: false })
     .destination,
 ): Logger<CustomLevels> => {
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
+
+  if (eeeoh) {
+    opts.hooks = createHooks({ eeeoh, hooks: opts.hooks, service });
+  }
 
   const serializers = createSerializers(opts);
 
@@ -94,6 +102,7 @@ export default <CustomLevels extends string = never>(
   const formatters = createFormatters({ ...opts, serializers });
   opts.base = {
     ...base,
+    service,
     ...opts.base,
   };
   opts.formatters = {

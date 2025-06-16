@@ -20,6 +20,9 @@ importers:
       pino-std-serializers:
         specifier: ^7.0.0
         version: 7.0.0
+      pure-parse:
+        specifier: 1.0.0-rc.1
+        version: 1.0.0-rc.1
     devDependencies:
       '@changesets/cli':
         specifier: 2.29.2
@@ -3285,6 +3288,9 @@ packages:
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
+
+  pure-parse@1.0.0-rc.1:
+    resolution: {integrity: sha512-SoEDzfkxPr5gEBdSOtPIDyzeC2xSbKRvuWt89R7OiP20vW+UlM72vBNpOzMX7vEVij3Kb7h8xHz+tqlqVhaQJA==}
 
   pure-rand@6.1.0:
     resolution: {integrity: sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==}
@@ -7869,6 +7875,8 @@ snapshots:
   proto-list@1.2.4: {}
 
   punycode@2.3.1: {}
+
+  pure-parse@1.0.0-rc.1: {}
 
   pure-rand@6.1.0: {}
 
