@@ -195,8 +195,9 @@ export const createEeeohHooks = <CustomLevels extends string>(
     const tier = levelToTier(level);
 
     return {
-      // TODO: which mixin should take precedence?
-      ...(opts.mixin?.(mergeObject, level, logger) ?? {}),
+      ...opts.mixin?.(mergeObject, level, logger),
+
+      // Take precedence over the user-provided `mixin` for the `eeeoh` property
       ...formatOutput(tier),
     };
   };

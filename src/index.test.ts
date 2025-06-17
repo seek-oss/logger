@@ -1192,7 +1192,15 @@ describe('eeeoh', () => {
     const logger = createLogger(
       {
         eeeoh: { datadog: false },
-        mixin: (_, level) => (level === 50 ? { extra: 'key' } : {}),
+        mixin: (_, level) =>
+          level === 50
+            ? {
+                extra: 'key',
+
+                // This should be overwritten by the built-in eeeoh integration
+                eeeoh: { datadog: 'zero' },
+              }
+            : {},
         service: 'deployment-service-name',
       },
       destination,
