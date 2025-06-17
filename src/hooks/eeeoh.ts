@@ -5,6 +5,7 @@ import {
   equals,
   objectCompiled,
   oneOf,
+  parseString,
   tuple,
 } from 'pure-parse';
 
@@ -25,37 +26,35 @@ type DatadogTier = Infer<typeof parseDatadogTier>;
 
 type LevelToTier = (level: number) => DatadogTier | false;
 
-const parseLevel = oneOf(
-  equals('fatal'),
-  equals('error'),
-  equals('warn'),
-  equals('info'),
-  equals('debug'),
-  equals('trace'),
-);
-
-const parseTierByLevelMap = dictionary<pino.Level, DatadogTier>(
-  parseLevel,
+const parseTierByLevelMap = dictionary<string, DatadogTier>(
+  parseString,
   parseDatadogTier,
 );
 
 const parseDatadogTierByLevel = tuple([parseDatadogTier, parseTierByLevelMap]);
 
-const parseEeeohConfig = objectCompiled({
+const parseEeeohConfig = objectCompiled<EeeohConfig<string>>({
   datadog: oneOf(parseDatadogTier, parseDatadogTierByLevel, equals(false)),
 });
 
-export type EeeohConfig = Infer<typeof parseEeeohConfig>;
+export type EeeohConfig<CustomLevels extends string> = {
+  datadog:
+    | DatadogTier
+    | [DatadogTier, Partial<Record<CustomLevels | pino.Level, DatadogTier>>]
+    | false;
+};
 
-export type EeeohFields = { eeeoh?: EeeohConfig };
+export type EeeohFields<CustomLevels extends string> = {
+  eeeoh?: EeeohConfig<CustomLevels>;
+};
 
-export type EeeohOptions =
+export type EeeohOptions<CustomLevels extends string> =
   | {
       eeeoh?: never;
       service?: never;
     }
   | {
-      eeeoh: EeeohConfig;
+      eeeoh: EeeohConfig<CustomLevels>;
       service: string;
 
       /**
@@ -85,10 +84,10 @@ const formatOutput = (tier: DatadogTier | false) => ({
   },
 });
 
-const getConfig = <CustomLevels extends string = never>(
+const getConfig = <CustomLevels extends string>(
   logger: pino.Logger<CustomLevels>,
   input: object,
-): EeeohConfig | undefined => {
+): EeeohConfig<CustomLevels> | undefined => {
   let result: ReturnType<typeof parseEeeohConfig> | undefined;
   let bindings: pino.Bindings | undefined;
 
@@ -108,8 +107,11 @@ const getConfig = <CustomLevels extends string = never>(
   return;
 };
 
-export const createEeeohHooks = <CustomLevels extends string = never>(
-  opts: Extract<EeeohOptions, { eeeoh: EeeohConfig }> &
+export const createEeeohHooks = <CustomLevels extends string>(
+  opts: Extract<
+    EeeohOptions<CustomLevels>,
+    { eeeoh: EeeohConfig<CustomLevels> }
+  > &
     Pick<pino.LoggerOptions<CustomLevels>, 'mixin'>,
 ) => {
   const levelToTierCache = new WeakMap<
@@ -143,17 +145,21 @@ export const createEeeohHooks = <CustomLevels extends string = never>(
 
     const tierDefault = Array.isArray(datadog) ? datadog[0] : datadog;
 
-    const tierByLevel = Array.isArray(datadog) ? datadog[1] : {};
+    const tierByLevel: Partial<Record<string, DatadogTier>> = Array.isArray(
+      datadog,
+    )
+      ? datadog[1]
+      : {};
 
     // TODO: pre-compute mappings for O(1) lookups?
     const entries = Object.entries(tierByLevel)
       .map(([levelLabel, tier]) => {
-        const levelValue = pino.levels.values[levelLabel];
-        // istanbul ignore next
-        // Defensive programming for a scenario that should never happen
+        const levelValue =
+          logger.levels.values[levelLabel] ?? pino.levels.values[levelLabel];
+
         if (!levelValue) {
           throw new Error(
-            `No numeric value associated with log level: ${levelLabel}`,
+            `No numeric value associated with log level: ${levelLabel}. Ensure custom levels listed in \`eeeoh.datadog\` are configured as \`customLevels\` of the logger instance.`,
           );
         }
 
@@ -166,7 +172,7 @@ export const createEeeohHooks = <CustomLevels extends string = never>(
 
     const levelToTier: LevelToTier = (level) => {
       for (const entry of entries) {
-        if (entry.levelValue <= level) {
+        if (entry.tier && entry.levelValue <= level) {
           return entry.tier;
         }
       }

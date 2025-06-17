@@ -1097,7 +1097,7 @@ describe('eeeoh', () => {
     );
     logger.debug(
       {
-        // @ts-expect-error - testing unsafe runtime behaviour
+        // @ts-expect-error - asserting runtime behaviour on invalid config
         eeeoh: { datadog: NaN },
       },
       'tin from default because invalid inline config is ignored',
@@ -1243,5 +1243,122 @@ describe('eeeoh', () => {
   },
 ]
 `);
+  });
+
+  test('custom level tiering', () => {
+    {
+      const logger = createLogger(
+        {
+          eeeoh: {
+            datadog: ['tin', { undefinedCustomLevel: 'bronze' }],
+          },
+          service: 'deployment-service-name',
+        },
+        destination,
+      );
+
+      expect(() => logger.info('error')).toThrowErrorMatchingInlineSnapshot(
+        `"No numeric value associated with log level: undefinedCustomLevel. Ensure custom levels listed in \`eeeoh.datadog\` are configured as \`customLevels\` of the logger instance."`,
+      );
+    }
+
+    {
+      const logger = createLogger<'asplode'>(
+        {
+          customLevels: {
+            asplode: 9001,
+          },
+
+          eeeoh: {
+            datadog: [
+              'tin',
+              {
+                info: 'bronze',
+                warn: 'silver',
+
+                // Properties do not have to be written in order
+                asplode: 'silver-plus',
+              },
+            ],
+          },
+          service: 'deployment-service-name',
+        },
+        destination,
+      );
+
+      logger.warn('silver from warn level');
+
+      logger.asplode('silver-plus from asplode level');
+
+      // @ts-expect-error - asserting type error on unsafe child init
+      // eslint-disable-next-line no-void
+      void logger.child(
+        {},
+        {
+          customLevels: {
+            megaAsplode: 9002,
+          },
+        },
+      );
+
+      const childLogger = logger.child(
+        { eeeoh: { datadog: 'zero' } },
+        {
+          customLevels: {
+            megaAsplode: 9002,
+          },
+        },
+      );
+
+      // @ts-expect-error - asserting type error on unsafe custom parent method
+      // eslint-disable-next-line no-void
+      void childLogger.asplode;
+
+      childLogger.megaAsplode('zero from child binding');
+
+      expect(stdoutMock.calls).toMatchInlineSnapshot(`
+[
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "silver",
+        },
+      },
+    },
+    "level": 40,
+    "msg": "silver from warn level",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "silver-plus",
+        },
+      },
+    },
+    "level": 9001,
+    "msg": "silver-plus from asplode level",
+    "service": "deployment-service-name",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "zero",
+        },
+      },
+    },
+    "level": 9002,
+    "msg": "zero from child binding",
+    "service": "deployment-service-name",
+  },
+]
+`);
+    }
   });
 });
