@@ -147,26 +147,26 @@ export const createEeeohHooks = <CustomLevels extends string = never>(
 
     // TODO: pre-compute mappings for O(1) lookups?
     const entries = Object.entries(tierByLevel)
-      .map(([level, tier]) => {
-        const numericLevel = pino.levels.values[level];
+      .map(([levelLabel, tier]) => {
+        const levelValue = pino.levels.values[levelLabel];
         // istanbul ignore next
         // Defensive programming for a scenario that should never happen
-        if (!numericLevel) {
+        if (!levelValue) {
           throw new Error(
-            `no numeric value associated with log level: ${level}`,
+            `No numeric value associated with log level: ${levelLabel}`,
           );
         }
 
         return {
-          numericLevel,
+          levelValue,
           tier,
         };
       })
-      .sort((a, b) => b.numericLevel - a.numericLevel);
+      .sort((a, b) => b.levelValue - a.levelValue);
 
     const levelToTier: LevelToTier = (level) => {
       for (const entry of entries) {
-        if (entry.numericLevel <= level) {
+        if (entry.levelValue <= level) {
           return entry.tier;
         }
       }
