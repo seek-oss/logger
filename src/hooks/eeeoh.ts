@@ -23,6 +23,8 @@ const parseDatadogTier = oneOf(
 
 type DatadogTier = Infer<typeof parseDatadogTier>;
 
+type LevelToTier = (level: number) => DatadogTier | false;
+
 const parseLevel = oneOf(
   equals('fatal'),
   equals('error'),
@@ -57,92 +59,94 @@ const formatOutput = (tier: DatadogTier | false) => ({
   },
 });
 
-type EeeohOutput = ReturnType<typeof formatOutput>;
+const getConfig = <CustomLevels extends string = never>(
+  logger: pino.Logger<CustomLevels>,
+  input: object,
+): EeeohConfig | undefined => {
+  let result: ReturnType<typeof parseEeeohConfig> | undefined;
+  let bindings: pino.Bindings | undefined;
 
-type EeeohOutputter = (level: number) => EeeohOutput;
-
-// TODO: support `customLevels` and `levelComparison`?
-export const configToOutputter = ({ datadog }: EeeohConfig): EeeohOutputter => {
-  if (datadog === false) {
-    return () => formatOutput(false);
+  // Skip parsing if the `eeeoh` property is not present
+  if ('eeeoh' in input) {
+    result = parseEeeohConfig(input.eeeoh);
+  }
+  // Skip parsing if the above parsed or the `eeeoh` property is not present
+  if ((!result || result.error) && 'eeeoh' in (bindings = logger.bindings())) {
+    result = parseEeeohConfig(bindings.eeeoh);
   }
 
-  const tierDefault = Array.isArray(datadog) ? datadog[0] : datadog;
+  if (result?.tag === 'success') {
+    return result.value;
+  }
 
-  const tierByLevel = Array.isArray(datadog) ? datadog[1] : {};
-
-  // TODO: pre-compute mappings for O(1) lookups?
-  //
-  // This would be tricky if we want to support `customLevels` as they can be
-  // added by child loggers, and we haven't found a convenient hook in to child
-  // logger creation.
-  const entries = Object.entries(tierByLevel)
-    .map(([level, tier]) => {
-      const numericLevel = pino.levels.values[level];
-      // istanbul ignore next
-      // Defensive programming for a scenario that should never happen
-      if (!numericLevel) {
-        throw new Error(`no numeric value associated with log level: ${level}`);
-      }
-
-      return {
-        numericLevel,
-        tier,
-      };
-    })
-    .sort((a, b) => b.numericLevel - a.numericLevel);
-
-  return (level) => {
-    for (const entry of entries) {
-      if (entry.numericLevel <= level) {
-        return formatOutput(entry.tier);
-      }
-    }
-
-    return formatOutput(tierDefault);
-  };
+  return;
 };
 
 export const createEeeohHooks = <CustomLevels extends string = never>(
   opts: Extract<EeeohOptions, { eeeoh: EeeohConfig }> &
     Pick<pino.LoggerOptions<CustomLevels>, 'mixin'>,
 ) => {
-  const outputDefault: EeeohOutputter = configToOutputter(opts.eeeoh);
-
-  const inputToOutputter = (
+  const getLevelToTier = (
     input: object,
     logger: pino.Logger<CustomLevels>,
-  ): EeeohOutputter => {
-    // TODO: cache on `logger.bindings().eeeoh` and `input.eeeoh`?
-    // This would work with `WeakMap` if we encourage and/or enforce use of
-    // exported singletons, but not if there are inline declarations.
-    // Good: logger.info(eeeoh.datadog.silver);
-    // Bad: logger.info({ eeeoh: { datadog: 'silver' } });
+  ): LevelToTier => {
+    const { datadog } = getConfig(logger, input) ?? opts.eeeoh;
 
-    let result: ReturnType<typeof parseEeeohConfig> | undefined;
+    if (datadog === false) {
+      const levelToTier: LevelToTier = () => false;
 
-    if ('eeeoh' in input && typeof input.eeeoh === 'object' && input.eeeoh) {
-      result = parseEeeohConfig(input.eeeoh);
-    }
-    if (!result || result.error) {
-      result = parseEeeohConfig(logger.bindings().eeeoh);
-    }
-    if (result.error) {
-      return outputDefault;
+      return levelToTier;
     }
 
-    const config = result.value;
+    const tierDefault = Array.isArray(datadog) ? datadog[0] : datadog;
 
-    return configToOutputter(config);
+    const tierByLevel = Array.isArray(datadog) ? datadog[1] : {};
+
+    // TODO: pre-compute mappings for O(1) lookups?
+    const entries = Object.entries(tierByLevel)
+      .map(([level, tier]) => {
+        const numericLevel = pino.levels.values[level];
+        // istanbul ignore next
+        // Defensive programming for a scenario that should never happen
+        if (!numericLevel) {
+          throw new Error(
+            `no numeric value associated with log level: ${level}`,
+          );
+        }
+
+        return {
+          numericLevel,
+          tier,
+        };
+      })
+      .sort((a, b) => b.numericLevel - a.numericLevel);
+
+    const levelToTier: LevelToTier = (level) => {
+      for (const entry of entries) {
+        if (entry.numericLevel <= level) {
+          return entry.tier;
+        }
+      }
+
+      return tierDefault;
+    };
+
+    return levelToTier;
   };
 
   return (
     mergeObject: object,
     level: number,
     logger: pino.Logger<CustomLevels>,
-  ): object => ({
-    // TODO: which mixin should take precedence?
-    ...(opts.mixin?.(mergeObject, level, logger) ?? {}),
-    ...inputToOutputter(mergeObject, logger)(level),
-  });
+  ): object => {
+    const levelToTier = getLevelToTier(mergeObject, logger);
+
+    const tier = levelToTier(level);
+
+    return {
+      // TODO: which mixin should take precedence?
+      ...(opts.mixin?.(mergeObject, level, logger) ?? {}),
+      ...formatOutput(tier),
+    };
+  };
 };
