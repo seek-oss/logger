@@ -94,30 +94,24 @@ const formatOutput = (tier: DatadogTier | false) => ({
   },
 });
 
-const getConfig = <CustomLevels extends string>(
+const getConfigForLogger = <CustomLevels extends string>(
   logger: pino.Logger<CustomLevels>,
-  input: object,
 ): EeeohConfig<CustomLevels> | undefined => {
-  let result: ReturnType<typeof parseEeeohConfig> | undefined;
-  let bindings: pino.Bindings | undefined;
-
-  // Skip parsing if the `eeeoh` property is not present
-  if ('eeeoh' in input) {
-    result = parseEeeohField(input.eeeoh);
-  }
-  // Skip parsing if the above parsed or the `eeeoh` property is not present
-  if ((!result || result.error) && 'eeeoh' in (bindings = logger.bindings())) {
-    result = parseEeeohConfig(bindings.eeeoh);
+  const eeeoh: unknown = logger.bindings().eeeoh;
+  if (!eeeoh) {
+    // Skip parsing if the `eeeoh` property is not present
+    return;
   }
 
-  if (result?.tag === 'success') {
-    return result.value;
+  const result = parseEeeohConfig(eeeoh);
+  if (result.error) {
+    return;
   }
 
-  return;
+  return result.value;
 };
 
-const evaluateTier = (
+const getTierForLevel = (
   level: number,
   entries: Array<{ levelValue: number; tier?: DatadogTier }>,
   defaultTier: DatadogTier,
@@ -143,21 +137,16 @@ export const createEeeohHooks = <CustomLevels extends string>(
     LevelToTier
   >();
 
-  const getLevelToTier = (
-    input: object,
-    logger: pino.Logger<CustomLevels>,
-  ): LevelToTier => {
-    if (!('eeeoh' in input)) {
-      // This cache implementation does not track out-of-band changes to the
-      // logger binding, i.e. `logger.setBindings({ eeeoh: { /* ... */ } })`.
-      // There should be no good reason to do that and we should discourage it.
-      const cached = levelToTierCache.get(logger);
-      if (cached) {
-        return cached;
-      }
+  const getLevelToTier = (logger: pino.Logger<CustomLevels>): LevelToTier => {
+    // This cache implementation does not track out-of-band changes to the
+    // logger binding, i.e. `logger.setBindings({ eeeoh: { /* ... */ } })`.
+    // There should be no good reason to do that and we should discourage it.
+    const cached = levelToTierCache.get(logger);
+    if (cached) {
+      return cached;
     }
 
-    const { datadog } = getConfig(logger, input) ?? opts.eeeoh;
+    const { datadog } = getConfigForLogger(logger) ?? opts.eeeoh;
 
     if (datadog === false) {
       const levelToTier: LevelToTier = () => false;
@@ -196,7 +185,7 @@ export const createEeeohHooks = <CustomLevels extends string>(
     const precomputations = Object.fromEntries(
       Object.values(logger.levels.values).map((levelValue) => [
         levelValue,
-        evaluateTier(levelValue, entries, tierDefault),
+        getTierForLevel(levelValue, entries, tierDefault),
       ]),
     );
 
@@ -210,14 +199,30 @@ export const createEeeohHooks = <CustomLevels extends string>(
     return levelToTier;
   };
 
+  const getTier = (
+    input: object,
+    level: number,
+    logger: pino.Logger<CustomLevels>,
+  ): DatadogTier | false => {
+    if ('eeeoh' in input) {
+      const result = parseEeeohField(input.eeeoh);
+
+      if (result?.tag === 'success') {
+        return result.value.datadog;
+      }
+    }
+
+    const levelToTier = getLevelToTier(logger);
+
+    return levelToTier(level);
+  };
+
   return (
     mergeObject: object,
     level: number,
     logger: pino.Logger<CustomLevels>,
   ): object => {
-    const levelToTier = getLevelToTier(mergeObject, logger);
-
-    const tier = levelToTier(level);
+    const tier = getTier(mergeObject, level, logger);
 
     return {
       ...opts.mixin?.(mergeObject, level, logger),

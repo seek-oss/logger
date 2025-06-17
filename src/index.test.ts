@@ -1349,4 +1349,41 @@ describe('eeeoh', () => {
 `);
     }
   });
+
+  test('invalid child binding', () => {
+    const logger = createLogger(
+      {
+        eeeoh: {
+          datadog: 'tin',
+        },
+        service: 'deployment-service-name',
+      },
+      destination,
+    ).child({
+      eeeoh: {
+        // @ts-expect-error - asserting runtime behaviour on invalid config
+        datadog: 'XXX',
+      },
+    });
+
+    logger.info('tin from root option');
+
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
+[
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "tin",
+        },
+      },
+    },
+    "level": 30,
+    "msg": "tin from root option",
+    "service": "deployment-service-name",
+  },
+]
+`);
+  });
 });
