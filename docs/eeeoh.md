@@ -72,7 +72,7 @@ const logger = createLogger({
       },
     ],
   },
-  service: '',
+  service: 'my-deployment-service-name',
 });
 
 logger.info('A tin message');
@@ -89,7 +89,7 @@ const logger = createLogger({
   eeeoh: {
     datadog: 'tin',
   },
-  service: '',
+  service: 'my-deployment-service-name',
 });
 
 logger.info({ eeeoh: { datadog: 'silver' } }, 'A silver message');
