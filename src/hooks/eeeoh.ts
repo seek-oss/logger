@@ -107,6 +107,20 @@ const getConfig = <CustomLevels extends string>(
   return;
 };
 
+const evaluateTier = (
+  level: number,
+  entries: Array<{ levelValue: number; tier?: DatadogTier }>,
+  defaultTier: DatadogTier,
+): DatadogTier => {
+  for (const entry of entries) {
+    if (entry.tier && entry.levelValue <= level) {
+      return entry.tier;
+    }
+  }
+
+  return defaultTier;
+};
+
 export const createEeeohHooks = <CustomLevels extends string>(
   opts: Extract<
     EeeohOptions<CustomLevels>,
@@ -151,7 +165,6 @@ export const createEeeohHooks = <CustomLevels extends string>(
       ? datadog[1]
       : {};
 
-    // TODO: pre-compute mappings for O(1) lookups?
     const entries = Object.entries(tierByLevel)
       .map(([levelLabel, tier]) => {
         const levelValue =
@@ -170,15 +183,17 @@ export const createEeeohHooks = <CustomLevels extends string>(
       })
       .sort((a, b) => b.levelValue - a.levelValue);
 
-    const levelToTier: LevelToTier = (level) => {
-      for (const entry of entries) {
-        if (entry.tier && entry.levelValue <= level) {
-          return entry.tier;
-        }
-      }
+    const precomputations = Object.fromEntries(
+      Object.values(logger.levels.values).map((levelValue) => [
+        levelValue,
+        evaluateTier(levelValue, entries, tierDefault),
+      ]),
+    );
 
-      return tierDefault;
-    };
+    const levelToTier: LevelToTier = (level) =>
+      // No known way of choosing a level that isn't in `logger.levels`
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      precomputations[level]!;
 
     levelToTierCache.set(logger, levelToTier);
 
