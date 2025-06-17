@@ -50,8 +50,21 @@ export type EeeohConfig = Infer<typeof parseEeeohConfig>;
 export type EeeohFields = { eeeoh?: EeeohConfig };
 
 export type EeeohOptions =
-  | { eeeoh?: never; service?: never }
-  | { eeeoh: EeeohConfig; service: string };
+  | {
+      eeeoh?: never;
+      service?: never;
+    }
+  | {
+      eeeoh: EeeohConfig;
+      /**
+       * You cannot customise level comparison if you opt in to eeeoh.
+       *
+       * It's unnecessarily complex to have to reason about custom comparison
+       * logic when using level-based Datadog log tiering.
+       */
+      levelComparison?: never;
+      service: string;
+    };
 
 const formatOutput = (tier: DatadogTier | false) => ({
   eeeoh: {
