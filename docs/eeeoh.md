@@ -20,6 +20,22 @@ const logger = createLogger({
 });
 ```
 
+Note that the `eeeoh` configuration option uses compact syntax.
+The logger internally transforms it to the expected output:
+
+```json
+{
+  "eeeoh": {
+    "logs": {
+      "datadog": {
+        "enabled": true,
+        "tier": "zero"
+      }
+    }
+  }
+}
+```
+
 ## Datadog log tiers
 
 ### Tier default
