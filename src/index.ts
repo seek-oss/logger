@@ -1,4 +1,4 @@
-import pino, { type LoggerExtras } from 'pino';
+import pino from 'pino';
 
 import base from './base';
 import { createDestination } from './destination/create';
