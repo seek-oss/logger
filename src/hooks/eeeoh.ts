@@ -24,7 +24,7 @@ const parseDatadogTier = oneOf(
 
 type DatadogTier = Infer<typeof parseDatadogTier>;
 
-type LevelToTier = (level: number) => DatadogTier | false;
+type LevelToTier = (level: number) => DatadogTier | false | null;
 
 const parseTierByLevelMap = dictionary<string, DatadogTier>(
   parseString,
@@ -88,24 +88,29 @@ export type EeeohOptions<CustomLevels extends string> =
       useOnlyCustomLevels?: false;
     };
 
-const formatOutput = (tier: DatadogTier | false) => ({
-  eeeoh: {
-    logs: { datadog: tier ? { enabled: true, tier } : { enabled: false } },
-  },
-});
+const formatOutput = (tier: DatadogTier | false | null) =>
+  tier === null
+    ? {}
+    : {
+        eeeoh: {
+          logs: {
+            datadog: tier ? { enabled: true, tier } : { enabled: false },
+          },
+        },
+      };
 
 const getConfigForLogger = <CustomLevels extends string>(
   logger: pino.Logger<CustomLevels>,
-): EeeohConfig<CustomLevels> | undefined => {
+): EeeohConfig<CustomLevels> | null => {
   const eeeoh: unknown = logger.bindings().eeeoh;
   if (!eeeoh) {
     // Skip parsing if the `eeeoh` property is not present
-    return;
+    return null;
   }
 
   const result = parseEeeohConfig(eeeoh);
   if (result.error) {
-    return;
+    return null;
   }
 
   return result.value;
@@ -114,8 +119,8 @@ const getConfigForLogger = <CustomLevels extends string>(
 const getTierForLevel = (
   level: number,
   entries: Array<{ levelValue: number; tier?: DatadogTier }>,
-  defaultTier: DatadogTier,
-): DatadogTier => {
+  defaultTier: DatadogTier | null,
+): DatadogTier | null => {
   for (const entry of entries) {
     if (entry.tier && entry.levelValue <= level) {
       return entry.tier;
@@ -126,10 +131,7 @@ const getTierForLevel = (
 };
 
 export const createEeeohHooks = <CustomLevels extends string>(
-  opts: Extract<
-    EeeohOptions<CustomLevels>,
-    { eeeoh: EeeohConfig<CustomLevels> }
-  > &
+  opts: Pick<EeeohOptions<CustomLevels>, 'eeeoh'> &
     Pick<pino.LoggerOptions<CustomLevels>, 'mixin'>,
 ) => {
   const levelToTierCache = new WeakMap<
@@ -146,10 +148,11 @@ export const createEeeohHooks = <CustomLevels extends string>(
       return cached;
     }
 
-    const { datadog } = getConfigForLogger(logger) ?? opts.eeeoh;
+    const { datadog } = getConfigForLogger(logger) ??
+      opts.eeeoh ?? { datadog: null };
 
-    if (datadog === false) {
-      const levelToTier: LevelToTier = () => false;
+    if (datadog === false || datadog === null) {
+      const levelToTier: LevelToTier = () => datadog;
 
       levelToTierCache.set(logger, levelToTier);
 
@@ -203,7 +206,7 @@ export const createEeeohHooks = <CustomLevels extends string>(
     input: object,
     level: number,
     logger: pino.Logger<CustomLevels>,
-  ): DatadogTier | false => {
+  ): DatadogTier | false | null => {
     if ('eeeoh' in input) {
       const result = parseEeeohField(input.eeeoh);
 

@@ -1386,4 +1386,34 @@ describe('eeeoh', () => {
 ]
 `);
   });
+
+  test('enabled on child logger only', () => {
+    const logger = createLogger(undefined, destination);
+
+    logger.info('no eeeoh');
+
+    // Note that we don't enforce `service` here; probably not worth the effort.
+    logger.child({ eeeoh: { datadog: 'tin' } }).info('has eeeoh');
+
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
+[
+  {
+    "level": 30,
+    "msg": "no eeeoh",
+  },
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "tin",
+        },
+      },
+    },
+    "level": 30,
+    "msg": "has eeeoh",
+  },
+]
+`);
+  });
 });

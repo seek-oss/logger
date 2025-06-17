@@ -120,24 +120,20 @@ export default <CustomLevels extends string = never>(
 ): Logger<CustomLevels> => {
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
 
-  if (eeeoh) {
-    const originalMergeStrategy = opts.mixinMergeStrategy;
+  const originalMergeStrategy = opts.mixinMergeStrategy;
 
-    opts.mixin = createHooks({ eeeoh, mixin: opts.mixin, service });
+  opts.mixin = createHooks({ eeeoh, mixin: opts.mixin });
 
-    opts.mixinMergeStrategy = (mergeObject, mixinObject) => {
-      // istanbul ignore next
-      // Defensive programming for a scenario that should never happen
-      const retain = 'eeeoh' in mixinObject ? { eeeoh: mixinObject.eeeoh } : {};
+  opts.mixinMergeStrategy = (mergeObject, mixinObject) => {
+    const retain = 'eeeoh' in mixinObject ? { eeeoh: mixinObject.eeeoh } : {};
 
-      const merged =
-        originalMergeStrategy?.(mergeObject, mixinObject) ??
-        Object.assign(mixinObject, mergeObject);
+    const merged =
+      originalMergeStrategy?.(mergeObject, mixinObject) ??
+      Object.assign(mixinObject, mergeObject);
 
-      // TODO: should we mutate for performance or shallow clone for safety?
-      return { ...merged, ...retain };
-    };
-  }
+    // TODO: should we mutate for performance or shallow clone for safety?
+    return { ...merged, ...retain };
+  };
 
   const serializers = createSerializers(opts);
 
