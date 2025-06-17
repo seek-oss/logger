@@ -926,26 +926,15 @@ describe('eeeoh', () => {
         'silver from inline object over child bindings',
       );
 
-    logger.info(
-      {
-        eeeoh: { datadog: ['bronze', { info: 'silver' }] },
-      },
-      'silver from inline equal to level',
-    );
-
-    logger.info(
-      {
-        eeeoh: { datadog: ['bronze', { debug: 'silver' }] },
-      },
-      'silver from inline greater than level',
-    );
-
-    logger.info(
-      {
-        eeeoh: { datadog: ['bronze', { warn: 'silver' }] },
-      },
-      'bronze from inline less than level',
-    );
+    // eslint-disable-next-line no-void
+    void (() =>
+      logger.info(
+        {
+          // @ts-expect-error - asserting type error on complex inline config
+          eeeoh: { datadog: ['bronze', { info: 'silver' }] },
+        },
+        'silver from inline equal to level',
+      ));
 
     logger.info(
       {
@@ -997,45 +986,6 @@ describe('eeeoh', () => {
     },
     "level": 30,
     "msg": "silver from inline object over child bindings",
-    "service": "deployment-service-name",
-  },
-  {
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "silver",
-        },
-      },
-    },
-    "level": 30,
-    "msg": "silver from inline equal to level",
-    "service": "deployment-service-name",
-  },
-  {
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "silver",
-        },
-      },
-    },
-    "level": 30,
-    "msg": "silver from inline greater than level",
-    "service": "deployment-service-name",
-  },
-  {
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "bronze",
-        },
-      },
-    },
-    "level": 30,
-    "msg": "bronze from inline less than level",
     "service": "deployment-service-name",
   },
   {

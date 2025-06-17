@@ -4,7 +4,12 @@ import base from './base';
 import { createDestination } from './destination/create';
 import { withRedaction } from './destination/redact';
 import { type FormatterOptions, createFormatters } from './formatters';
-import { type HookFields, type HookOptions, createHooks } from './hooks/create';
+import {
+  type HookBindings,
+  type HookFields,
+  type HookOptions,
+  createHooks,
+} from './hooks/create';
 import * as redact from './redact';
 import { type SerializerOptions, createSerializers } from './serializers';
 
@@ -39,9 +44,9 @@ type ParseLogFnArgs<
   : Acc;
 
 // FIXME: Remove if pinojs/pino#2230 lands in a release.
-interface LogFn<CustomLevels extends string> {
+interface LogFn {
   <T, TMsg extends string = string>(
-    obj: HookFields<CustomLevels> & T,
+    obj: HookFields & T,
     msg?: T extends string ? never : TMsg,
     ...args: ParseLogFnArgs<TMsg> | []
   ): void;
@@ -65,21 +70,21 @@ export type Logger<CustomLevels extends string = never> = Omit<
   | CustomLevels
 > & {
   level: pino.LevelWithSilentOrString;
-  fatal: LogFn<CustomLevels>;
-  error: LogFn<CustomLevels>;
-  warn: LogFn<CustomLevels>;
-  info: LogFn<CustomLevels>;
-  debug: LogFn<CustomLevels>;
-  trace: LogFn<CustomLevels>;
-  silent: LogFn<CustomLevels>;
+  fatal: LogFn;
+  error: LogFn;
+  warn: LogFn;
+  info: LogFn;
+  debug: LogFn;
+  trace: LogFn;
+  silent: LogFn;
 
   child<ChildCustomLevels extends never = never>(
-    bindings: HookFields<CustomLevels> & pino.Bindings,
+    bindings: HookBindings<CustomLevels> & pino.Bindings,
     options?: undefined,
   ): Logger<CustomLevels | ChildCustomLevels>;
 
   child<ChildCustomLevels extends string = never>(
-    bindings: HookFields<CustomLevels> & pino.Bindings,
+    bindings: HookBindings<CustomLevels> & pino.Bindings,
     options: Omit<pino.ChildLoggerOptions<ChildCustomLevels>, 'customLevels'>,
   ): Logger<CustomLevels | ChildCustomLevels>;
 
@@ -95,13 +100,13 @@ export type Logger<CustomLevels extends string = never> = Omit<
    * We hide those "parent" methods on the child to avoid this issue.
    */
   child<ChildCustomLevels extends string = never>(
-    bindings: Required<HookFields<ChildCustomLevels>> & pino.Bindings,
+    bindings: Required<HookBindings<ChildCustomLevels>> & pino.Bindings,
     options: Omit<
       pino.ChildLoggerOptions<ChildCustomLevels>,
       'customLevels'
     > & { customLevels: Record<ChildCustomLevels, number> },
   ): Logger<ChildCustomLevels>;
-} & Record<CustomLevels, LogFn<CustomLevels>>;
+} & Record<CustomLevels, LogFn>;
 
 /**
  * Creates a logger that can enforce a strict logged object shape.

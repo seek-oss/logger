@@ -37,6 +37,10 @@ const parseEeeohConfig = objectCompiled<EeeohConfig<string>>({
   datadog: oneOf(parseDatadogTier, parseDatadogTierByLevel, equals(false)),
 });
 
+const parseEeeohField = objectCompiled<NonNullable<EeeohFields['eeeoh']>>({
+  datadog: oneOf(parseDatadogTier, equals(false)),
+});
+
 export type EeeohConfig<CustomLevels extends string> = {
   datadog:
     | DatadogTier
@@ -44,8 +48,14 @@ export type EeeohConfig<CustomLevels extends string> = {
     | false;
 };
 
-export type EeeohFields<CustomLevels extends string> = {
+export type EeeohBindings<CustomLevels extends string> = {
   eeeoh?: EeeohConfig<CustomLevels>;
+};
+
+export type EeeohFields = {
+  eeeoh?: {
+    datadog: DatadogTier | false;
+  };
 };
 
 export type EeeohOptions<CustomLevels extends string> =
@@ -93,7 +103,7 @@ const getConfig = <CustomLevels extends string>(
 
   // Skip parsing if the `eeeoh` property is not present
   if ('eeeoh' in input) {
-    result = parseEeeohConfig(input.eeeoh);
+    result = parseEeeohField(input.eeeoh);
   }
   // Skip parsing if the above parsed or the `eeeoh` property is not present
   if ((!result || result.error) && 'eeeoh' in (bindings = logger.bindings())) {
