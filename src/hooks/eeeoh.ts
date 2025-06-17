@@ -99,14 +99,31 @@ export const createEeeohHooks = <CustomLevels extends string = never>(
   opts: Extract<EeeohOptions, { eeeoh: EeeohConfig }> &
     Pick<pino.LoggerOptions<CustomLevels>, 'mixin'>,
 ) => {
+  const levelToTierCache = new WeakMap<
+    pino.Logger<CustomLevels>,
+    LevelToTier
+  >();
+
   const getLevelToTier = (
     input: object,
     logger: pino.Logger<CustomLevels>,
   ): LevelToTier => {
+    if (!('eeeoh' in input)) {
+      // This cache implementation does not track out-of-band changes to the
+      // logger binding, i.e. `logger.setBindings({ eeeoh: { /* ... */ } })`.
+      // There should be no good reason to do that and we should discourage it.
+      const cached = levelToTierCache.get(logger);
+      if (cached) {
+        return cached;
+      }
+    }
+
     const { datadog } = getConfig(logger, input) ?? opts.eeeoh;
 
     if (datadog === false) {
       const levelToTier: LevelToTier = () => false;
+
+      levelToTierCache.set(logger, levelToTier);
 
       return levelToTier;
     }
@@ -143,6 +160,8 @@ export const createEeeohHooks = <CustomLevels extends string = never>(
 
       return tierDefault;
     };
+
+    levelToTierCache.set(logger, levelToTier);
 
     return levelToTier;
   };
