@@ -56,14 +56,27 @@ export type EeeohOptions =
     }
   | {
       eeeoh: EeeohConfig;
+      service: string;
+
       /**
        * You cannot customise level comparison if you opt in to eeeoh.
        *
-       * It's unnecessarily complex to have to reason about custom comparison
-       * logic when using level-based Datadog log tiering.
+       * Custom comparison logic is difficult to reason about in relation to
+       * level-based Datadog log tiering.
+       *
+       * Please contact the maintainers if you have a use case for this.
        */
       levelComparison?: never;
-      service: string;
+
+      /**
+       * You cannot disable default levels if you opt in to eeeoh.
+       *
+       * A fully custom scale of log levels is complex to support in relation to
+       * level-based Datadog log tiering.
+       *
+       * Please contact the maintainers if you have a use case for this.
+       */
+      useOnlyCustomLevels?: false;
     };
 
 const formatOutput = (tier: DatadogTier | false) => ({
