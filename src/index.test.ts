@@ -1187,7 +1187,37 @@ describe('eeeoh', () => {
 `);
   });
 
-  // TODO: consider more complex mixins and merge strategies here.
+  test('existing mixin merge strategy', () => {
+    const logger = createLogger(
+      {
+        eeeoh: { datadog: 'tin' },
+        mixinMergeStrategy: (mergeObject, _mixinObject) => mergeObject,
+        service: 'deployment-service-name',
+      },
+      destination,
+    );
+
+    logger.info('eeeoh cherry-picked despite mixin merge strategy');
+
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
+[
+  {
+    "eeeoh": {
+      "logs": {
+        "datadog": {
+          "enabled": true,
+          "tier": "tin",
+        },
+      },
+    },
+    "level": 30,
+    "msg": "eeeoh cherry-picked despite mixin merge strategy",
+    "service": "deployment-service-name",
+  },
+]
+`);
+  });
+
   test('existing mixin', () => {
     const logger = createLogger(
       {
