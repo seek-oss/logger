@@ -120,20 +120,13 @@ export default <CustomLevels extends string = never>(
 ): Logger<CustomLevels> => {
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
 
-  const originalMergeStrategy = opts.mixinMergeStrategy;
-
-  opts.mixin = createHooks({ eeeoh, mixin: opts.mixin });
-
-  opts.mixinMergeStrategy = (mergeObject, mixinObject) => {
-    const retain = 'eeeoh' in mixinObject ? { eeeoh: mixinObject.eeeoh } : {};
-
-    const merged =
-      originalMergeStrategy?.(mergeObject, mixinObject) ??
-      Object.assign(mixinObject, mergeObject);
-
-    // TODO: should we mutate for performance or shallow clone for safety?
-    return { ...merged, ...retain };
-  };
+  const { mixin, mixinMergeStrategy } = createHooks({
+    eeeoh,
+    mixin: opts.mixin,
+    mixinMergeStrategy: opts.mixinMergeStrategy,
+  });
+  opts.mixin = mixin;
+  opts.mixinMergeStrategy = mixinMergeStrategy;
 
   const serializers = createSerializers(opts);
 

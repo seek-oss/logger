@@ -132,8 +132,8 @@ const getTierForLevel = (
 
 export const createEeeohHooks = <CustomLevels extends string>(
   opts: Pick<EeeohOptions<CustomLevels>, 'eeeoh'> &
-    Pick<pino.LoggerOptions<CustomLevels>, 'mixin'>,
-) => {
+    Pick<pino.LoggerOptions<CustomLevels>, 'mixin' | 'mixinMergeStrategy'>,
+): Pick<pino.LoggerOptions<CustomLevels>, 'mixin' | 'mixinMergeStrategy'> => {
   const levelToTierCache = new WeakMap<
     pino.Logger<CustomLevels>,
     LevelToTier
@@ -220,18 +220,27 @@ export const createEeeohHooks = <CustomLevels extends string>(
     return levelToTier(level);
   };
 
-  return (
-    mergeObject: object,
-    level: number,
-    logger: pino.Logger<CustomLevels>,
-  ): object => {
-    const tier = getTier(mergeObject, level, logger);
+  return {
+    mixin: (mergeObject, level, logger) => {
+      const tier = getTier(mergeObject, level, logger);
 
-    return {
-      ...opts.mixin?.(mergeObject, level, logger),
+      return {
+        ...opts.mixin?.(mergeObject, level, logger),
 
-      // Take precedence over the user-provided `mixin` for the `eeeoh` property
-      ...formatOutput(tier),
-    };
+        // Take precedence over the user-provided `mixin` for the `eeeoh` property
+        ...formatOutput(tier),
+      };
+    },
+
+    mixinMergeStrategy: (mergeObject, mixinObject) => {
+      const retain = 'eeeoh' in mixinObject ? { eeeoh: mixinObject.eeeoh } : {};
+
+      const merged =
+        opts.mixinMergeStrategy?.(mergeObject, mixinObject) ??
+        Object.assign(mixinObject, mergeObject);
+
+      // TODO: should we mutate for performance or shallow clone for safety?
+      return { ...merged, ...retain };
+    },
   };
 };
