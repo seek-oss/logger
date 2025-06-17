@@ -76,8 +76,7 @@ export type Logger<CustomLevels extends string = never> = Omit<
     bindings: HookFields & pino.Bindings,
     options?: pino.ChildLoggerOptions<ChildCustomLevels>,
   ) => Logger<CustomLevels | ChildCustomLevels>;
-} & Record<CustomLevels, LogFn> &
-  LoggerExtras<CustomLevels>;
+} & Record<CustomLevels, LogFn>;
 
 /**
  * Creates a logger that can enforce a strict logged object shape.
