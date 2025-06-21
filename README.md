@@ -262,7 +262,7 @@ The captured context will be automatically included in all log entries during th
 You can customize what context information gets captured by providing a `requestMixin` function:
 
 ```typescript
-const captureContext = createLambdaContextTracker({
+const withRequest = createLambdaContextTracker({
   requestMixin: (event, context) => ({
     requestId: context.awsRequestId,
     functionName: context.functionName,
