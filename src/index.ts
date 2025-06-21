@@ -7,6 +7,12 @@ import { type FormatterOptions, createFormatters } from './formatters';
 import * as redact from './redact';
 import { type SerializerOptions, createSerializers } from './serializers';
 
+export {
+  createLambdaContextTracker,
+  type LambdaContextTrackerOptions,
+} from './lambda/request';
+export { lambdaContextStorageProvider } from './lambda/context';
+
 export { createDestination } from './destination/create';
 export { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
 
