@@ -1,9 +1,15 @@
-import pino, { type LoggerExtras } from 'pino';
+import pino from 'pino';
 
 import base from './base';
 import { createDestination } from './destination/create';
 import { withRedaction } from './destination/redact';
 import { type FormatterOptions, createFormatters } from './formatters';
+import {
+  type HookBindings,
+  type HookFields,
+  type HookOptions,
+  createHooks,
+} from './hooks/create';
 import * as redact from './redact';
 import { type SerializerOptions, createSerializers } from './serializers';
 
@@ -13,7 +19,10 @@ export { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
 export { pino };
 
 export type LoggerOptions<CustomLevels extends string = never> =
-  pino.LoggerOptions<CustomLevels> & FormatterOptions & SerializerOptions;
+  pino.LoggerOptions<CustomLevels> &
+    HookOptions<CustomLevels> &
+    FormatterOptions &
+    SerializerOptions;
 
 type PlaceholderSpecifier = 'd' | 's' | 'j' | 'o' | 'O';
 type PlaceholderTypeMapping<T extends PlaceholderSpecifier> = T extends 'd'
@@ -37,7 +46,7 @@ type ParseLogFnArgs<
 // FIXME: Remove if pinojs/pino#2230 lands in a release.
 interface LogFn {
   <T, TMsg extends string = string>(
-    obj: T,
+    obj: HookFields & T,
     msg?: T extends string ? never : TMsg,
     ...args: ParseLogFnArgs<TMsg> | []
   ): void;
@@ -68,12 +77,36 @@ export type Logger<CustomLevels extends string = never> = Omit<
   debug: LogFn;
   trace: LogFn;
   silent: LogFn;
-  child: <ChildCustomLevels extends string = never>(
-    bindings: pino.Bindings,
-    options?: pino.ChildLoggerOptions<ChildCustomLevels>,
-  ) => Logger<CustomLevels | ChildCustomLevels>;
-} & Record<CustomLevels, LogFn> &
-  LoggerExtras<CustomLevels>;
+
+  child<ChildCustomLevels extends never = never>(
+    bindings: HookBindings<CustomLevels> & pino.Bindings,
+    options?: undefined,
+  ): Logger<CustomLevels | ChildCustomLevels>;
+
+  child<ChildCustomLevels extends string = never>(
+    bindings: HookBindings<CustomLevels> & pino.Bindings,
+    options: Omit<pino.ChildLoggerOptions<ChildCustomLevels>, 'customLevels'>,
+  ): Logger<CustomLevels | ChildCustomLevels>;
+
+  /**
+   * As of `pino@9.6.0`, a child that specifies `customLevels` can still access
+   * methods corresponding to the custom levels of the parent logger, but they
+   * will output malformed JSON:
+   *
+   * ```json
+   * undefined,"timestamp":"2000-01-01T00:00:00.000Z","msg":"huh?"}
+   * ```
+   *
+   * We hide those "parent" methods on the child to avoid this issue.
+   */
+  child<ChildCustomLevels extends string = never>(
+    bindings: Required<HookBindings<ChildCustomLevels>> & pino.Bindings,
+    options: Omit<
+      pino.ChildLoggerOptions<ChildCustomLevels>,
+      'customLevels'
+    > & { customLevels: Record<ChildCustomLevels, number> },
+  ): Logger<ChildCustomLevels>;
+} & Record<CustomLevels, LogFn>;
 
 /**
  * Creates a logger that can enforce a strict logged object shape.
@@ -81,11 +114,19 @@ export type Logger<CustomLevels extends string = never> = Omit<
  * @param destination - Destination stream. Default: `pino.destination({ sync: true })`.
  */
 export default <CustomLevels extends string = never>(
-  opts: LoggerOptions<CustomLevels> = {},
+  { eeeoh, service, ...opts }: LoggerOptions<CustomLevels> = {},
   destination: pino.DestinationStream = createDestination({ mock: false })
     .destination,
 ): Logger<CustomLevels> => {
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
+
+  const { mixin, mixinMergeStrategy } = createHooks({
+    eeeoh,
+    mixin: opts.mixin,
+    mixinMergeStrategy: opts.mixinMergeStrategy,
+  });
+  opts.mixin = mixin;
+  opts.mixinMergeStrategy = mixinMergeStrategy;
 
   const serializers = createSerializers(opts);
 
@@ -94,6 +135,7 @@ export default <CustomLevels extends string = never>(
   const formatters = createFormatters({ ...opts, serializers });
   opts.base = {
     ...base,
+    service,
     ...opts.base,
   };
   opts.formatters = {
