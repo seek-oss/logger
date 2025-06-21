@@ -2,10 +2,10 @@ import { type ContextMap, lambdaContextStorageProvider } from './context';
 
 export interface LambdaContext {
   awsRequestId: string;
-  [key: string]: unknown;
 }
 
-export type LambdaEvent = Record<string, unknown>;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface LambdaEvent {}
 
 export interface LambdaContextTrackerOptions<
   TEvent extends LambdaEvent = LambdaEvent,
