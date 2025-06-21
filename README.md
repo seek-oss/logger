@@ -216,6 +216,77 @@ const logger = createLogger({
 });
 ```
 
+### Lambda Context
+
+**@seek/logger** provides built-in support for capturing and including AWS Lambda context in your logs, ensuring consistent tracing and correlation across your serverless functions. Please note: this only works in AWS Lambda environments.
+
+#### Basic Setup
+
+To capture Lambda context in your logs:
+
+```typescript
+import createLogger, {
+  createLambdaContextTracker,
+  lambdaContextStorageProvider,
+} from '@seek/logger';
+
+// Create a context capture function
+const withRequest = createLambdaContextTracker();
+
+// Configure logger to include the context in all logs
+const logger = createLogger({
+  name: 'my-lambda-service',
+  mixin: () => ({
+    ...lambdaContextStorageProvider.getContext(),
+  }),
+});
+
+// Lambda handler with automated context capture
+export const handler = async (event, context) => {
+  // Capture the Lambda context at the start of each invocation
+  withRequest(event, context);
+
+  // All logs will now automatically include the Lambda context
+  logger.info({ event }, 'Lambda function invoked');
+
+  // Process your Lambda function...
+
+  logger.debug('Lambda execution completed');
+};
+```
+
+The captured context will be automatically included in all log entries during the Lambda invocation.
+
+#### Custom Context Fields
+
+You can customize what context information gets captured by providing a `requestMixin` function:
+
+```typescript
+const captureContext = createLambdaContextTracker({
+  requestMixin: (event, context) => ({
+    requestId: context.awsRequestId,
+    functionName: context.functionName,
+    eventSource: event.source,
+  }),
+});
+```
+
+This allows you to extract, transform, and include any relevant fields from both the Lambda event and context objects in your logs.
+
+#### Advanced Context Management
+
+For more complex usecases, you can update the context at any point during the Lambda invocation:
+
+```typescript
+import { lambdaContextStorageProvider } from '@seek/logger';
+
+lambdaContextStorageProvider.updateContext({
+  messageId: '12345
+});
+```
+
+This approach is particularly useful for tracking state changes within a single Lambda invocation or when processing batched events where context needs to be updated between each item.
+
 ### Testing
 
 See [docs/testing.md](docs/testing.md).
