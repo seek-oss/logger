@@ -28,10 +28,6 @@ export const handler = async (event, context) => {
 
   // All logs will now automatically include the Lambda context
   logger.info({ event }, 'Lambda function invoked');
-
-  // Process your Lambda function...
-
-  logger.debug('Lambda execution completed');
 };
 ```
 
