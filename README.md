@@ -230,10 +230,8 @@ import createLogger, {
   lambdaContextStorage,
 } from '@seek/logger';
 
-// Create a context capture function
 const captureContext = createLambdaContextCapture();
 
-// Configure logger to include the context in all logs
 const logger = createLogger({
   name: 'my-lambda-service',
   mixin: () => ({
@@ -241,12 +239,9 @@ const logger = createLogger({
   }),
 });
 
-// Lambda handler with automated context capture
 export const handler = async (event, context) => {
-  // Capture the Lambda context at the start of each invocation
   captureContext(event, context);
 
-  // All logs will now automatically include the Lambda context
   logger.info({ event }, 'Lambda function invoked');
   // { "awsRequestId": "12345", "message": "Lambda function invoked" }
 };
@@ -276,7 +271,6 @@ For more complex use-cases, you can update the context at any point during the L
 ```typescript
 import { lambdaContextStorage } from '@seek/logger';
 
-// Add or update specific context fields
 lambdaContextStorage.updateContext({
   'x-correlation-id': '12345',
 });
@@ -295,10 +289,8 @@ interface MessageContext {
 }
 const asyncLocalStorage = new AsyncLocalStorage<MessageContext>();
 
-// Create a context capture function
 const captureContext = createLambdaContextCapture();
 
-// Configure logger to include the context in all logs
 const logger = createLogger({
   name: 'my-lambda-service',
   mixin: () => ({
@@ -308,19 +300,19 @@ const logger = createLogger({
 });
 
 const handler = async (event, context) => {
-  // Capture the Lambda context at the start of each invocation
   captureContext(event, context);
 
   logger.info('Lambda function invoked');
   // { "awsRequestId": "12345", "message": "Lambda function invoked" }
 
-  for (const record of event.Records) {
-    // Store message-specific context in AsyncLocalStorage
-    asyncLocalStorage.run({ sqsMessageId: record.messageId }, () => {
-      logger.info('Processing SQS message');
-      // { "awsRequestId": "12345", "sqsMessageId": "6789", "message": "Processing SQS message" }
-    });
-  }
+  await Promise.all(
+    event.Records.map(async (record) => {
+      await asyncLocalStorage.run({ sqsMessageId: record.messageId }, () => {
+        logger.info('Processing SQS message');
+        // { "awsRequestId": "12345", "sqsMessageId": "6789", "message": "Processing SQS message" }
+      });
+    }),
+  );
 };
 ```
 
