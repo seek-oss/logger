@@ -1,4 +1,4 @@
-import { type ContextMap, lambdaContextStorageProvider } from './context';
+import { type ContextMap, lambdaContextStorage } from './context';
 
 export interface LambdaContext {
   awsRequestId: string;
@@ -7,7 +7,7 @@ export interface LambdaContext {
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface LambdaEvent {}
 
-export interface LambdaContextTrackerOptions<
+export interface LambdaContextOptions<
   TEvent extends LambdaEvent = LambdaEvent,
   TContext extends LambdaContext = LambdaContext,
 > {
@@ -22,12 +22,12 @@ export interface LambdaContextTrackerOptions<
  * Creates a function for capturing Lambda request context across logging calls
  * @param options The request options
  */
-export const createLambdaContextTracker =
+export const createLambdaContextCapture =
   <
     TEvent extends LambdaEvent = LambdaEvent,
     TContext extends LambdaContext = LambdaContext,
   >(
-    options: LambdaContextTrackerOptions<TEvent, TContext> = {},
+    options: LambdaContextOptions<TEvent, TContext> = {},
   ) =>
   (event: TEvent, context: TContext): void => {
     const ctx: ContextMap = {
@@ -40,5 +40,5 @@ export const createLambdaContextTracker =
       Object.assign(ctx, result);
     }
 
-    lambdaContextStorageProvider.setContext(ctx);
+    lambdaContextStorage.setContext(ctx);
   };

@@ -6,12 +6,12 @@ Add support for capturing Lambda context in logs. This allows for consistent tra
 
 ```typescript
 import createLogger, {
-  createLambdaContextTracker,
+  createLambdaContextCaptureTracker,
   lambdaContextStorageProvider,
 } from '@seek/logger';
 
 // Create a context capture function
-const withRequest = createLambdaContextTracker();
+const withRequest = createLambdaContextCaptureTracker();
 
 // Configure logger to include the context in all logs
 const logger = createLogger({

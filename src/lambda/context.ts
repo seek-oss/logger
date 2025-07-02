@@ -9,18 +9,18 @@ export interface ContextMap {
   [key: string]: unknown;
 }
 
-export interface ContextStorageProvider {
+export interface ContextStorage {
   getContext: () => ContextMap;
   setContext: (map: ContextMap) => void;
   updateContext: (values: Record<string, unknown>) => void;
 }
 
-export const lambdaContextStorageProvider: ContextStorageProvider = {
+export const lambdaContextStorage: ContextStorage = {
   getContext: () => (global as unknown as GlobalContext)[CONTEXT_SYMBOL],
   setContext: (map: ContextMap) =>
     ((global as unknown as GlobalContext)[CONTEXT_SYMBOL] = map),
   updateContext: (values: Record<string, unknown>) => {
-    const ctx = lambdaContextStorageProvider.getContext();
+    const ctx = lambdaContextStorage.getContext();
     (global as unknown as GlobalContext)[CONTEXT_SYMBOL] = {
       ...ctx,
       ...values,

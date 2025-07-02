@@ -1,21 +1,21 @@
-import { lambdaContextStorageProvider } from './context';
+import { lambdaContextStorage } from './context';
 
 describe('lambdaContextStorageProvider', () => {
   it('should set and get context', () => {
     const context = { awsRequestId: 'test-123', customKey: 'value' };
-    lambdaContextStorageProvider.setContext(context);
-    const retrievedContext = lambdaContextStorageProvider.getContext();
+    lambdaContextStorage.setContext(context);
+    const retrievedContext = lambdaContextStorage.getContext();
     expect(retrievedContext).toEqual(context);
   });
 
   it('should update context', () => {
     const initialContext = { awsRequestId: 'test-123', customKey: 'value' };
-    lambdaContextStorageProvider.setContext(initialContext);
+    lambdaContextStorage.setContext(initialContext);
 
     const updateValues = { customKey: 'newValue', anotherKey: 'anotherValue' };
-    lambdaContextStorageProvider.updateContext(updateValues);
+    lambdaContextStorage.updateContext(updateValues);
 
-    const updatedContext = lambdaContextStorageProvider.getContext();
+    const updatedContext = lambdaContextStorage.getContext();
     expect(updatedContext).toEqual({
       awsRequestId: 'test-123',
       customKey: 'newValue',

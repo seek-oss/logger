@@ -218,7 +218,7 @@ const logger = createLogger({
 
 ### Lambda Context
 
-**@seek/logger** provides built-in support for capturing and including AWS Lambda context in your logs, ensuring consistent tracing and correlation across your serverless functions. Please note: this only works in AWS Lambda environments.
+**@seek/logger** provides built-in support for capturing and including AWS Lambda context in your logs, ensuring consistent tracing and correlation across your serverless functions. By default, the `awsRequestId` is always captured. Please note: this only works in AWS Lambda environments.
 
 #### Basic Setup
 
@@ -226,28 +226,29 @@ To capture Lambda context in your logs:
 
 ```typescript
 import createLogger, {
-  createLambdaContextTracker,
-  lambdaContextStorageProvider,
+  createLambdaContextCapture,
+  lambdaContextStorage,
 } from '@seek/logger';
 
 // Create a context capture function
-const withRequest = createLambdaContextTracker();
+const captureContext = createLambdaContextCapture();
 
 // Configure logger to include the context in all logs
 const logger = createLogger({
   name: 'my-lambda-service',
   mixin: () => ({
-    ...lambdaContextStorageProvider.getContext(),
+    ...lambdaContextStorage.getContext(),
   }),
 });
 
 // Lambda handler with automated context capture
 export const handler = async (event, context) => {
   // Capture the Lambda context at the start of each invocation
-  withRequest(event, context);
+  captureContext(event, context);
 
   // All logs will now automatically include the Lambda context
   logger.info({ event }, 'Lambda function invoked');
+  // { "awsRequestId": "12345", "message": "Lambda function invoked" }
 };
 ```
 
@@ -258,9 +259,8 @@ The captured context will be automatically included in all log entries during th
 You can customize what context information gets captured by providing a `requestMixin` function:
 
 ```typescript
-const withRequest = createLambdaContextTracker({
+const captureContext = createLambdaContextCapture({
   requestMixin: (event, context) => ({
-    requestId: context.awsRequestId,
     functionName: context.functionName,
     eventSource: event.source,
   }),
@@ -269,19 +269,60 @@ const withRequest = createLambdaContextTracker({
 
 This allows you to extract, transform, and include any relevant fields from both the Lambda event and context objects in your logs.
 
-#### Advanced Context Management
+#### Updating Context
 
-For more complex usecases, you can update the context at any point during the Lambda invocation:
+For more complex use-cases, you can update the context at any point during the Lambda invocation:
 
 ```typescript
-import { lambdaContextStorageProvider } from '@seek/logger';
+import { lambdaContextStorage } from '@seek/logger';
 
-lambdaContextStorageProvider.updateContext({
-  messageId: '12345
+// Add or update specific context fields
+lambdaContextStorage.updateContext({
+  'x-correlation-id': '12345',
 });
 ```
 
-This approach is particularly useful for tracking state changes within a single Lambda invocation or when processing batched events where context needs to be updated between each item.
+#### Advanced Context Management
+
+For tracking batch processing lambdas, you can combine the lambda context tracking with AsyncLocalStorage to maintain context across multiple messages or asynchronous operations within the same Lambda invocation.
+
+```typescript
+import { lambdaContextStorage } from '@seek/logger';
+import { AsyncLocalStorage } from 'async_hooks';
+
+interface MessageContext {
+  sqsMessageId: string;
+}
+const asyncLocalStorage = new AsyncLocalStorage<MessageContext>();
+
+// Create a context capture function
+const captureContext = createLambdaContextCapture();
+
+// Configure logger to include the context in all logs
+const logger = createLogger({
+  name: 'my-lambda-service',
+  mixin: () => ({
+    ...lambdaContextStorage.getContext(),
+    ...asyncLocalStorage.getStore(),
+  }),
+});
+
+const handler = async (event, context) => {
+  // Capture the Lambda context at the start of each invocation
+  captureContext(event, context);
+
+  logger.info('Lambda function invoked');
+  // { "awsRequestId": "12345", "message": "Lambda function invoked" }
+
+  for (const record of event.Records) {
+    // Store message-specific context in AsyncLocalStorage
+    asyncLocalStorage.run({ sqsMessageId: record.messageId }, () => {
+      logger.info('Processing SQS message');
+      // { "awsRequestId": "12345", "sqsMessageId": "6789", "message": "Processing SQS message" }
+    });
+  }
+};
+```
 
 ### Testing
 

@@ -1,15 +1,15 @@
-import { lambdaContextStorageProvider } from './context';
-import { createLambdaContextTracker } from './request';
+import { lambdaContextStorage } from './context';
+import { createLambdaContextCapture } from './request';
 
-describe('createLambdaContextTracker', () => {
+describe('createLambdaContextCaptureTracker', () => {
   it('should set the context with awsRequestId', () => {
-    const withRequest = createLambdaContextTracker();
+    const captureContext = createLambdaContextCapture();
     const event = {};
     const context = { awsRequestId: '12345' };
 
-    withRequest(event, context);
+    captureContext(event, context);
 
-    const ctx = lambdaContextStorageProvider.getContext();
+    const ctx = lambdaContextStorage.getContext();
     expect(ctx).toEqual({ awsRequestId: '12345' });
   });
 
@@ -18,7 +18,7 @@ describe('createLambdaContextTracker', () => {
       key: string;
     };
 
-    const withRequest = createLambdaContextTracker<MyEvent>({
+    const captureContext = createLambdaContextCapture<MyEvent>({
       requestMixin: (event, context) => ({
         customEventKey: event.key,
         customContextKey: context.awsRequestId,
@@ -27,9 +27,9 @@ describe('createLambdaContextTracker', () => {
     const event = { key: 'value' };
     const context = { awsRequestId: '12345' };
 
-    withRequest(event, context);
+    captureContext(event, context);
 
-    const ctx = lambdaContextStorageProvider.getContext();
+    const ctx = lambdaContextStorage.getContext();
     expect(ctx).toEqual({
       awsRequestId: '12345',
       customEventKey: 'value',
