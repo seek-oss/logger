@@ -284,10 +284,10 @@ For tracking batch processing lambdas, you can combine the lambda context tracki
 import { lambdaContextStorage } from '@seek/logger';
 import { AsyncLocalStorage } from 'async_hooks';
 
-interface MessageContext {
+interface BatchRecordContext {
   sqsMessageId: string;
 }
-const asyncLocalStorage = new AsyncLocalStorage<MessageContext>();
+const asyncLocalStorage = new AsyncLocalStorage<BatchRecordContext>();
 
 const captureContext = createLambdaContextCapture();
 
