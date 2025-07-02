@@ -1,7 +1,7 @@
 import { lambdaContextStorage } from './context';
 import { createLambdaContextCapture } from './request';
 
-describe('createLambdaContextCaptureTracker', () => {
+describe('createLambdaContextCapture', () => {
   it('should set the context with awsRequestId', () => {
     const captureContext = createLambdaContextCapture();
     const event = {};

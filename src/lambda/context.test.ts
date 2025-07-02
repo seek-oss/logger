@@ -1,6 +1,6 @@
 import { lambdaContextStorage } from './context';
 
-describe('lambdaContextStorageProvider', () => {
+describe('lambdaContextStorage', () => {
   it('should set and get context', () => {
     const context = { awsRequestId: 'test-123', customKey: 'value' };
     lambdaContextStorage.setContext(context);
