@@ -216,6 +216,106 @@ const logger = createLogger({
 });
 ```
 
+### Lambda Context
+
+**@seek/logger** provides built-in support for capturing and including AWS Lambda context in your logs, ensuring consistent tracing and correlation across your serverless functions. By default, the `awsRequestId` is always captured. Please note: this only works in AWS Lambda environments.
+
+#### Basic Setup
+
+To capture Lambda context in your logs:
+
+```typescript
+import createLogger, {
+  createLambdaContextCapture,
+  lambdaContextStorage,
+} from '@seek/logger';
+
+const captureContext = createLambdaContextCapture();
+
+const logger = createLogger({
+  name: 'my-lambda-service',
+  mixin: () => ({
+    ...lambdaContextStorage.getContext(),
+  }),
+});
+
+export const handler = async (event, context) => {
+  captureContext(event, context);
+
+  logger.info({ event }, 'Lambda function invoked');
+  // { "awsRequestId": "12345", "message": "Lambda function invoked" }
+};
+```
+
+The captured context will be automatically included in all log entries during the Lambda invocation.
+
+#### Custom Context Fields
+
+You can customize what context information gets captured by providing a `requestMixin` function:
+
+```typescript
+const captureContext = createLambdaContextCapture({
+  requestMixin: (event, context) => ({
+    functionName: context.functionName,
+    eventSource: event.source,
+  }),
+});
+```
+
+This allows you to extract, transform, and include any relevant fields from both the Lambda event and context objects in your logs.
+
+#### Updating Context
+
+For more complex use-cases, you can update the context at any point during the Lambda invocation:
+
+```typescript
+import { lambdaContextStorage } from '@seek/logger';
+
+lambdaContextStorage.updateContext({
+  'x-correlation-id': '12345',
+});
+```
+
+#### Advanced Context Management
+
+For tracking batch processing lambdas, you can combine the lambda context tracking with AsyncLocalStorage to maintain context across multiple messages or asynchronous operations within the same Lambda invocation.
+
+```typescript
+import { lambdaContextStorage } from '@seek/logger';
+import { AsyncLocalStorage } from 'async_hooks';
+
+interface BatchRecordContext {
+  sqsMessageId: string;
+}
+const asyncLocalStorage = new AsyncLocalStorage<BatchRecordContext>();
+
+const captureContext = createLambdaContextCapture();
+
+const logger = createLogger({
+  name: 'my-lambda-service',
+  mixin: () => ({
+    ...lambdaContextStorage.getContext(),
+    ...asyncLocalStorage.getStore(),
+  }),
+});
+
+const handler = async (event, context) => {
+  captureContext(event, context);
+
+  logger.info('Lambda function invoked');
+  // { "awsRequestId": "12345", "message": "Lambda function invoked" }
+
+  await Promise.all(
+    event.Records.map(async (record) => {
+      await asyncLocalStorage.run({ sqsMessageId: record.messageId }, () => {
+        logger.info('Processing SQS message');
+        // { "awsRequestId": "12345", "sqsMessageId": "6789", "message": "Processing SQS message" }
+      });
+    }),
+  );
+};
+```
+
 ### Testing
 
 See [docs/testing.md](docs/testing.md).

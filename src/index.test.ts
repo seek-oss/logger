@@ -19,7 +19,13 @@ test('exports', () =>
     "x-envoy-upstream-service-time",
   ],
   "createDestination": [Function],
+  "createLambdaContextCapture": [Function],
   "default": [Function],
+  "lambdaContextStorage": {
+    "getContext": [Function],
+    "setContext": [Function],
+    "updateContext": [Function],
+  },
   "pino": [Function],
 }
 `));
