@@ -6,29 +6,30 @@ Add support for capturing Lambda context in logs. This allows for consistent tra
 
 ```typescript
 import createLogger, {
-  createLambdaContextCaptureTracker,
-  lambdaContextStorageProvider,
+  createLambdaContextCapture,
+  lambdaContextStorage,
 } from '@seek/logger';
 
 // Create a context capture function
-const withRequest = createLambdaContextCaptureTracker();
+const captureContext = createLambdaContextCapture();
 
 // Configure logger to include the context in all logs
 const logger = createLogger({
   name: 'my-lambda-service',
   mixin: () => ({
-    ...lambdaContextStorageProvider.getContext(),
+    ...lambdaContextStorage.getContext(),
   }),
 });
 
 // Lambda handler with automated context capture
 export const handler = async (event, context) => {
   // Capture the Lambda context at the start of each invocation
-  withRequest(event, context);
+  captureContext(event, context);
 
   // All logs will now automatically include the Lambda context
-  logger.info({ event }, 'Lambda function invoked');
+  logger.info('Lambda function invoked');
+  // { "awsRequestId": "12345", "message": "Lambda function invoked" }
 };
 ```
 
-Please check the [README] for more details.
+Please check the README for more details.
