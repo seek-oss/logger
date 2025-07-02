@@ -10,10 +10,8 @@ import createLogger, {
   lambdaContextStorage,
 } from '@seek/logger';
 
-// Create a context capture function
 const captureContext = createLambdaContextCapture();
 
-// Configure logger to include the context in all logs
 const logger = createLogger({
   name: 'my-lambda-service',
   mixin: () => ({
@@ -21,9 +19,7 @@ const logger = createLogger({
   }),
 });
 
-// Lambda handler with automated context capture
 export const handler = async (event, context) => {
-  // Capture the Lambda context at the start of each invocation
   captureContext(event, context);
 
   // All logs will now automatically include the Lambda context
