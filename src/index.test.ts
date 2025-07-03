@@ -1484,4 +1484,29 @@ describe('eeeoh', () => {
 ]
 `);
   });
+
+  test('eeeoh banned in the base options field', () => {
+    const logger = createLogger(
+      {
+        base: {
+          // @ts-expect-error - asserting type error
+          eeeoh: 'test',
+        },
+      },
+      destination,
+    );
+
+    // It still "works" if consumers choose to `@ts-ignore`
+    logger.info('still works');
+
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
+[
+  {
+    "eeeoh": "test",
+    "level": 30,
+    "msg": "still works",
+  },
+]
+`);
+  });
 });

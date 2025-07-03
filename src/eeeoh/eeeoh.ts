@@ -71,7 +71,11 @@ export type EeeohOptions<CustomLevels extends string> =
   | {
       eeeoh?: never;
 
-      base?: Record<string, unknown> | null;
+      base?: null | {
+        eeeoh?: never;
+
+        [key: string]: unknown;
+      };
     }
   | {
       eeeoh: EeeohConfig<CustomLevels>;
