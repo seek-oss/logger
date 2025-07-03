@@ -895,13 +895,19 @@ describe('eeeoh', () => {
     mock: true,
   });
 
+  const base = {
+    env: 'development',
+    service: 'deployment-service-name',
+    version: 'abcdef',
+  } satisfies Extract<LoggerOptions, { eeeoh: object }>['base'];
+
   afterEach(stdoutMock.clear);
 
   test('static root config', () => {
     const logger = createLogger(
       {
+        base,
         eeeoh: { datadog: 'tin' },
-        service: 'deployment-service-name',
       },
       destination,
     );
@@ -950,6 +956,8 @@ describe('eeeoh', () => {
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
 [
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -958,11 +966,14 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 30,
     "msg": "tin from root option",
     "service": "deployment-service-name",
   },
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -971,11 +982,14 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 30,
     "msg": "silver from inline object",
     "service": "deployment-service-name",
   },
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -984,11 +998,14 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 30,
     "msg": "silver from inline object over child bindings",
     "service": "deployment-service-name",
   },
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -996,11 +1013,14 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 30,
     "msg": "disabled from inline object",
     "service": "deployment-service-name",
   },
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1009,6 +1029,7 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 30,
     "msg": "silver from child bindings ",
     "service": "deployment-service-name",
@@ -1020,6 +1041,7 @@ describe('eeeoh', () => {
   test('level-based root config', () => {
     const logger = createLogger(
       {
+        base,
         eeeoh: {
           datadog: [
             'tin',
@@ -1030,7 +1052,6 @@ describe('eeeoh', () => {
           ],
         },
         level: 'debug',
-        service: 'deployment-service-name',
       },
       destination,
     );
@@ -1056,6 +1077,8 @@ describe('eeeoh', () => {
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
 [
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1064,11 +1087,14 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 20,
     "msg": "tin from default",
     "service": "deployment-service-name",
   },
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1077,11 +1103,14 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 30,
     "msg": "bronze from info level",
     "service": "deployment-service-name",
   },
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1090,11 +1119,14 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 40,
     "msg": "silver from warn level",
     "service": "deployment-service-name",
   },
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1103,11 +1135,14 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 50,
     "msg": "silver from warn level",
     "service": "deployment-service-name",
   },
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1116,11 +1151,14 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 50,
     "msg": "zero from inline override",
     "service": "deployment-service-name",
   },
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1129,6 +1167,7 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 20,
     "msg": "tin from default because invalid inline config is ignored",
     "service": "deployment-service-name",
@@ -1140,9 +1179,9 @@ describe('eeeoh', () => {
   test('existing mixin merge strategy', () => {
     const logger = createLogger(
       {
+        base,
         eeeoh: { datadog: 'tin' },
         mixinMergeStrategy: (mergeObject, _mixinObject) => mergeObject,
-        service: 'deployment-service-name',
       },
       destination,
     );
@@ -1152,6 +1191,8 @@ describe('eeeoh', () => {
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
 [
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1160,6 +1201,7 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 30,
     "msg": "eeeoh cherry-picked despite mixin merge strategy",
     "service": "deployment-service-name",
@@ -1171,6 +1213,7 @@ describe('eeeoh', () => {
   test('existing mixin', () => {
     const logger = createLogger(
       {
+        base,
         eeeoh: { datadog: false },
         mixin: (_, level) =>
           level === 50
@@ -1181,7 +1224,6 @@ describe('eeeoh', () => {
                 eeeoh: { datadog: 'zero' },
               }
             : {},
-        service: 'deployment-service-name',
       },
       destination,
     );
@@ -1193,6 +1235,8 @@ describe('eeeoh', () => {
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
 [
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1200,11 +1244,14 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 30,
     "msg": "retain for info",
     "service": "deployment-service-name",
   },
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1212,11 +1259,14 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 40,
     "msg": "retain for warn",
     "service": "deployment-service-name",
   },
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1224,6 +1274,7 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "extra": "key",
     "level": 50,
     "msg": "extra key for error",
@@ -1237,10 +1288,10 @@ describe('eeeoh', () => {
     {
       const logger = createLogger(
         {
+          base,
           eeeoh: {
             datadog: ['tin', { undefinedCustomLevel: 'bronze' }],
           },
-          service: 'deployment-service-name',
         },
         destination,
       );
@@ -1257,6 +1308,7 @@ describe('eeeoh', () => {
             asplode: 9001,
           },
 
+          base,
           eeeoh: {
             datadog: [
               'tin',
@@ -1269,7 +1321,6 @@ describe('eeeoh', () => {
               },
             ],
           },
-          service: 'deployment-service-name',
         },
         destination,
       );
@@ -1307,6 +1358,8 @@ describe('eeeoh', () => {
       expect(stdoutMock.calls).toMatchInlineSnapshot(`
 [
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1315,11 +1368,14 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 40,
     "msg": "silver from warn level",
     "service": "deployment-service-name",
   },
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1328,11 +1384,14 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 9001,
     "msg": "silver-plus from asplode level",
     "service": "deployment-service-name",
   },
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1341,6 +1400,7 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 9002,
     "msg": "zero from child binding",
     "service": "deployment-service-name",
@@ -1353,10 +1413,10 @@ describe('eeeoh', () => {
   test('invalid child binding', () => {
     const logger = createLogger(
       {
+        base,
         eeeoh: {
           datadog: 'tin',
         },
-        service: 'deployment-service-name',
       },
       destination,
     ).child({
@@ -1371,6 +1431,8 @@ describe('eeeoh', () => {
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
 [
   {
+    "ddsource": "nodejs",
+    "ddtags": "env:development,version:abcdef",
     "eeeoh": {
       "logs": {
         "datadog": {
@@ -1379,6 +1441,7 @@ describe('eeeoh', () => {
         },
       },
     },
+    "env": "development",
     "level": 30,
     "msg": "tin from root option",
     "service": "deployment-service-name",
@@ -1389,6 +1452,11 @@ describe('eeeoh', () => {
 
   test('enabled on child logger only', () => {
     const logger = createLogger(undefined, destination);
+
+    createLogger({
+      base,
+      eeeoh: { datadog: 'tin' },
+    });
 
     logger.info('no eeeoh');
 

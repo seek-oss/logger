@@ -13,10 +13,14 @@ To opt in:
 import createLogger from '@seek/logger';
 
 const logger = createLogger({
+  base: {
+    env: 'production',
+    service: 'my-deployment-service-name',
+    version: '123.abcdef',
+  },
   eeeoh: {
     datadog: 'zero',
   },
-  service: 'my-deployment-service-name',
 });
 ```
 
@@ -44,10 +48,14 @@ The logger internally transforms it to the expected output:
 import createLogger from '@seek/logger';
 
 const logger = createLogger({
+  base: {
+    env: 'production',
+    service: 'my-deployment-service-name',
+    version: '123.abcdef',
+  },
   eeeoh: {
     datadog: 'tin',
   },
-  service: 'my-deployment-service-name',
 });
 
 logger.info('A tin message');
@@ -61,6 +69,11 @@ logger.error('A tin message');
 import createLogger from '@seek/logger';
 
 const logger = createLogger({
+  base: {
+    env: 'production',
+    service: 'my-deployment-service-name',
+    version: '123.abcdef',
+  },
   eeeoh: {
     datadog: [
       // Default
@@ -72,7 +85,6 @@ const logger = createLogger({
       },
     ],
   },
-  service: 'my-deployment-service-name',
 });
 
 logger.info('A tin message');
@@ -86,10 +98,14 @@ logger.error('A silver message');
 import createLogger from '@seek/logger';
 
 const logger = createLogger({
+  base: {
+    env: 'production',
+    service: 'my-deployment-service-name',
+    version: '123.abcdef',
+  },
   eeeoh: {
     datadog: 'tin',
   },
-  service: 'my-deployment-service-name',
 });
 
 logger.info({ eeeoh: { datadog: 'silver' } }, 'A silver message');

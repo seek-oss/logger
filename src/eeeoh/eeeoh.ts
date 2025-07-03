@@ -9,6 +9,8 @@ import {
   tuple,
 } from 'pure-parse';
 
+import { ddtags } from './ddtags';
+
 const parseDatadogTier = oneOf(
   equals('zero'),
   equals('tin'),
@@ -53,6 +55,13 @@ export type EeeohBindings<CustomLevels extends string> = {
 };
 
 export type EeeohFields = {
+  env?: never;
+  service?: never;
+  version?: never;
+
+  ddsource?: never;
+  ddtags?: never;
+
   eeeoh?: {
     datadog: DatadogTier | false;
   };
@@ -61,11 +70,24 @@ export type EeeohFields = {
 export type EeeohOptions<CustomLevels extends string> =
   | {
       eeeoh?: never;
-      service?: never;
+
+      base?: Record<string, unknown> | null;
     }
   | {
       eeeoh: EeeohConfig<CustomLevels>;
-      service: string;
+
+      base: {
+        env: 'development' | 'production' | 'sandbox' | 'test';
+        service: string;
+        version: string;
+
+        ddsource?: never;
+        ddtags?: never;
+
+        eeeoh?: never;
+
+        [key: string]: unknown;
+      };
 
       /**
        * You cannot customise level comparison if you opt in to eeeoh.
@@ -130,10 +152,13 @@ const getTierForLevel = (
   return defaultTier;
 };
 
-export const createEeeohHooks = <CustomLevels extends string>(
-  opts: Pick<EeeohOptions<CustomLevels>, 'eeeoh'> &
+export const createEeeohOptions = <CustomLevels extends string>(
+  opts: EeeohOptions<CustomLevels> &
     Pick<pino.LoggerOptions<CustomLevels>, 'mixin' | 'mixinMergeStrategy'>,
-): Pick<pino.LoggerOptions<CustomLevels>, 'mixin' | 'mixinMergeStrategy'> => {
+): Pick<
+  pino.LoggerOptions<CustomLevels>,
+  'base' | 'mixin' | 'mixinMergeStrategy'
+> => {
   const levelToTierCache = new WeakMap<
     pino.Logger<CustomLevels>,
     LevelToTier
@@ -220,12 +245,24 @@ export const createEeeohHooks = <CustomLevels extends string>(
     return levelToTier(level);
   };
 
+  const original = {
+    mixinMergeStrategy: opts.mixinMergeStrategy,
+    mixin: opts.mixin,
+  };
+
   return {
+    base: opts.eeeoh
+      ? {
+          ddsource: 'nodejs',
+          ddtags: ddtags({ env: opts.base.env, version: opts.base.version }),
+        }
+      : {},
+
     mixin: (mergeObject, level, logger) => {
       const tier = getTier(mergeObject, level, logger);
 
       return {
-        ...opts.mixin?.(mergeObject, level, logger),
+        ...original.mixin?.(mergeObject, level, logger),
 
         // Take precedence over the user-provided `mixin` for the `eeeoh` property
         ...formatOutput(tier),
@@ -236,7 +273,7 @@ export const createEeeohHooks = <CustomLevels extends string>(
       const retain = 'eeeoh' in mixinObject ? { eeeoh: mixinObject.eeeoh } : {};
 
       const merged =
-        opts.mixinMergeStrategy?.(mergeObject, mixinObject) ??
+        original.mixinMergeStrategy?.(mergeObject, mixinObject) ??
         Object.assign(mixinObject, mergeObject);
 
       // TODO: should we mutate for performance or shallow clone for safety?

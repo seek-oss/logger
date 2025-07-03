@@ -3,13 +3,13 @@ import pino from 'pino';
 import base from './base';
 import { createDestination } from './destination/create';
 import { withRedaction } from './destination/redact';
-import { type FormatterOptions, createFormatters } from './formatters';
 import {
-  type HookBindings,
-  type HookFields,
-  type HookOptions,
-  createHooks,
-} from './hooks/create';
+  type EeeohBindings,
+  type EeeohFields,
+  type EeeohOptions,
+  createEeeohOptions,
+} from './eeeoh/eeeoh';
+import { type FormatterOptions, createFormatters } from './formatters';
 import * as redact from './redact';
 import { type SerializerOptions, createSerializers } from './serializers';
 
@@ -18,11 +18,13 @@ export { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
 
 export { pino };
 
-export type LoggerOptions<CustomLevels extends string = never> =
-  pino.LoggerOptions<CustomLevels> &
-    HookOptions<CustomLevels> &
-    FormatterOptions &
-    SerializerOptions;
+export type LoggerOptions<CustomLevels extends string = never> = Exclude<
+  pino.LoggerOptions<CustomLevels>,
+  'base'
+> &
+  EeeohOptions<CustomLevels> &
+  FormatterOptions &
+  SerializerOptions;
 
 type PlaceholderSpecifier = 'd' | 's' | 'j' | 'o' | 'O';
 type PlaceholderTypeMapping<T extends PlaceholderSpecifier> = T extends 'd'
@@ -46,7 +48,7 @@ type ParseLogFnArgs<
 // FIXME: Remove if pinojs/pino#2230 lands in a release.
 interface LogFn {
   <T, TMsg extends string = string>(
-    obj: HookFields & T,
+    obj: EeeohFields & T,
     msg?: T extends string ? never : TMsg,
     ...args: ParseLogFnArgs<TMsg> | []
   ): void;
@@ -79,12 +81,12 @@ export type Logger<CustomLevels extends string = never> = Omit<
   silent: LogFn;
 
   child<ChildCustomLevels extends never = never>(
-    bindings: HookBindings<CustomLevels> & pino.Bindings,
+    bindings: EeeohBindings<CustomLevels> & pino.Bindings,
     options?: undefined,
   ): Logger<CustomLevels | ChildCustomLevels>;
 
   child<ChildCustomLevels extends string = never>(
-    bindings: HookBindings<CustomLevels> & pino.Bindings,
+    bindings: EeeohBindings<CustomLevels> & pino.Bindings,
     options: Omit<pino.ChildLoggerOptions<ChildCustomLevels>, 'customLevels'>,
   ): Logger<CustomLevels | ChildCustomLevels>;
 
@@ -100,7 +102,7 @@ export type Logger<CustomLevels extends string = never> = Omit<
    * We hide those "parent" methods on the child to avoid this issue.
    */
   child<ChildCustomLevels extends string = never>(
-    bindings: Required<HookBindings<ChildCustomLevels>> & pino.Bindings,
+    bindings: Required<EeeohBindings<ChildCustomLevels>> & pino.Bindings,
     options: Omit<
       pino.ChildLoggerOptions<ChildCustomLevels>,
       'customLevels'
@@ -114,19 +116,15 @@ export type Logger<CustomLevels extends string = never> = Omit<
  * @param destination - Destination stream. Default: `pino.destination({ sync: true })`.
  */
 export default <CustomLevels extends string = never>(
-  { eeeoh, service, ...opts }: LoggerOptions<CustomLevels> = {},
+  opts: LoggerOptions<CustomLevels> = {},
   destination: pino.DestinationStream = createDestination({ mock: false })
     .destination,
 ): Logger<CustomLevels> => {
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
 
-  const { mixin, mixinMergeStrategy } = createHooks({
-    eeeoh,
-    mixin: opts.mixin,
-    mixinMergeStrategy: opts.mixinMergeStrategy,
-  });
-  opts.mixin = mixin;
-  opts.mixinMergeStrategy = mixinMergeStrategy;
+  const eeeoh = createEeeohOptions(opts);
+  opts.mixin = eeeoh.mixin;
+  opts.mixinMergeStrategy = eeeoh.mixinMergeStrategy;
 
   const serializers = createSerializers(opts);
 
@@ -135,7 +133,7 @@ export default <CustomLevels extends string = never>(
   const formatters = createFormatters({ ...opts, serializers });
   opts.base = {
     ...base,
-    service,
+    ...eeeoh.base,
     ...opts.base,
   };
   opts.formatters = {
