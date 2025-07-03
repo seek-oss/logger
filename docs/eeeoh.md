@@ -3,7 +3,7 @@
 eeeoh is SEEK's proprietary logging solution.
 
 SEEKers can visit [Backstage](https://backstage.myseek.xyz/docs/default/system/eeeoh) for more information.
-These features are not relevant to applications that run outside of SEEK's standard workload hosting environments.
+These optional features are not relevant to applications that run outside of SEEK's standard workload hosting environments.
 
 ## Getting started
 

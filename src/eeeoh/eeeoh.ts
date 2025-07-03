@@ -276,7 +276,8 @@ export const createEeeohOptions = <CustomLevels extends string>(
         original.mixinMergeStrategy?.(mergeObject, mixinObject) ??
         Object.assign(mixinObject, mergeObject);
 
-      // TODO: should we mutate for performance or shallow clone for safety?
+      // Mutation would be faster, but it's unlikely to matter too much.
+      // Use a shallow clone for safety.
       return { ...merged, ...retain };
     },
   };
