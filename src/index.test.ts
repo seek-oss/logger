@@ -18,6 +18,14 @@ test('exports', () =>
     "x-envoy-peer-metadata-id",
     "x-envoy-upstream-service-time",
   ],
+  "Eeeoh": {
+    "envs": [
+      "development",
+      "production",
+      "sandbox",
+      "test",
+    ],
+  },
   "createDestination": [Function],
   "default": [Function],
   "pino": [Function],

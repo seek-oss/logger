@@ -11,6 +11,10 @@ import {
 
 import { ddtags } from './ddtags';
 
+export const envs = ['development', 'production', 'sandbox', 'test'] as const;
+
+export type Env = (typeof envs)[number];
+
 const parseDatadogTier = oneOf(
   equals('zero'),
   equals('tin'),
@@ -24,7 +28,7 @@ const parseDatadogTier = oneOf(
   equals('silver-plus-plus'),
 );
 
-type DatadogTier = Infer<typeof parseDatadogTier>;
+export type DatadogTier = Infer<typeof parseDatadogTier>;
 
 type LevelToTier = (level: number) => DatadogTier | false | null;
 
@@ -35,22 +39,22 @@ const parseTierByLevelMap = dictionary<string, DatadogTier>(
 
 const parseDatadogTierByLevel = tuple([parseDatadogTier, parseTierByLevelMap]);
 
-const parseEeeohConfig = objectCompiled<EeeohConfig<string>>({
+const parseEeeohConfig = objectCompiled<Config<string>>({
   datadog: oneOf(parseDatadogTier, parseDatadogTierByLevel, equals(false)),
 });
 
-const parseEeeohField = objectCompiled<NonNullable<EeeohFields['eeeoh']>>({
+const parseEeeohField = objectCompiled<NonNullable<Fields['eeeoh']>>({
   datadog: oneOf(parseDatadogTier, equals(false)),
 });
 
-export type EeeohConfig<CustomLevels extends string> = {
+export type Config<CustomLevels extends string> = {
   datadog:
     | DatadogTier
     | [DatadogTier, Partial<Record<CustomLevels | pino.Level, DatadogTier>>]
     | false;
 };
 
-export type EeeohBindings<CustomLevels extends string> = {
+export type Bindings<CustomLevels extends string> = {
   /**
    * @deprecated Set `env` upfront in the top-level `base` logger option.
    *
@@ -89,10 +93,10 @@ export type EeeohBindings<CustomLevels extends string> = {
    */
   ddtags?: never;
 
-  eeeoh?: EeeohConfig<CustomLevels>;
+  eeeoh?: Config<CustomLevels>;
 };
 
-export type EeeohFields = {
+export type Fields = {
   /**
    * @deprecated Set `env` upfront in the top-level `base` logger option.
    *
@@ -143,7 +147,7 @@ export type EeeohFields = {
   };
 };
 
-export type EeeohOptions<CustomLevels extends string> =
+export type Options<CustomLevels extends string> =
   | {
       eeeoh?: never;
 
@@ -157,10 +161,10 @@ export type EeeohOptions<CustomLevels extends string> =
       };
     }
   | {
-      eeeoh: EeeohConfig<CustomLevels>;
+      eeeoh: Config<CustomLevels>;
 
       base: {
-        env: 'development' | 'production' | 'sandbox' | 'test';
+        env: Env;
         service: string;
         version: string;
 
@@ -248,7 +252,7 @@ const formatOutput = (tier: DatadogTier | false | null) =>
 
 const getConfigForLogger = <CustomLevels extends string>(
   logger: pino.Logger<CustomLevels>,
-): EeeohConfig<CustomLevels> | null => {
+): Config<CustomLevels> | null => {
   const eeeoh: unknown = logger.bindings().eeeoh;
   if (!eeeoh) {
     // Skip parsing if the `eeeoh` property is not present
@@ -277,8 +281,8 @@ const getTierForLevel = (
   return defaultTier;
 };
 
-export const createEeeohOptions = <CustomLevels extends string>(
-  opts: EeeohOptions<CustomLevels> &
+export const createOptions = <CustomLevels extends string>(
+  opts: Options<CustomLevels> &
     Pick<pino.LoggerOptions<CustomLevels>, 'mixin' | 'mixinMergeStrategy'>,
 ): Pick<
   pino.LoggerOptions<CustomLevels>,

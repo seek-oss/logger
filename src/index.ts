@@ -3,17 +3,13 @@ import pino from 'pino';
 import base from './base';
 import { createDestination } from './destination/create';
 import { withRedaction } from './destination/redact';
-import {
-  type EeeohBindings,
-  type EeeohFields,
-  type EeeohOptions,
-  createEeeohOptions,
-} from './eeeoh/eeeoh';
+import * as Eeeoh from './eeeoh/eeeoh';
 import { type FormatterOptions, createFormatters } from './formatters';
 import * as redact from './redact';
 import { type SerializerOptions, createSerializers } from './serializers';
 
 export { createDestination } from './destination/create';
+export * as Eeeoh from './eeeoh/exports';
 export { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
 
 export { pino };
@@ -22,7 +18,7 @@ export type LoggerOptions<CustomLevels extends string = never> = Exclude<
   pino.LoggerOptions<CustomLevels>,
   'base'
 > &
-  EeeohOptions<CustomLevels> &
+  Eeeoh.Options<CustomLevels> &
   FormatterOptions &
   SerializerOptions;
 
@@ -48,7 +44,7 @@ type ParseLogFnArgs<
 // FIXME: Remove if pinojs/pino#2230 lands in a release.
 interface LogFn {
   <T, TMsg extends string = string>(
-    obj: T extends object ? EeeohFields & T : T,
+    obj: T extends object ? Eeeoh.Fields & T : T,
     msg?: T extends string ? never : TMsg,
     ...args: ParseLogFnArgs<TMsg> | []
   ): void;
@@ -81,12 +77,12 @@ export type Logger<CustomLevels extends string = never> = Omit<
   silent: LogFn;
 
   child<ChildCustomLevels extends never = never>(
-    bindings: EeeohBindings<CustomLevels> & pino.Bindings,
+    bindings: Eeeoh.Bindings<CustomLevels> & pino.Bindings,
     options?: undefined,
   ): Logger<CustomLevels | ChildCustomLevels>;
 
   child<ChildCustomLevels extends string = never>(
-    bindings: EeeohBindings<CustomLevels> & pino.Bindings,
+    bindings: Eeeoh.Bindings<CustomLevels> & pino.Bindings,
     options: Omit<pino.ChildLoggerOptions<ChildCustomLevels>, 'customLevels'>,
   ): Logger<CustomLevels | ChildCustomLevels>;
 
@@ -102,7 +98,7 @@ export type Logger<CustomLevels extends string = never> = Omit<
    * We hide those "parent" methods on the child to avoid this issue.
    */
   child<ChildCustomLevels extends string = never>(
-    bindings: Required<EeeohBindings<ChildCustomLevels>> & pino.Bindings,
+    bindings: Required<Eeeoh.Bindings<ChildCustomLevels>> & pino.Bindings,
     options: Omit<
       pino.ChildLoggerOptions<ChildCustomLevels>,
       'customLevels'
@@ -122,7 +118,7 @@ export default <CustomLevels extends string = never>(
 ): Logger<CustomLevels> => {
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
 
-  const eeeoh = createEeeohOptions(opts);
+  const eeeoh = Eeeoh.createOptions(opts);
   opts.errorKey ??= eeeoh.errorKey;
   opts.mixin = eeeoh.mixin;
   opts.mixinMergeStrategy = eeeoh.mixinMergeStrategy;
