@@ -51,22 +51,91 @@ export type EeeohConfig<CustomLevels extends string> = {
 };
 
 export type EeeohBindings<CustomLevels extends string> = {
+  /**
+   * @deprecated Set `env` upfront in the top-level `base` logger option.
+   *
+   * It's unlikely that you need to differ the `env` in a child logger.
+   *
+   * Contact the maintainers if you have a use case for this.
+   */
   env?: never;
+
   service?: string;
+
+  /**
+   * @deprecated Set `version` upfront in the top-level `base` logger option.
+   *
+   * It's unlikely that you need to differ the `version` in a child logger.
+   *
+   * Contact the maintainers if you have a use case for this.
+   */
   version?: never;
 
+  /**
+   * @deprecated Do not customise `ddsource`.
+   *
+   * This is pre-configured to match the expectations of eeeoh destinations.
+   *
+   * Contact the maintainers if you have a use case for this.
+   */
   ddsource?: never;
+
+  /**
+   * @deprecated Do not customise `ddtags`.
+   *
+   * This is pre-configured to match the expectations of eeeoh destinations.
+   *
+   * Contact the maintainers if you have a use case for this.
+   */
   ddtags?: never;
 
   eeeoh?: EeeohConfig<CustomLevels>;
 };
 
 export type EeeohFields = {
+  /**
+   * @deprecated Set `env` upfront in the top-level `base` logger option.
+   *
+   * It's unlikely that you need to differ the `env` in a log event.
+   *
+   * Contact the maintainers if you have a use case for this.
+   */
   env?: never;
+
+  /**
+   * @deprecated Set `service` upfront in the top-level `base` logger option.
+   *
+   * It's unlikely that you need to differ the `service` in a log event.
+   *
+   * Contact the maintainers if you have a use case for this.
+   */
   service?: never;
+
+  /**
+   * @deprecated Set `version` upfront in the top-level `base` logger option.
+   *
+   * It's unlikely that you need to differ the `version` in a log event.
+   *
+   * Contact the maintainers if you have a use case for this.
+   */
   version?: never;
 
+  /**
+   * @deprecated Do not customise `ddsource`.
+   *
+   * This is pre-configured to match the expectations of eeeoh destinations.
+   *
+   * Contact the maintainers if you have a use case for this.
+   */
   ddsource?: never;
+
+  /**
+   * @deprecated Do not customise `ddtags`.
+   *
+   * This is pre-configured to match the expectations of eeeoh destinations.
+   *
+   * Contact the maintainers if you have a use case for this.
+   */
   ddtags?: never;
 
   eeeoh?: {
@@ -79,6 +148,9 @@ export type EeeohOptions<CustomLevels extends string> =
       eeeoh?: never;
 
       base?: null | {
+        /**
+         * @deprecated Use the top-level `eeeoh` logger option.
+         */
         eeeoh?: never;
 
         [key: string]: unknown;
@@ -92,40 +164,73 @@ export type EeeohOptions<CustomLevels extends string> =
         service: string;
         version: string;
 
+        /**
+         * @deprecated Do not customise `ddsource`.
+         *
+         * This is pre-configured to match the expectations of eeeoh destinations.
+         *
+         * Contact the maintainers if you have a use case for this.
+         */
         ddsource?: never;
+
+        /**
+         * @deprecated Do not customise `ddtags`.
+         *
+         * This is pre-configured to match the expectations of eeeoh destinations.
+         *
+         * Contact the maintainers if you have a use case for this.
+         */
         ddtags?: never;
 
+        /**
+         * @deprecated Use the top-level `eeeoh` logger option.
+         */
         eeeoh?: never;
+
+        /**
+         * @deprecated Use `service`.
+         */
+        app?: never;
+
+        /**
+         * @deprecated Use `env`.
+         */
+        environment?: never;
+
+        /**
+         * @deprecated Use `service`.
+         */
+        name?: never;
 
         [key: string]: unknown;
       };
 
       /**
-       * You cannot customise the error key if you opt in to eeeoh.
+       * @deprecated Do not customise `errorKey` if you opt in to eeeoh.
        *
        * This is pre-configured to match the expectations of eeeoh destinations.
        *
-       * Please contact the maintainers if you have a use case for this.
+       * Contact the maintainers if you have a use case for this.
        */
       errorKey?: never;
 
       /**
-       * You cannot customise level comparison if you opt in to eeeoh.
+       * @deprecated Do not customise `levelComparison` if you opt in to eeeoh.
        *
        * Custom comparison logic is difficult to reason about in relation to
        * level-based Datadog log tiering.
        *
-       * Please contact the maintainers if you have a use case for this.
+       * Contact the maintainers if you have a use case for this.
        */
       levelComparison?: never;
 
       /**
-       * You cannot disable default levels if you opt in to eeeoh.
+       * @deprecated Do not disable default levels if you opt in to eeeoh.
        *
        * A fully custom scale of log levels is complex to support in relation to
        * level-based Datadog log tiering.
        *
-       * Please contact the maintainers if you have a use case for this.
+       * Contact the maintainers if you have a use case for this.
        */
       useOnlyCustomLevels?: false;
     };
