@@ -890,6 +890,26 @@ test('using custom levels does not leak into types or runtypes of other loggers'
   expect(infoLog.name).toBe('my-app');
 });
 
+test('bindings in child logger', () => {
+  const logger = createLogger();
+
+  logger.child({
+    service: 'i-have-one-root-logger-used-by-multiple-components',
+
+    // @ts-expect-error - environment should not differ between components
+    env: 'test',
+
+    // @ts-expect-error - version should not differ between components
+    version: 'version-should-not-differ-within-a-given-software-bundle',
+
+    // @ts-expect-error - enforce `nodejs` for now
+    ddsource: 'locking-this-down-until-we-have-a-need-for-it',
+
+    // @ts-expect-error - limit indexable tags for now
+    ddtags: 'locking-this-down-until-we-have-a-need-for-it',
+  });
+});
+
 describe('eeeoh', () => {
   const { destination, stdoutMock } = rootModule.createDestination({
     mock: true,
@@ -1330,8 +1350,7 @@ describe('eeeoh', () => {
       logger.asplode('silver-plus from asplode level');
 
       // @ts-expect-error - asserting type error on unsafe child init
-      // eslint-disable-next-line no-void
-      void logger.child(
+      const childLogger = logger.child(
         {},
         {
           customLevels: {
@@ -1340,22 +1359,21 @@ describe('eeeoh', () => {
         },
       );
 
-      const childLogger = logger.child(
-        { eeeoh: { datadog: 'zero' } },
-        {
-          customLevels: {
-            megaAsplode: 9002,
-          },
-        },
+      expect(() =>
+        // @ts-expect-error - asserting type error on unsafe child init
+        childLogger.megaAsplode('broken'),
+      ).toThrowErrorMatchingInlineSnapshot(
+        `"No numeric value associated with log level: asplode. Ensure custom levels listed in \`eeeoh.datadog\` are configured as \`customLevels\` of the logger instance."`,
       );
 
-      // @ts-expect-error - asserting type error on unsafe custom parent method
-      // eslint-disable-next-line no-void
-      void childLogger.asplode;
+      expect(() =>
+        childLogger.asplode('broken'),
+      ).toThrowErrorMatchingInlineSnapshot(
+        `"No numeric value associated with log level: asplode. Ensure custom levels listed in \`eeeoh.datadog\` are configured as \`customLevels\` of the logger instance."`,
+      );
+    }
 
-      childLogger.megaAsplode('zero from child binding');
-
-      expect(stdoutMock.calls).toMatchInlineSnapshot(`
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
 [
   {
     "ddsource": "nodejs",
@@ -1389,25 +1407,8 @@ describe('eeeoh', () => {
     "msg": "silver-plus from asplode level",
     "service": "deployment-service-name",
   },
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "zero",
-        },
-      },
-    },
-    "env": "development",
-    "level": 9002,
-    "msg": "zero from child binding",
-    "service": "deployment-service-name",
-  },
 ]
 `);
-    }
   });
 
   test('invalid child binding', () => {

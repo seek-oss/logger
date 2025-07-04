@@ -51,6 +51,13 @@ export type EeeohConfig<CustomLevels extends string> = {
 };
 
 export type EeeohBindings<CustomLevels extends string> = {
+  env?: never;
+  service?: string;
+  version?: never;
+
+  ddsource?: never;
+  ddtags?: never;
+
   eeeoh?: EeeohConfig<CustomLevels>;
 };
 
