@@ -121,6 +121,7 @@ export const createSerializers = (opts: SerializerOptions) => {
 
   const serializers = {
     ...errSerializers,
+    error: errSerializers.err,
     ...restSerializers,
   } satisfies pino.LoggerOptions['serializers'];
 

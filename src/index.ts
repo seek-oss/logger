@@ -123,6 +123,7 @@ export default <CustomLevels extends string = never>(
   opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
 
   const eeeoh = createEeeohOptions(opts);
+  opts.errorKey ??= eeeoh.errorKey;
   opts.mixin = eeeoh.mixin;
   opts.mixinMergeStrategy = eeeoh.mixinMergeStrategy;
 

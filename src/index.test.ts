@@ -269,8 +269,8 @@ testLog(
   {
     error: {
       message: 'Ooh oh! Something went wrong',
-      name: 'Error',
       stack: expect.stringMatching(/^Error: Ooh oh! Something went wrong\n/),
+      type: 'Error',
     },
     err: {
       message: 'Woot! Another one!',
@@ -1509,5 +1509,42 @@ describe('eeeoh', () => {
   },
 ]
 `);
+  });
+
+  test('error key', () => {
+    const err = new Error('Badness!');
+
+    createLogger({}, destination).error(err, 'msg');
+
+    createLogger(
+      {
+        base,
+        eeeoh: {
+          datadog: 'tin',
+        },
+      },
+      destination,
+    ).error(err, 'msg');
+
+    expect(stdoutMock.calls).toMatchObject([
+      {
+        // Retain `err` default for non-eeeoh loggers
+        err: {
+          message: 'Badness!',
+          stack: expect.stringContaining('Error: Badness!'),
+        },
+        level: 50,
+        msg: 'msg',
+      },
+      {
+        // Apply `error` default for eeeoh loggers
+        error: {
+          message: 'Badness!',
+          stack: expect.stringContaining('Error: Badness!'),
+        },
+        level: 50,
+        msg: 'msg',
+      },
+    ]);
   });
 });

@@ -101,6 +101,15 @@ export type EeeohOptions<CustomLevels extends string> =
       };
 
       /**
+       * You cannot customise the error key if you opt in to eeeoh.
+       *
+       * This is pre-configured to match the expectations of eeeoh destinations.
+       *
+       * Please contact the maintainers if you have a use case for this.
+       */
+      errorKey?: never;
+
+      /**
        * You cannot customise level comparison if you opt in to eeeoh.
        *
        * Custom comparison logic is difficult to reason about in relation to
@@ -168,7 +177,7 @@ export const createEeeohOptions = <CustomLevels extends string>(
     Pick<pino.LoggerOptions<CustomLevels>, 'mixin' | 'mixinMergeStrategy'>,
 ): Pick<
   pino.LoggerOptions<CustomLevels>,
-  'base' | 'mixin' | 'mixinMergeStrategy'
+  'base' | 'errorKey' | 'mixin' | 'mixinMergeStrategy'
 > => {
   const levelToTierCache = new WeakMap<
     pino.Logger<CustomLevels>,
@@ -268,6 +277,8 @@ export const createEeeohOptions = <CustomLevels extends string>(
           ddtags: ddtags({ env: opts.base.env, version: opts.base.version }),
         }
       : {},
+
+    errorKey: opts.eeeoh ? 'error' : 'err',
 
     mixin: (mergeObject, level, logger) => {
       const tier = getTier(mergeObject, level, logger);
