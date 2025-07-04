@@ -294,9 +294,14 @@ export const createEeeohOptions = <CustomLevels extends string>(
     mixinMergeStrategy: (mergeObject, mixinObject) => {
       const retain = 'eeeoh' in mixinObject ? { eeeoh: mixinObject.eeeoh } : {};
 
-      const merged =
+      let merged =
         original.mixinMergeStrategy?.(mergeObject, mixinObject) ??
         Object.assign(mixinObject, mergeObject);
+
+      if ('eeeoh' in merged && 'err' in merged && !('error' in merged)) {
+        const { err, ...rest } = merged;
+        merged = { error: err, ...rest };
+      }
 
       // Mutation would be faster, but it's unlikely to matter too much.
       // Use a shallow clone for safety.

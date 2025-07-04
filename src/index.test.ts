@@ -1512,11 +1512,14 @@ describe('eeeoh', () => {
   });
 
   test('error key', () => {
-    const err = new Error('Badness!');
+    const err = new Error('err');
+    const error = new Error('error');
 
-    createLogger({}, destination).error(err, 'msg');
+    const defaultLogger = createLogger({}, destination);
+    defaultLogger.error(err, 'default');
+    defaultLogger.error({ err }, 'default');
 
-    createLogger(
+    const eeeohLogger = createLogger(
       {
         base,
         eeeoh: {
@@ -1524,26 +1527,56 @@ describe('eeeoh', () => {
         },
       },
       destination,
-    ).error(err, 'msg');
+    );
+
+    eeeohLogger.error(error, 'eeeoh');
+    eeeohLogger.error({ err }, 'eeeoh');
+    eeeohLogger.error({ err, error }, 'eeeoh');
 
     expect(stdoutMock.calls).toMatchObject([
       {
         // Retain `err` default for non-eeeoh loggers
         err: {
-          message: 'Badness!',
-          stack: expect.stringContaining('Error: Badness!'),
+          message: 'err',
+          stack: expect.stringContaining('Error: err'),
         },
-        level: 50,
-        msg: 'msg',
+        msg: 'default',
+      },
+      {
+        // Retain `err` property for non-eeeoh loggers
+        err: {
+          message: 'err',
+          stack: expect.stringContaining('Error: err'),
+        },
+        msg: 'default',
       },
       {
         // Apply `error` default for eeeoh loggers
         error: {
-          message: 'Badness!',
-          stack: expect.stringContaining('Error: Badness!'),
+          message: 'error',
+          stack: expect.stringContaining('Error: error'),
         },
-        level: 50,
-        msg: 'msg',
+        msg: 'eeeoh',
+      },
+      {
+        // Rewrite `err` on no `error` for eeeoh loggers
+        error: {
+          message: 'err',
+          stack: expect.stringContaining('Error: err'),
+        },
+        msg: 'eeeoh',
+      },
+      {
+        // Retain `err` on existing `error` for eeeoh loggers
+        err: {
+          message: 'err',
+          stack: expect.stringContaining('Error: err'),
+        },
+        error: {
+          message: 'error',
+          stack: expect.stringContaining('Error: error'),
+        },
+        msg: 'eeeoh',
       },
     ]);
   });
