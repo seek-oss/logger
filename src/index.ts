@@ -80,7 +80,7 @@ export type Logger<CustomLevels extends string = never> = Omit<
  * @param opts - Logger options.
  * @param destination - Destination stream. Default: `pino.destination({ sync: true })`.
  */
-export default <CustomLevels extends string = never>(
+export const createLogger = <CustomLevels extends string = never>(
   opts: LoggerOptions<CustomLevels> = {},
   destination: pino.DestinationStream = createDestination({ mock: false })
     .destination,
@@ -105,3 +105,5 @@ export default <CustomLevels extends string = never>(
 
   return pino(opts, withRedaction(destination, opts.redactText));
 };
+
+export default createLogger;

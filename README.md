@@ -27,7 +27,7 @@ It implements several SEEK customisations over [Pino], including:
 ## Usage
 
 ```typescript
-import createLogger, { createDestination } from '@seek/logger';
+import { createDestination, createLogger } from '@seek/logger';
 
 const { destination, stdoutMock } = createDestination({
   mock: config.environment === 'test',
@@ -150,8 +150,8 @@ This behaviour can be configured with the `omitHeaderNames` option.
 Example of extending the default header list:
 
 ```diff
--import createLogger from '@seek/logger';
-+import createLogger, { DEFAULT_OMIT_HEADER_NAMES } from '@seek/logger';
+-import { createLogger } from '@seek/logger';
++import { createLogger, DEFAULT_OMIT_HEADER_NAMES } from '@seek/logger';
 
 const logger = createLogger({
   name: 'my-app',
@@ -180,7 +180,7 @@ Consider flattening the log structure for performance, readability and cost savi
 You can customise your logger by providing [Pino options] like so:
 
 ```javascript
-import createLogger, { pino } from '@seek/logger';
+import { createLogger, pino } from '@seek/logger';
 
 const logger = createLogger(
   {
@@ -207,7 +207,7 @@ yarn add --dev pino-pretty
 Then selectively enable pretty printing when running your application locally:
 
 ```typescript
-import createLogger from '@seek/logger';
+import { createLogger } from '@seek/logger';
 
 const logger = createLogger({
   name: 'my-app',

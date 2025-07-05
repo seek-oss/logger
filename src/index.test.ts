@@ -19,6 +19,7 @@ test('exports', () =>
     "x-envoy-upstream-service-time",
   ],
   "createDestination": [Function],
+  "createLogger": [Function],
   "default": [Function],
   "pino": [Function],
 }
