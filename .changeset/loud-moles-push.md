@@ -2,7 +2,9 @@
 '@seek/logger': minor
 ---
 
-Export `createLogger` as a named export for improved TypeScript compatibility
+Export `createLogger` as a named export
+
+This improves forward compatibility with TypeScript & ESM. We've left the default export in place and there is no immediate need to migrate existing codebases.
 
 **Migration:**
 
@@ -10,5 +12,3 @@ Export `createLogger` as a named export for improved TypeScript compatibility
 - import createLogger from '@seek/logger';
 + import { createLogger } from '@seek/logger';
 ```
-
-This change is required for our eventual migration to ESM
