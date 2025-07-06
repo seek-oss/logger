@@ -136,7 +136,6 @@
 - **deps:** Pin `fast-redact@3.3.0` ([#114](https://github.com/seek-oss/logger/pull/114))
 
   This aims to discourage adoption of `fast-redact@3.4.0` as it [mutates input data](https://github.com/davidmarkclements/fast-redact/pull/67#issuecomment-1991563646) when you:
-
   1. Write application logs with `@seek/logger` or `pino`
   2. Configure the `redact` option with wildcards
   3. Use the logger in a slightly strange way, such as calling `.child()` with the same props more than once
@@ -164,7 +163,6 @@
 - Omit request headers ([#92](https://github.com/seek-oss/logger/pull/92))
 
   `@seek/logger` now omits the following properties from `headers` and `req.headers` by default:
-
   - `x-envoy-attempt-count`
   - `x-envoy-decorator-operation`
   - `x-envoy-expected-rq-timeout-ms`
