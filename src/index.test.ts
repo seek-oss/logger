@@ -7,23 +7,23 @@ import * as rootModule from '.';
 
 test('exports', () =>
   expect(rootModule).toMatchInlineSnapshot(`
-{
-  "DEFAULT_OMIT_HEADER_NAMES": [
-    "x-envoy-attempt-count",
-    "x-envoy-decorator-operation",
-    "x-envoy-expected-rq-timeout-ms",
-    "x-envoy-external-address",
-    "x-envoy-internal",
-    "x-envoy-peer-metadata",
-    "x-envoy-peer-metadata-id",
-    "x-envoy-upstream-service-time",
-  ],
-  "createDestination": [Function],
-  "createLogger": [Function],
-  "default": [Function],
-  "pino": [Function],
-}
-`));
+    {
+      "DEFAULT_OMIT_HEADER_NAMES": [
+        "x-envoy-attempt-count",
+        "x-envoy-decorator-operation",
+        "x-envoy-expected-rq-timeout-ms",
+        "x-envoy-external-address",
+        "x-envoy-internal",
+        "x-envoy-peer-metadata",
+        "x-envoy-peer-metadata-id",
+        "x-envoy-upstream-service-time",
+      ],
+      "createDestination": [Function],
+      "createLogger": [Function],
+      "default": [Function],
+      "pino": [Function],
+    }
+  `));
 
 test('parameterless initialisation', () => {
   const logger = createLogger();
