@@ -7,30 +7,31 @@ import * as rootModule from '.';
 
 test('exports', () =>
   expect(rootModule).toMatchInlineSnapshot(`
-{
-  "DEFAULT_OMIT_HEADER_NAMES": [
-    "x-envoy-attempt-count",
-    "x-envoy-decorator-operation",
-    "x-envoy-expected-rq-timeout-ms",
-    "x-envoy-external-address",
-    "x-envoy-internal",
-    "x-envoy-peer-metadata",
-    "x-envoy-peer-metadata-id",
-    "x-envoy-upstream-service-time",
-  ],
-  "Eeeoh": {
-    "envs": [
-      "development",
-      "production",
-      "sandbox",
-      "test",
-    ],
-  },
-  "createDestination": [Function],
-  "default": [Function],
-  "pino": [Function],
-}
-`));
+    {
+      "DEFAULT_OMIT_HEADER_NAMES": [
+        "x-envoy-attempt-count",
+        "x-envoy-decorator-operation",
+        "x-envoy-expected-rq-timeout-ms",
+        "x-envoy-external-address",
+        "x-envoy-internal",
+        "x-envoy-peer-metadata",
+        "x-envoy-peer-metadata-id",
+        "x-envoy-upstream-service-time",
+      ],
+      "Eeeoh": {
+        "envs": [
+          "development",
+          "production",
+          "sandbox",
+          "test",
+        ],
+      },
+      "createDestination": [Function],
+      "createLogger": [Function],
+      "default": [Function],
+      "pino": [Function],
+    }
+  `));
 
 test('parameterless initialisation', () => {
   const logger = createLogger();
@@ -982,88 +983,88 @@ describe('eeeoh', () => {
       .info('silver from child bindings ');
 
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
-[
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "tin",
+      [
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "tin from root option",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 30,
-    "msg": "tin from root option",
-    "service": "deployment-service-name",
-  },
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "silver",
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "silver",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "silver from inline object",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 30,
-    "msg": "silver from inline object",
-    "service": "deployment-service-name",
-  },
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "silver",
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "silver",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "silver from inline object over child bindings",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 30,
-    "msg": "silver from inline object over child bindings",
-    "service": "deployment-service-name",
-  },
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": false,
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": false,
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "disabled from inline object",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 30,
-    "msg": "disabled from inline object",
-    "service": "deployment-service-name",
-  },
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "silver",
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "silver",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "silver from child bindings ",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 30,
-    "msg": "silver from child bindings ",
-    "service": "deployment-service-name",
-  },
-]
-`);
+      ]
+    `);
   });
 
   test('level-based root config', () => {
@@ -1103,105 +1104,105 @@ describe('eeeoh', () => {
     );
 
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
-[
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "tin",
+      [
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "env": "development",
+          "level": 20,
+          "msg": "tin from default",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 20,
-    "msg": "tin from default",
-    "service": "deployment-service-name",
-  },
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "bronze",
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "bronze",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "bronze from info level",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 30,
-    "msg": "bronze from info level",
-    "service": "deployment-service-name",
-  },
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "silver",
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "silver",
+              },
+            },
+          },
+          "env": "development",
+          "level": 40,
+          "msg": "silver from warn level",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 40,
-    "msg": "silver from warn level",
-    "service": "deployment-service-name",
-  },
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "silver",
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "silver",
+              },
+            },
+          },
+          "env": "development",
+          "level": 50,
+          "msg": "silver from warn level",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 50,
-    "msg": "silver from warn level",
-    "service": "deployment-service-name",
-  },
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "zero",
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "zero",
+              },
+            },
+          },
+          "env": "development",
+          "level": 50,
+          "msg": "zero from inline override",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 50,
-    "msg": "zero from inline override",
-    "service": "deployment-service-name",
-  },
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "tin",
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "env": "development",
+          "level": 20,
+          "msg": "tin from default because invalid inline config is ignored",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 20,
-    "msg": "tin from default because invalid inline config is ignored",
-    "service": "deployment-service-name",
-  },
-]
-`);
+      ]
+    `);
   });
 
   test('existing mixin merge strategy', () => {
@@ -1217,25 +1218,25 @@ describe('eeeoh', () => {
     logger.info('eeeoh cherry-picked despite mixin merge strategy');
 
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
-[
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "tin",
+      [
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "eeeoh cherry-picked despite mixin merge strategy",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 30,
-    "msg": "eeeoh cherry-picked despite mixin merge strategy",
-    "service": "deployment-service-name",
-  },
-]
-`);
+      ]
+    `);
   });
 
   test('existing mixin', () => {
@@ -1261,55 +1262,55 @@ describe('eeeoh', () => {
     logger.error('extra key for error');
 
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
-[
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": false,
+      [
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": false,
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "retain for info",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 30,
-    "msg": "retain for info",
-    "service": "deployment-service-name",
-  },
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": false,
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": false,
+              },
+            },
+          },
+          "env": "development",
+          "level": 40,
+          "msg": "retain for warn",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 40,
-    "msg": "retain for warn",
-    "service": "deployment-service-name",
-  },
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": false,
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": false,
+              },
+            },
+          },
+          "env": "development",
+          "extra": "key",
+          "level": 50,
+          "msg": "extra key for error",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "extra": "key",
-    "level": 50,
-    "msg": "extra key for error",
-    "service": "deployment-service-name",
-  },
-]
-`);
+      ]
+    `);
   });
 
   test('custom level tiering', () => {
@@ -1382,41 +1383,41 @@ describe('eeeoh', () => {
     }
 
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
-[
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "silver",
+      [
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "silver",
+              },
+            },
+          },
+          "env": "development",
+          "level": 40,
+          "msg": "silver from warn level",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 40,
-    "msg": "silver from warn level",
-    "service": "deployment-service-name",
-  },
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "silver-plus",
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "silver-plus",
+              },
+            },
+          },
+          "env": "development",
+          "level": 9001,
+          "msg": "silver-plus from asplode level",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 9001,
-    "msg": "silver-plus from asplode level",
-    "service": "deployment-service-name",
-  },
-]
-`);
+      ]
+    `);
   });
 
   test('invalid child binding', () => {
@@ -1438,25 +1439,25 @@ describe('eeeoh', () => {
     logger.info('tin from root option');
 
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
-[
-  {
-    "ddsource": "nodejs",
-    "ddtags": "env:development,version:abcdef",
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "tin",
+      [
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "tin from root option",
+          "service": "deployment-service-name",
         },
-      },
-    },
-    "env": "development",
-    "level": 30,
-    "msg": "tin from root option",
-    "service": "deployment-service-name",
-  },
-]
-`);
+      ]
+    `);
   });
 
   test('enabled on child logger only', () => {
@@ -1473,25 +1474,25 @@ describe('eeeoh', () => {
     logger.child({ eeeoh: { datadog: 'tin' } }).info('has eeeoh');
 
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
-[
-  {
-    "level": 30,
-    "msg": "no eeeoh",
-  },
-  {
-    "eeeoh": {
-      "logs": {
-        "datadog": {
-          "enabled": true,
-          "tier": "tin",
+      [
+        {
+          "level": 30,
+          "msg": "no eeeoh",
         },
-      },
-    },
-    "level": 30,
-    "msg": "has eeeoh",
-  },
-]
-`);
+        {
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "level": 30,
+          "msg": "has eeeoh",
+        },
+      ]
+    `);
   });
 
   test('eeeoh banned in the base options field', () => {
@@ -1509,14 +1510,14 @@ describe('eeeoh', () => {
     logger.info('still works');
 
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
-[
-  {
-    "eeeoh": "test",
-    "level": 30,
-    "msg": "still works",
-  },
-]
-`);
+      [
+        {
+          "eeeoh": "test",
+          "level": 30,
+          "msg": "still works",
+        },
+      ]
+    `);
   });
 
   test('error key', () => {

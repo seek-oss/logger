@@ -59,20 +59,20 @@ describe('createDestination', () => {
       destination.write(msg);
 
       expect(stdoutMock.onlyCall()).toMatchInlineSnapshot(`
-{
-  "key": {
-    "1": "a",
-    "2": "b",
-  },
-  "latency": "-",
-  "level": 30,
-  "msg": "hello world",
-  "~": {
-    "c": "3",
-    "d": "4",
-  },
-}
-`);
+        {
+          "key": {
+            "1": "a",
+            "2": "b",
+          },
+          "latency": "-",
+          "level": 30,
+          "msg": "hello world",
+          "~": {
+            "c": "3",
+            "d": "4",
+          },
+        }
+      `);
     });
 
     it('can be disabled', () => {
@@ -86,22 +86,22 @@ describe('createDestination', () => {
       destination.write(msg);
 
       expect(stdoutMock.onlyCall()).toMatchInlineSnapshot(`
-{
-  "key": {
-    "1": "a",
-    "2": "b",
-  },
-  "latency": 123,
-  "level": 30,
-  "msg": "hello world",
-  "name": "test",
-  "timestamp": 1234567890,
-  "~": {
-    "c": "3",
-    "d": "4",
-  },
-}
-`);
+        {
+          "key": {
+            "1": "a",
+            "2": "b",
+          },
+          "latency": 123,
+          "level": 30,
+          "msg": "hello world",
+          "name": "test",
+          "timestamp": 1234567890,
+          "~": {
+            "c": "3",
+            "d": "4",
+          },
+        }
+      `);
     });
 
     it('can be overwritten', () => {
@@ -115,19 +115,19 @@ describe('createDestination', () => {
       destination.write(msg);
 
       expect(stdoutMock.onlyCall()).toMatchInlineSnapshot(`
-{
-  "key": {
-    "1": "a",
-    "2": "b",
-  },
-  "name": "-",
-  "timestamp": "-",
-  "~": {
-    "c": "3",
-    "d": "4",
-  },
-}
-`);
+        {
+          "key": {
+            "1": "a",
+            "2": "b",
+          },
+          "name": "-",
+          "timestamp": "-",
+          "~": {
+            "c": "3",
+            "d": "4",
+          },
+        }
+      `);
     });
 
     it('can be extended', () => {
@@ -149,13 +149,13 @@ describe('createDestination', () => {
       destination.write(msg);
 
       expect(stdoutMock.onlyCall()).toMatchInlineSnapshot(`
-{
-  "key": "-",
-  "latency": "-",
-  "level": 30,
-  "msg": "hello world",
-}
-`);
+        {
+          "key": "-",
+          "latency": "-",
+          "level": 30,
+          "msg": "hello world",
+        }
+      `);
     });
 
     it('supports nested properties', () => {
@@ -169,19 +169,19 @@ describe('createDestination', () => {
       destination.write(msg);
 
       expect(stdoutMock.onlyCall()).toMatchInlineSnapshot(`
-{
-  "key": {
-    "1": "-",
-    "2": "b",
-  },
-  "latency": "-",
-  "level": 30,
-  "msg": "hello world",
-  "~": {
-    "c": "3",
-  },
-}
-`);
+        {
+          "key": {
+            "1": "-",
+            "2": "b",
+          },
+          "latency": "-",
+          "level": 30,
+          "msg": "hello world",
+          "~": {
+            "c": "3",
+          },
+        }
+      `);
     });
 
     it('supports overwriting redact only', () => {
@@ -194,10 +194,10 @@ describe('createDestination', () => {
       destination.write(JSON.stringify({ latency: 123, name: 'test' }));
 
       expect(stdoutMock.onlyCall()).toMatchInlineSnapshot(`
-{
-  "latency": 123,
-}
-`);
+        {
+          "latency": 123,
+        }
+      `);
     });
 
     it('supports overwriting remove only', () => {
@@ -210,11 +210,11 @@ describe('createDestination', () => {
       destination.write(JSON.stringify({ latency: 123, name: 'test' }));
 
       expect(stdoutMock.onlyCall()).toMatchInlineSnapshot(`
-{
-  "latency": "-",
-  "name": "test",
-}
-`);
+        {
+          "latency": "-",
+          "name": "test",
+        }
+      `);
     });
   });
 
@@ -235,10 +235,10 @@ describe('createDestination', () => {
       destination.write('{}');
 
       expect(stdoutMock.calls).toMatchInlineSnapshot(`
-[
-  {},
-]
-`);
+        [
+          {},
+        ]
+      `);
 
       expect(stdoutMock.onlyCall()).toMatchInlineSnapshot(`{}`);
     });
@@ -248,11 +248,11 @@ describe('createDestination', () => {
       destination.write('{}');
 
       expect(stdoutMock.calls).toMatchInlineSnapshot(`
-[
-  {},
-  {},
-]
-`);
+        [
+          {},
+          {},
+        ]
+      `);
 
       expect(stdoutMock.onlyCall).toThrowErrorMatchingInlineSnapshot(
         `"stdoutMock.onlyCall() found 2 calls; expected exactly 1"`,
