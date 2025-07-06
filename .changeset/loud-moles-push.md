@@ -11,4 +11,4 @@ Export `createLogger` as a named export for improved TypeScript compatibility
 + import { createLogger } from '@seek/logger';
 ```
 
-This change is required for our eventual migration to ESM modules
+This change is required for our eventual migration to ESM
