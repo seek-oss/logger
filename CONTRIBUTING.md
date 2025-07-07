@@ -46,12 +46,12 @@ If you're on Windows, we recommend the [Windows Subsystem for Linux].
 First, some JavaScript tooling:
 
 - Node.js LTS
-- Yarn 1.x
+- pnpm
 
 Next, install npm dependencies:
 
 ```shell
-yarn install
+pnpm install
 ```
 
 ### Git workflow
@@ -95,21 +95,21 @@ If all is well, they will merge your pull request into master.
 You may find it easier to develop alongside unit tests:
 
 ```shell
-yarn test --watch
+pnpm test --watch
 ```
 
 Format your code once you're happy with it:
 
 ```shell
-yarn format
+pnpm format
 ```
 
 We run linting and testing in CI,
 but consider running these commands locally for a faster feedback loop:
 
 ```shell
-yarn lint
-yarn test
+pnpm lint
+pnpm test
 ```
 
 ---
@@ -130,7 +130,7 @@ a changeset is not necessary for:
 - [npm dev dependencies](https://github.com/seek-oss/logger/blob/master/package.json)
 
 ```shell
-yarn changeset
+pnpm changeset
 ```
 
 The Changesets CLI is interactive and follows [semantic versioning]:
