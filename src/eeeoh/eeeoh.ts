@@ -91,7 +91,8 @@ export type Bindings<CustomLevels extends string> = {
   env?: never;
 
   /**
-   * The name of the component or deployment.
+   * The name of the component, or the service name override on a deployment of
+   * the component.
    *
    * You may set this on a child logger when you have multiple components
    * sharing the one root logger instance.
@@ -274,7 +275,8 @@ export type Options<CustomLevels extends string> =
         env: Env;
 
         /**
-         * The name of the component or deployment.
+         * The name of the component, or the service name override on a
+         * deployment of the component.
          *
          * Carefully set this to enable correlation of observability data.
          *
