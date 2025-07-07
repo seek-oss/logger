@@ -127,7 +127,7 @@ const base = {
 `DD_SERVICE` is derived from the following attributes:
 
 ```yaml
-# config/{environment}/{region}/{environment}.yaml
+# config/{environment}/{region}/{deployment}.yaml
 kind: Deployment
 spec:
   serviceName: my-service-name-override
