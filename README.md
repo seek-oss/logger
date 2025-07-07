@@ -12,18 +12,6 @@ It implements several SEEK customisations over [Pino], including:
 - Redaction of sensitive data
 - Trimming deep objects to reduce cost and unintended disclosure
 
-## Table of contents
-
-- [Usage](#usage)
-  - [Standardised fields](#standardised-fields)
-  - [Typed fields](#typed-fields)
-- [Features](#features)
-  - [Redaction](#redaction)
-  - [Omitting Headers]
-  - [Trimming](#trimming)
-  - [Pino customisation](#pino-customisation)
-  - [Pretty printing](#pretty-printing)
-
 ## Usage
 
 ```typescript
