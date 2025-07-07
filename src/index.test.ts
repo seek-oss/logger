@@ -2,7 +2,7 @@ import split from 'split2';
 
 import { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
 
-import createLogger, { type LoggerOptions } from '.';
+import { type LoggerOptions, createLogger } from '.';
 import * as rootModule from '.';
 
 test('exports', () =>
