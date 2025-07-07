@@ -48,6 +48,32 @@ const parseEeeohField = objectCompiled<NonNullable<Fields['eeeoh']>>({
 });
 
 export type Config<CustomLevels extends string> = {
+  /**
+   * Configuration for routing logs to Datadog.
+   *
+   * The following options are currently supported:
+   *
+   * 1. Specify a static default tier:
+   *
+   *    ```typescript
+   *    'tin'
+   *    ```
+   *
+   * 2. Specify level-based tiering:
+   *
+   *    ```typescript
+   *    ['tin', { warn: 'silver' }]
+   *    ```
+   *
+   * 3. Disable routing to Datadog:
+   *
+   *    ```typescript
+   *    false
+   *    ```
+   *
+   * See the documentation for more information:
+   * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+   */
   datadog:
     | DatadogTier
     | [DatadogTier, Partial<Record<CustomLevels | pino.Level, DatadogTier>>]
@@ -64,6 +90,17 @@ export type Bindings<CustomLevels extends string> = {
    */
   env?: never;
 
+  /**
+   * The name of the component or deployment.
+   *
+   * You may set this on a child logger when you have multiple components
+   * sharing the one root logger instance.
+   *
+   * Carefully set this to enable correlation of observability data.
+   *
+   * See the documentation for more information:
+   * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+   */
   service?: string;
 
   /**
@@ -93,6 +130,14 @@ export type Bindings<CustomLevels extends string> = {
    */
   ddtags?: never;
 
+  /**
+   * The eeeoh routing configuration for the child logger.
+   *
+   * This will overwrite configuration set in the root logger.
+   *
+   * See the documentation for more information:
+   * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+   */
   eeeoh?: Config<CustomLevels>;
 
   /**
@@ -146,6 +191,15 @@ export type Fields = {
    * Contact the maintainers if you have a use case for this.
    */
   ddtags?: never;
+
+  /**
+   * The eeeoh routing configuration for this specific log.
+   *
+   * This will overwrite configuration set on the logger.
+   *
+   * See the documentation for more information:
+   * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+   */
   eeeoh?: {
     datadog: DatadogTier | false;
   };
@@ -182,6 +236,12 @@ export type Fields = {
 
 export type Options<CustomLevels extends string> =
   | {
+      /**
+       * The eeeoh routing configuration for the logger.
+       *
+       * See the documentation for more information:
+       * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+       */
       eeeoh?: never;
 
       base?: null | {
@@ -194,11 +254,43 @@ export type Options<CustomLevels extends string> =
       };
     }
   | {
+      /**
+       * The eeeoh routing configuration for the logger.
+       *
+       * See the documentation for more information:
+       * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+       */
       eeeoh: Config<CustomLevels>;
 
       base: {
+        /**
+         * The environment that the component is deployed to.
+         *
+         * Carefully set this to enable correlation of observability data.
+         *
+         * See the documentation for more information:
+         * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+         */
         env: Env;
+
+        /**
+         * The name of the component or deployment.
+         *
+         * Carefully set this to enable correlation of observability data.
+         *
+         * See the documentation for more information:
+         * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+         */
         service: string;
+
+        /**
+         * The unique identifier for the current deployment.
+         *
+         * Carefully set this to enable correlation of observability data.
+         *
+         * See the documentation for more information:
+         * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+         */
         version: string;
 
         /**
