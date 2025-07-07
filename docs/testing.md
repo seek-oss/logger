@@ -88,7 +88,7 @@ built on Pino's support for customisable [destinations].
 In practice, this looks like the following:
 
 ```typescript
-import { createLogger, createDestination } from '@seek/logger';
+import { createDestination, createLogger } from '@seek/logger';
 
 const { destination, stdoutMock } = createDestination({
   mock: config.environment === 'test',
