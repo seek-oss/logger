@@ -2,7 +2,7 @@
 
 Testing the logging behaviour of your project may be useful to:
 
-1. Check for regressions to log messages that have dependencies
+1. Check for regressions to logs that have dependencies
 
    For example, a particular message may serve as an important audit log,
    and changing its format could break dashboards and reporting.
@@ -20,7 +20,7 @@ Previously, the de facto testing pattern was to set up mocks or spies manually.
 This may be sufficient to run targeted assertions in a pinch.
 
 ```typescript
-import createLogger from '@seek/logger';
+import { createLogger } from '@seek/logger';
 
 export const logger = createLogger();
 ```
@@ -73,7 +73,7 @@ test('spy', () => {
 3. It doesn't cover internal processing logic within `@seek/logger` and Pino.
 
    For example, the `maxObjectDepth` logger option may reduce the effective
-   effectiveness (ha) of a log message, but a `logger.info()` spy would not pick
+   effectiveness (ha) of a log, but a `logger.info()` spy would not pick
    this up.
 
 [`logger.child()`]: https://github.com/pinojs/pino/blob/v9.2.1/docs/child-loggers.md
@@ -88,7 +88,7 @@ built on Pino's support for customisable [destinations].
 In practice, this looks like the following:
 
 ```typescript
-import createLogger, { createDestination } from '@seek/logger';
+import { createLogger, createDestination } from '@seek/logger';
 
 const { destination, stdoutMock } = createDestination({
   mock: config.environment === 'test',

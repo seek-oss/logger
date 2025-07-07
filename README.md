@@ -151,7 +151,7 @@ Example of extending the default header list:
 
 ```diff
 -import { createLogger } from '@seek/logger';
-+import { createLogger, DEFAULT_OMIT_HEADER_NAMES } from '@seek/logger';
++import { DEFAULT_OMIT_HEADER_NAMES, createLogger } from '@seek/logger';
 
 const logger = createLogger({
   name: 'my-app',
