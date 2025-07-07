@@ -56,6 +56,13 @@ childLogger.error({ err }, 'Something bad happened');
 stdoutMock.calls;
 ```
 
+### eeeoh
+
+Enable the `eeeoh` integration for applications running inside of SEEK's standard workload hosting environments.
+This is an experimental feature that enables first-class support for SEEK's proprietary logging solution.
+
+See the [documentation](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md) for more information.
+
 ### Standardised fields
 
 **@seek/logger** bundles custom `req`, `res` and `headers` serializers along with [Pino]'s standard set.
@@ -63,7 +70,7 @@ User-defined serializers will take precedence over predefined ones.
 
 Use the following standardised logging fields to benefit from customised serialization:
 
-- `err` for errors.
+- `error` for errors.
 
   The [Error] is serialized with its message, name, stack and additional properties.
   Notice that this is not possible with e.g. `JSON.stringify(new Error())`.
