@@ -201,7 +201,7 @@ Note: `createLogger` mutates the supplied destination in order to redact sensiti
 For example, you can install **[pino-pretty]** as a `devDependency`:
 
 ```shell
-yarn add --dev pino-pretty
+pnpm add --dev pino-pretty
 ```
 
 Then selectively enable pretty printing when running your application locally:

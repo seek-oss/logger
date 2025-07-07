@@ -30,8 +30,8 @@
     "clean": "rm -fr lib",
     "format": "skuba format",
     "lint": "skuba lint",
-    "release": "yarn build && changeset publish",
-    "stage": "changeset version && yarn format",
+    "release": "pnpm build && changeset publish",
+    "stage": "changeset version && pnpm format",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"
