@@ -61,7 +61,7 @@ stdoutMock.calls;
 Enable the `eeeoh` integration for applications running inside of SEEK's standard workload hosting environments.
 This is an experimental feature that enables first-class support for SEEK's proprietary logging solution.
 
-See the [documentation](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md) for more information.
+See the [documentation](./docs/eeeoh.md) for more information.
 
 ### Standardised fields
 
