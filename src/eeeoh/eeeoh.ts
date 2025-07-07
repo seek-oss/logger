@@ -94,6 +94,11 @@ export type Bindings<CustomLevels extends string> = {
   ddtags?: never;
 
   eeeoh?: Config<CustomLevels>;
+
+  /**
+   * The SEEK `X-Request-Id` used to correlate requests.
+   */
+  'x-request-id'?: string;
 };
 
 export type Fields = {
@@ -141,10 +146,38 @@ export type Fields = {
    * Contact the maintainers if you have a use case for this.
    */
   ddtags?: never;
-
   eeeoh?: {
     datadog: DatadogTier | false;
   };
+
+  /**
+   * @deprecated Use `error` instead.
+   */
+  err?: unknown;
+
+  /**
+   * The error object associated with the log.
+   *
+   * This provides better compatibility with Datadog log management.
+   */
+  error?: unknown;
+
+  /**
+   * The duration of a given event in nanoseconds.
+   *
+   * This provides better compatibility with Datadog tracing.
+   */
+  duration?: number;
+
+  /**
+   * @deprecated Use `duration` with nanoseconds instead.
+   */
+  latency?: number;
+
+  /**
+   * The SEEK `X-Request-Id` used to correlate requests.
+   */
+  'x-request-id'?: string;
 };
 
 export type Options<CustomLevels extends string> =
