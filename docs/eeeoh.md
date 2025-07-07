@@ -103,7 +103,7 @@ Incorporate the commit hash and build number;
 see subsequent sections for implementation guidance.
 
 `@seek/logger` currently auto-generates `ddsource` and `ddtags`.
-Reach out if you have a need to set values for these attributes.
+Reach out if you have a need to set custom values for these attributes.
 
 ### Automat workload hosting
 
@@ -231,7 +231,7 @@ const base = {
 } as const;
 ```
 
-<https://docs.datadoghq.com/serverless/libraries_integrations/cdk/#configuration>
+See the [Datadog CDK Construct] documentation for more information.
 
 ### AWS Lambda via Serverless
 
@@ -452,6 +452,7 @@ export const bronzeLogger = noLogger.child({
 [Backstage]: https://backstage.myseek.xyz/docs/default/system/eeeoh
 [child loggers]: https://getpino.io/#/docs/child-loggers
 [component]: https://backstage.myseek.xyz/docs/default/component/automat-docs/v1-pre/concept-maps/automat/concepts/component/
+[Datadog CDK Construct]: https://docs.datadoghq.com/serverless/libraries_integrations/cdk/#configuration
 [Datadog standard attributes]: https://docs.datadoghq.com/standard-attributes/?product=log
 [Datadog tiering]: https://backstage.myseek.xyz/docs/default/system/eeeoh/datadog-tier/
 [Datadog unified service tagging]: https://docs.datadoghq.com/getting_started/tagging/unified_service_tagging/
