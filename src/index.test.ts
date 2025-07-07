@@ -903,10 +903,11 @@ test('bindings in child logger', () => {
   const logger = createLogger();
 
   logger.child({
-    service: 'i-have-one-root-logger-used-by-multiple-components',
-
     // @ts-expect-error - environment should not differ between components
     env: 'test',
+
+    // @ts-expect-error - service should not differ between components
+    service: 'i-have-one-root-logger-used-by-multiple-components',
 
     // @ts-expect-error - version should not differ between components
     version: 'version-should-not-differ-within-a-given-software-bundle',

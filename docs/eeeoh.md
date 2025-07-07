@@ -400,19 +400,21 @@ const base = {
 } as const;
 ```
 
-However,
-it's also possible to specify [child loggers] that derive from a common root logger:
+You could also share configuration options between loggers:
 
 ```typescript
-// Do not export so it is not used directly
-const _logger = createLogger({
-  base,
-  eeeoh: { datadog: 'tin' },
-});
+const optionsForService = (service: string) =>
+  ({
+    base: {
+      ...base,
+      service,
+    },
+    eeeoh: { datadog: 'tin' },
+  }) satisfies LoggerOptions;
 
-export const aLogger = _logger.child({ service: 'component-a' });
+export const aLogger = createLogger(optionsForService('component-a'));
 
-export const bLogger = _logger.child({ service: 'component-b' });
+export const bLogger = createLogger(optionsForService('component-b'));
 ```
 
 ### By tier
@@ -432,7 +434,7 @@ export const bronzeLogger = createLogger({
 });
 ```
 
-Or:
+Or, you could accomplish a similar effect with [child loggers]:
 
 ```typescript
 const noLogger = createLogger({

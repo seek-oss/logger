@@ -91,18 +91,13 @@ export type Bindings<CustomLevels extends string> = {
   env?: never;
 
   /**
-   * The name of the component, or the service name override on a deployment of
-   * the component.
+   * @deprecated Set `service` upfront in the top-level `base` logger option.
    *
-   * You may set this on a child logger when you have multiple components
-   * sharing the one root logger instance.
+   * It's unlikely that you need to differ the `service` in a child logger.
    *
-   * Carefully set this to enable correlation of observability data.
-   *
-   * See the documentation for more information:
-   * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+   * Contact the maintainers if you have a use case for this.
    */
-  service?: string;
+  service?: never;
 
   /**
    * @deprecated Set `version` upfront in the top-level `base` logger option.
