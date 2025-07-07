@@ -96,7 +96,7 @@ createLogger({
 - `sandbox`
 - `test`
 
-`service` is the name of the [component] or [deployment] override.
+`service` is the name of the [component], or the service name override on a [deployment] of the component.
 
 `version` is a unique identifier for the current deployment.
 Incorporate the commit hash and build number;
