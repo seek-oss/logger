@@ -249,21 +249,21 @@ custom:
 
 ## Event attributes
 
-Some common attributes used to describe an event have prescribed names.
+Some common attributes have recommended names.
 These generally follow [Datadog standard attributes] for an improved out-of-box experience.
 
 ### `duration`
 
-Use this name and nanosecond precision for improved compatibility with Datadog traces.
+Use this key and nanosecond precision for improved compatibility with Datadog traces.
 
 ```diff
-- latency
-+ duration
+- logger.info({ latency }, 'I did a thing');
++ logger.info({ duration: spanInNs }, 'I did a thing');
 ```
 
 ### `error`
 
-We recommend that you use `error` for any new code.
+Use this key to capture error details in new code for improved compatibility with Datadog log management.
 
 To include the error as the only additional attribute on the log:
 
@@ -283,12 +283,21 @@ To include the error among other additional attributes on the log:
 +   logger.error({ error, id }, 'Badness!')
 ```
 
+Pass through the original error to the key.
+Extracting specific properties is not recommended as you may drop valuable context such as the stack trace.
+
+```diff
+- } catch (error) {
+-   logger.error({ error: error.message }, 'Badness!')
++ } catch (error) {
++   logger.error(error, 'Badness!')
+
 `@seek/logger` automatically rewrites `err` to `error` when you opt in to eeeoh.
 We may investigate codemods for existing code so we can remove this compatibility layer in a future major version.
 
 ### `x-request-id`
 
-See [RFC002] for more information.
+Use this key to include the correlating [RFC002] string identifier.
 
 ## Datadog log tiers
 
