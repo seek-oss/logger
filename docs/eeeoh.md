@@ -1,5 +1,17 @@
 # eeeoh
 
+> [!IMPORTANT]
+>
+> The eeeoh integration is ready for user adoption and feedback.
+>
+> However, it is currently classified as an experimental feature to reflect the facts:
+> it targets a platform that is still rapidly evolving,
+> and is yet to go through an intensive feedback phase.
+>
+> Its design aims to be flexible and forward facing.
+> We do not anticipate significant breaking changes at this time,
+> and will do our best to minimise disruption while the feature stabilises.
+
 This page contains usage guidance for SEEK's proprietary logging solution.
 
 SEEKers can visit [Backstage] for more information.
@@ -35,8 +47,8 @@ import { Env } from 'skuba-dive';
 
 const base = {
   env: Env.oneOf(Eeeoh.envs)('DD_ENV'),
-  service: Env.string('SERVICE'),
-  version: Env.string('VERSION'),
+  service: Env.string('DD_SERVICE'),
+  version: Env.string('DD_VERSION'),
 } as const;
 
 const logger = createLogger({
@@ -157,8 +169,8 @@ serviceName: my-component-name
 kind: Service
 service: '{{values "serviceName"}}'
 env:
-  ENV: '{{values "env"}}'
-  SERVICE: '{{values "serviceName"}}'
+  DD_ENV: '{{values "env"}}'
+  DD_SERVICE: '{{values "serviceName"}}'
 openTelemetry:
   useGantryServiceName: true
 ```
@@ -173,8 +185,8 @@ import { Eeeoh } from '@seek/logger';
 import { Env } from 'skuba-dive';
 
 const base = {
-  env: Env.oneOf(Eeeoh.envs)('ENV'),
-  service: Env.string('SERVICE'),
+  env: Env.oneOf(Eeeoh.envs)('DD_ENV'),
+  service: Env.string('DD_SERVICE'),
   version: Env.string('VERSION'),
 } as const;
 ```
@@ -391,11 +403,11 @@ We recommend varying `service` via environment variable:
 functions:
   FunctionA:
     environment:
-      SERVICE: component-a
+      DD_SERVICE: component-a
 
   FunctionB:
     environment:
-      SERVICE: component-b
+      DD_SERVICE: component-b
 ```
 
 ```typescript
@@ -404,7 +416,7 @@ import { Env } from 'skuba-dive';
 
 const base = {
   env: Env.oneOf(Eeeoh.envs)('DD_ENV'),
-  service: Env.string('SERVICE'), // 'component-a' | 'component-b'
+  service: Env.string('DD_SERVICE'), // 'component-a' | 'component-b'
   version: Env.string('DD_VERSION'),
 } as const;
 ```

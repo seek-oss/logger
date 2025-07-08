@@ -2,7 +2,7 @@
 '@seek/logger': major
 ---
 
-Restrict manual eeeoh configuration
+Restrict manual `base.eeeoh` configuration
 
 If you have an application that manually configures eeeoh routing like so:
 
