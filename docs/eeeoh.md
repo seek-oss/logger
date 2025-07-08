@@ -409,7 +409,7 @@ const base = {
 } as const;
 ```
 
-You could also share configuration options between loggers:
+You can also share configuration options between loggers:
 
 ```typescript
 const optionsForService = (service: string) =>
@@ -429,7 +429,7 @@ export const bLogger = createLogger(optionsForService('component-b'));
 ### By tier
 
 If your codebase makes widespread usage of multiple Datadog tiers,
-you could create a separate logger per tier.
+you can create a separate logger per tier.
 
 ```typescript
 export const tinLogger = createLogger({
@@ -443,7 +443,7 @@ export const bronzeLogger = createLogger({
 });
 ```
 
-Or, you could accomplish a similar effect with [child loggers]:
+Or, you can accomplish a similar effect with [child loggers]:
 
 ```typescript
 const noLogger = createLogger({
