@@ -12,18 +12,6 @@ It implements several SEEK customisations over [Pino], including:
 - Redaction of sensitive data
 - Trimming deep objects to reduce cost and unintended disclosure
 
-## Table of contents
-
-- [Usage](#usage)
-  - [Standardised fields](#standardised-fields)
-  - [Typed fields](#typed-fields)
-- [Features](#features)
-  - [Redaction](#redaction)
-  - [Omitting Headers]
-  - [Trimming](#trimming)
-  - [Pino customisation](#pino-customisation)
-  - [Pretty printing](#pretty-printing)
-
 ## Usage
 
 ```typescript
@@ -56,6 +44,13 @@ childLogger.error({ err }, 'Something bad happened');
 stdoutMock.calls;
 ```
 
+### eeeoh
+
+Enable the eeeoh integration for applications running inside of SEEK's standard workload hosting environments.
+This is an experimental feature that enables first-class support for SEEK's proprietary logging solution.
+
+See the [documentation](./docs/eeeoh.md) for more information.
+
 ### Standardised fields
 
 **@seek/logger** bundles custom `req`, `res` and `headers` serializers along with [Pino]'s standard set.
@@ -63,7 +58,7 @@ User-defined serializers will take precedence over predefined ones.
 
 Use the following standardised logging fields to benefit from customised serialization:
 
-- `err` for errors.
+- `error` for errors.
 
   The [Error] is serialized with its message, name, stack and additional properties.
   Notice that this is not possible with e.g. `JSON.stringify(new Error())`.

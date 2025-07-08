@@ -194,13 +194,14 @@ describe('res', () => {
 describe('serializers', () => {
   test('it exports the expected properties', () => {
     expect(serializers).toMatchInlineSnapshot(`
-      {
-        "err": [Function],
-        "errWithCause": [Function],
-        "headers": [Function],
-        "req": [Function],
-        "res": [Function],
-      }
-    `);
+{
+  "err": [Function],
+  "errWithCause": [Function],
+  "error": [Function],
+  "headers": [Function],
+  "req": [Function],
+  "res": [Function],
+}
+`);
   });
 });
