@@ -7,8 +7,15 @@ Restrict select log attributes
 When specifying attributes in a child logger or log method:
 
 ```typescript
-logger.child({ /* here */ });
-logger.method({ /* here */ }, msg);
+logger.child({
+  /* here */
+});
+logger.method(
+  {
+    /* here */
+  },
+  msg,
+);
 ```
 
 The following keys now fail type checking:
