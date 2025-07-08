@@ -156,7 +156,7 @@ metadata:
 
 Components deployed to Gantry workload hosting receive a `VERSION` environment variable at runtime.
 
-Pipe through `ENV` and `SERVICE` yourself:
+Pipe through `DD_ENV` and `DD_SERVICE` yourself:
 
 ```yaml
 # Values file: .gantry/production.yml | values.yaml
