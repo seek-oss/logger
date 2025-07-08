@@ -137,6 +137,16 @@ export type Bindings<CustomLevels extends string> = {
   eeeoh?: Config<CustomLevels>;
 
   /**
+   * @deprecated Use `eeeoh` with 3 `e`s.
+   */
+  eeoh?: never;
+
+  /**
+   * @deprecated Use `eeeoh` with 3 `e`s.
+   */
+  eeeeoh?: never;
+
+  /**
    * The SEEK `X-Request-Id` used to correlate requests.
    */
   'x-request-id'?: string;
@@ -199,6 +209,16 @@ export type Fields = {
   eeeoh?: {
     datadog: DatadogTier | false;
   };
+
+  /**
+   * @deprecated Use `eeeoh` with 3 `e`s.
+   */
+  eeoh?: never;
+
+  /**
+   * @deprecated Use `eeeoh` with 3 `e`s.
+   */
+  eeeeoh?: never;
 
   /**
    * @deprecated Use `error` instead.
@@ -312,6 +332,16 @@ export type Options<CustomLevels extends string> =
          * @deprecated Use the top-level `eeeoh` logger option.
          */
         eeeoh?: never;
+
+        /**
+         * @deprecated Use the top-level `eeeoh` logger option with 3 `e`s.
+         */
+        eeoh?: never;
+
+        /**
+         * @deprecated Use the top-level `eeeoh` logger option with 3 `e`s.
+         */
+        eeeeoh?: never;
 
         /**
          * @deprecated Use `service`.
