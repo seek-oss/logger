@@ -2,7 +2,7 @@
 '@seek/logger': major
 ---
 
-Restrict manual eeeoh configuration
+Restrict manual `base.eeeoh` configuration
 
 If you have an application that manually configures eeeoh routing like so:
 
@@ -41,28 +41,4 @@ createLogger({
 });
 ```
 
-The built-in integration does not support dual-shipping to Datadog & Splunk. If you use this feature, you may temporarily ignore the type error:
-
-```typescript
-createLogger({
-  // @ts-expect-error - temporarily support dual shipping to Datadog & Splunk
-  base: {
-    ddsource: 'nodejs',
-    ddtags: `version:${process.env.VERSION || 'missing'},env:${process.env.ENVIRONMENT || 'missing'}`,
-    service: 'my-component-name',
-    eeeoh: {
-      logs: {
-        datadog: {
-          enabled: true,
-          tier: 'tin',
-        },
-        splunk: {
-          index: 'my-index-name',
-          source: 'my-source-name',
-          sourcetype: '_json',
-        },
-      },
-    },
-  },
-});
-```
+The built-in integration does not support configuring a Splunk destination; you can append a Splunk destination via your LogCentral strategy.
