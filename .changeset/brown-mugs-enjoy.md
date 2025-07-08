@@ -28,9 +28,11 @@ The following keys now fail type checking:
 
 The following keys now have specific TypeScript types associated with them:
 
-- `duration: number`
-- `eeeoh: object`
-- `latency: number`
-- `x-request-id: string`
+| Key            | Type     |
+| :------------- | :------- |
+| `duration`     | `number` |
+| `eeeoh`        | `object` |
+| `latency`      | `number` |
+| `x-request-id` | `string` |
 
 Reach out if these new type definitions pose problems for your application.

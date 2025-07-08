@@ -2,7 +2,7 @@
 '@seek/logger': minor
 ---
 
-Add `eeeoh` integration
+Add eeeoh integration
 
 This is an experimental feature that enables first-class support for SEEK's proprietary logging solution.
 
