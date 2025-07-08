@@ -159,6 +159,8 @@ service: '{{values "serviceName"}}'
 env:
   ENV: '{{values "env"}}'
   SERVICE: '{{values "serviceName"}}'
+openTelemetry:
+  useGantryServiceName: true
 ```
 
 Then, read the values in your application code:
