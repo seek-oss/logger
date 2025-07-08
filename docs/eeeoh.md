@@ -468,5 +468,5 @@ export const bronzeLogger = noLogger.child({
 [Datadog tiering]: https://backstage.myseek.xyz/docs/default/system/eeeoh/datadog-tier/
 [Datadog unified service tagging]: https://docs.datadoghq.com/getting_started/tagging/unified_service_tagging/
 [deployment]: https://backstage.myseek.xyz/docs/default/component/automat-docs/v1-pre/concept-maps/automat/concepts/deployment/
-[RFC002]: https://rfc.skinfra.xyz/RFC002-RequestIds.html
+[RFC002]: https://backstage.myseek.xyz/docs/default/component/rfcs/RFC002-RequestIds/
 [Serverless plugin]: https://docs.datadoghq.com/serverless/libraries_integrations/plugin/#configuration-parameters
