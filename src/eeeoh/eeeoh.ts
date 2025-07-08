@@ -250,6 +250,89 @@ export type Fields = {
   'x-request-id'?: string;
 };
 
+type Base = {
+  /**
+   * The environment that the component is deployed to.
+   *
+   * Carefully set this to enable correlation of observability data.
+   *
+   * See the documentation for more information:
+   * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+   */
+  env: Env;
+
+  /**
+   * The name of the component, or the service name override on a
+   * deployment of the component.
+   *
+   * Carefully set this to enable correlation of observability data.
+   *
+   * See the documentation for more information:
+   * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+   */
+  service: string;
+
+  /**
+   * The unique identifier for the current deployment.
+   *
+   * Carefully set this to enable correlation of observability data.
+   *
+   * See the documentation for more information:
+   * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+   */
+  version: string;
+
+  /**
+   * @deprecated Do not customise `ddsource`.
+   *
+   * This is pre-configured to match the expectations of eeeoh destinations.
+   *
+   * Contact the maintainers if you have a use case for this.
+   */
+  ddsource?: never;
+
+  /**
+   * @deprecated Do not customise `ddtags`.
+   *
+   * This is pre-configured to match the expectations of eeeoh destinations.
+   *
+   * Contact the maintainers if you have a use case for this.
+   */
+  ddtags?: never;
+
+  /**
+   * @deprecated Use the top-level `eeeoh` logger option.
+   */
+  eeeoh?: never;
+
+  /**
+   * @deprecated Use the top-level `eeeoh` logger option with 3 `e`s.
+   */
+  eeoh?: never;
+
+  /**
+   * @deprecated Use the top-level `eeeoh` logger option with 3 `e`s.
+   */
+  eeeeoh?: never;
+
+  /**
+   * @deprecated Use `service`.
+   */
+  app?: never;
+
+  /**
+   * @deprecated Use `env`.
+   */
+  environment?: never;
+
+  /**
+   * @deprecated Use `service`.
+   */
+  name?: never;
+
+  [key: string]: unknown;
+};
+
 export type Options<CustomLevels extends string> =
   | {
       /**
@@ -278,88 +361,7 @@ export type Options<CustomLevels extends string> =
        */
       eeeoh: Config<CustomLevels>;
 
-      base: {
-        /**
-         * The environment that the component is deployed to.
-         *
-         * Carefully set this to enable correlation of observability data.
-         *
-         * See the documentation for more information:
-         * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
-         */
-        env: Env;
-
-        /**
-         * The name of the component, or the service name override on a
-         * deployment of the component.
-         *
-         * Carefully set this to enable correlation of observability data.
-         *
-         * See the documentation for more information:
-         * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
-         */
-        service: string;
-
-        /**
-         * The unique identifier for the current deployment.
-         *
-         * Carefully set this to enable correlation of observability data.
-         *
-         * See the documentation for more information:
-         * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
-         */
-        version: string;
-
-        /**
-         * @deprecated Do not customise `ddsource`.
-         *
-         * This is pre-configured to match the expectations of eeeoh destinations.
-         *
-         * Contact the maintainers if you have a use case for this.
-         */
-        ddsource?: never;
-
-        /**
-         * @deprecated Do not customise `ddtags`.
-         *
-         * This is pre-configured to match the expectations of eeeoh destinations.
-         *
-         * Contact the maintainers if you have a use case for this.
-         */
-        ddtags?: never;
-
-        /**
-         * @deprecated Use the top-level `eeeoh` logger option.
-         */
-        eeeoh?: never;
-
-        /**
-         * @deprecated Use the top-level `eeeoh` logger option with 3 `e`s.
-         */
-        eeoh?: never;
-
-        /**
-         * @deprecated Use the top-level `eeeoh` logger option with 3 `e`s.
-         */
-        eeeeoh?: never;
-
-        /**
-         * @deprecated Use `service`.
-         */
-        app?: never;
-
-        /**
-         * @deprecated Use `env`.
-         */
-        environment?: never;
-
-        /**
-         * @deprecated Use `service`.
-         */
-        name?: never;
-
-        [key: string]: unknown;
-      };
+      base: Base;
 
       /**
        * @deprecated Do not customise `errorKey` if you opt in to eeeoh.
