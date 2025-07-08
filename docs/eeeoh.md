@@ -287,9 +287,8 @@ Pass through the original error to the key.
 Extracting specific properties is not recommended as you may drop valuable context such as the stack trace.
 
 ```diff
-- } catch (error) {
+  } catch (error) {
 -   logger.error({ error: error.message }, 'Badness!')
-+ } catch (error) {
 +   logger.error(error, 'Badness!')
 ```
 
