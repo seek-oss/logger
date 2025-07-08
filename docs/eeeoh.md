@@ -286,7 +286,7 @@ To include the error among other additional attributes on the log:
 Pass through the original error to the key.
 Extracting specific properties is not recommended as you may drop valuable context such as the stack trace.
 
-```diff
+````diff
 - } catch (error) {
 -   logger.error({ error: error.message }, 'Badness!')
 + } catch (error) {
@@ -322,7 +322,7 @@ const logger = createLogger({
 logger.info('A tin message');
 logger.warn('A tin message');
 logger.error('A tin message');
-```
+````
 
 ### Tier by level
 
