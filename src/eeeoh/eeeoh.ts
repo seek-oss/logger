@@ -30,6 +30,11 @@ const parseDatadogTier = oneOf(
 
 export type DatadogTier = Infer<typeof parseDatadogTier>;
 
+export type DatadogConfig<CustomLevels extends string = never> =
+  | DatadogTier
+  | [DatadogTier, Partial<Record<CustomLevels | pino.Level, DatadogTier>>]
+  | false;
+
 type LevelToTier = (level: number) => DatadogTier | false | null;
 
 const parseTierByLevelMap = dictionary<string, DatadogTier>(
@@ -74,10 +79,7 @@ export type Config<CustomLevels extends string> = {
    * See the documentation for more information:
    * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
    */
-  datadog:
-    | DatadogTier
-    | [DatadogTier, Partial<Record<CustomLevels | pino.Level, DatadogTier>>]
-    | false;
+  datadog: DatadogConfig<CustomLevels>;
 };
 
 export type Bindings<CustomLevels extends string> = {
