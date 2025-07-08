@@ -16,13 +16,15 @@ logger.method({ env }, msg);
 
 The following keys now fail type checking:
 
-- `ddsource`
-- `ddtags`
-- `eeeeoh`
-- `eeoh`
-- `env`
-- `service`
-- `version`
+| Key        | Replacement                                              |
+| :--------- | :------------------------------------------------------- |
+| `ddsource` | None; leave to `createLogger({ eeeoh })` to autogenerate |
+| `ddtags`   | None; leave to `createLogger({ eeeoh })` to autogenerate |
+| `eeeeoh`   | Set upfront via `createLogger({ eeeoh })`                |
+| `eeoh`     | Set upfront via `createLogger({ eeeoh })`                |
+| `env`      | Set upfront via `createLogger({ base: { env } })`        |
+| `service`  | Set upfront via `createLogger({ base: { service } })`    |
+| `version`  | Set upfront via `createLogger({ base: { version } })`    |
 
 The following keys now have specific TypeScript types associated with them:
 
