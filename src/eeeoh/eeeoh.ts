@@ -1,11 +1,14 @@
 import pino from 'pino';
 import {
   type Infer,
+  chain,
   dictionary,
   equals,
+  failure,
   objectCompiled,
   oneOf,
   parseString,
+  success,
   tuple,
 } from 'pure-parse';
 
@@ -14,6 +17,16 @@ import { ddtags } from './ddtags';
 export const envs = ['development', 'production', 'sandbox', 'test'] as const;
 
 export type Env = (typeof envs)[number];
+
+const parseNonEmptyString = chain(parseString, (value) =>
+  value.trim().length ? success(value) : failure('String cannot be empty'),
+);
+
+const parseBase = objectCompiled({
+  env: oneOf(...envs.map((env) => equals(env))),
+  service: parseNonEmptyString,
+  version: parseNonEmptyString,
+});
 
 const parseDatadogTier = oneOf(
   equals('zero'),
@@ -352,17 +365,30 @@ export type Options<CustomLevels extends string> =
         [key: string]: unknown;
       };
     }
-  | {
-      /**
-       * The eeeoh routing configuration for the logger.
-       *
-       * See the documentation for more information:
-       * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
-       */
-      eeeoh: Config<CustomLevels>;
+  | ((
+      | {
+          /**
+           * The eeeoh routing configuration for the logger.
+           *
+           * See the documentation for more information:
+           * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+           */
+          eeeoh: Config<CustomLevels> & { fromEnvironment: true };
 
-      base: Base;
+          base?: Partial<Base>;
+        }
+      | {
+          /**
+           * The eeeoh routing configuration for the logger.
+           *
+           * See the documentation for more information:
+           * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+           */
+          eeeoh: Config<CustomLevels> & { fromEnvironment?: false };
 
+          base: Base;
+        }
+    ) & {
       /**
        * @deprecated Do not customise `errorKey` if you opt in to eeeoh.
        *
@@ -391,7 +417,7 @@ export type Options<CustomLevels extends string> =
        * Contact the maintainers if you have a use case for this.
        */
       useOnlyCustomLevels?: false;
-    };
+    });
 
 const formatOutput = (tier: DatadogTier | false | null) =>
   tier === null
@@ -435,9 +461,46 @@ const getTierForLevel = (
   return defaultTier;
 };
 
+const getBaseOrThrow = <CustomLevels extends string>(
+  opts: Extract<CreateOptions<CustomLevels>, { eeeoh: object }>,
+) => {
+  const result = parseBase(
+    opts.eeeoh.fromEnvironment
+      ? {
+          env: process.env.DD_ENV,
+          service: process.env.DD_SERVICE,
+          version:
+            process.env.DD_VERSION ??
+            // Fallback for Gantry which only sets `VERSION`
+            process.env.VERSION,
+        }
+      : opts.base,
+  );
+
+  if (result.error) {
+    throw new Error(
+      opts.eeeoh.fromEnvironment
+        ? '@seek/logger found invalid values in environment variables: DD_ENV | DD_SERVICE | DD_VERSION. Review the documentation and ensure your deployment configures these environment variables correctly.'
+        : '@seek/logger found invalid values in instantiation options: { base: { env, service, version } }. Review the documentation and ensure your application configures these options correctly.',
+    );
+  }
+
+  const { env, service, version } = result.value;
+
+  return {
+    ddsource: 'nodejs',
+    ddtags: ddtags({ env, version }),
+    env,
+    service,
+    version,
+  };
+};
+
+type CreateOptions<CustomLevels extends string> = Options<CustomLevels> &
+  Pick<pino.LoggerOptions<CustomLevels>, 'mixin' | 'mixinMergeStrategy'>;
+
 export const createOptions = <CustomLevels extends string>(
-  opts: Options<CustomLevels> &
-    Pick<pino.LoggerOptions<CustomLevels>, 'mixin' | 'mixinMergeStrategy'>,
+  opts: CreateOptions<CustomLevels>,
 ): Pick<
   pino.LoggerOptions<CustomLevels>,
   'base' | 'errorKey' | 'mixin' | 'mixinMergeStrategy'
@@ -533,13 +596,10 @@ export const createOptions = <CustomLevels extends string>(
     mixin: opts.mixin,
   };
 
+  const base = opts.eeeoh ? getBaseOrThrow(opts) : undefined;
+
   return {
-    base: opts.eeeoh
-      ? {
-          ddsource: 'nodejs',
-          ddtags: ddtags({ env: opts.base.env, version: opts.base.version }),
-        }
-      : {},
+    base,
 
     errorKey: opts.eeeoh ? 'error' : 'err',
 
