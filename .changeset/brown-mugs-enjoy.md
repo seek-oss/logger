@@ -35,5 +35,4 @@ The following keys now have specific TypeScript types associated with them:
 | `latency`      | `number` |
 | `x-request-id` | `string` |
 
-This change aims to drive alignment with [eeeoh](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md) & Datadog conventions for an improved out-of-box experience.
-Reach out if these new type definitions pose problems for your application.
+This change aims to drive alignment with [eeeoh](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md) & Datadog conventions for an improved out-of-box experience. Reach out if these new type definitions pose problems for your application.
