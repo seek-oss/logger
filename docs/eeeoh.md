@@ -190,7 +190,7 @@ env:
   VERSION: ${BUILDKITE_COMMIT:0:7}.${BUILDKITE_BUILD_NUMBER}
 ```
 
-Then, pipe through `DD_ENV`, `DD_SERVICE`, and `DD_VERSION` via Datadog tooling:
+Then, pipe through `DD_ENV`, `DD_SERVICE`, and `DD_VERSION` via the [Datadog CDK Construct]:
 
 ```typescript
 // infra/appStack.ts
@@ -232,8 +232,6 @@ const base = {
   version: Env.string('DD_VERSION'),
 } as const;
 ```
-
-See the [Datadog CDK Construct] documentation for more information.
 
 ### AWS Lambda via Serverless
 
