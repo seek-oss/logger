@@ -4,29 +4,14 @@
 
 Restrict select log attributes
 
-The following bindings now fail type checking upon creating a child logger:
+When specifying attributes in a child logger or log method:
 
 ```typescript
-logger.child({
-  // bindings
-});
+logger.child({ /* here */ });
+logger.method({ /* here */ }, msg);
 ```
 
-- `ddsource`
-- `ddtags`
-- `env`
-- `version`
-
-The following fields now fail type checking upon composing a log:
-
-```typescript
-logger.method(
-  {
-    // fields
-  },
-  msg,
-);
-```
+The following keys now fail type checking:
 
 - `ddsource`
 - `ddtags`
