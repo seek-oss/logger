@@ -22,21 +22,25 @@ These optional features are not relevant to applications that run outside of SEE
 To opt in:
 
 ```typescript
+// process.env.DD_ENV = 'production';
+// process.env.DD_SERVICE = 'my-component-name';
+// process.env.DD_VERSION = 'abcdefa.123';
+
 import { createLogger } from '@seek/logger';
 
-const base = {
-  env: 'production',
-  service: 'my-component-name',
-  version: 'abcdefa.123',
-} as const;
-
 const logger = createLogger({
-  base,
-  eeeoh: { datadog: 'tin' },
+  eeeoh: { datadog: 'tin', fromEnvironment: true },
 });
 ```
 
-In practice, you'd likely read `base` values from environment variables:
+The `fromEnvironment` option assumes that you have the following environment variables set.
+It throws an error if they fail validation as we recommend failing fast over silently continuing in a misconfigured state.
+
+- `DD_ENV`
+- `DD_SERVICE`
+- `DD_VERSION` | `VERSION`
+
+You can accomplish a similar effect by manually configuring the [base attributes](#base-attributes) like so:
 
 ```typescript
 import { Eeeoh } from '@seek/logger';
@@ -120,20 +124,13 @@ Reach out if you have a need to set custom values for these attributes.
 ### Automat workload hosting
 
 Components deployed to Automat workload hosting receive `DD_ENV`, `DD_SERVICE`, `DD_VERSION` environment variables at runtime.
-Read the values in your application code.
+Read the values `fromEnvironment` in your application code:
 
 ```typescript
-import { Eeeoh } from '@seek/logger';
-
-// `Env` is like `process.env` but throws an error if the variable is not set.
-// We recommend failing fast over silently continuing in a misconfigured state.
-import { Env } from 'skuba-dive';
-
-const base = {
-  env: Env.oneOf(Eeeoh.envs)('DD_ENV'),
-  service: Env.string('DD_SERVICE'),
-  version: Env.string('DD_VERSION'),
-} as const;
+// src/framework/logging.ts
+const logger = createLogger({
+  eeeoh: { datadog: 'tin', fromEnvironment: true },
+});
 ```
 
 `DD_SERVICE` is derived from the following attributes:
@@ -175,20 +172,13 @@ openTelemetry:
   useGantryServiceName: true
 ```
 
-Then, read the values in your application code:
+Then, read the values `fromEnvironment` in your application code:
 
 ```typescript
-import { Eeeoh } from '@seek/logger';
-
-// `Env` is like `process.env` but throws an error if the variable is not set.
-// We recommend failing fast over silently continuing in a misconfigured state.
-import { Env } from 'skuba-dive';
-
-const base = {
-  env: Env.oneOf(Eeeoh.envs)('DD_ENV'),
-  service: Env.string('DD_SERVICE'),
-  version: Env.string('VERSION'),
-} as const;
+// src/framework/logging.ts
+const logger = createLogger({
+  eeeoh: { datadog: 'tin', fromEnvironment: true },
+});
 ```
 
 ### AWS Lambda via AWS CDK
@@ -228,21 +218,13 @@ const datadog = new DatadogLambda(this, 'datadog', {
 datadog.addLambdaFunctions([worker]);
 ```
 
-Finally, read the values in your application code:
+Finally, read the values `fromEnvironment` in your application code:
 
 ```typescript
 // src/framework/logging.ts
-import { Eeeoh } from '@seek/logger';
-
-// `Env` is like `process.env` but throws an error if the variable is not set.
-// We recommend failing fast over silently continuing in a misconfigured state.
-import { Env } from 'skuba-dive';
-
-const base = {
-  env: Env.oneOf(Eeeoh.envs)('DD_ENV'),
-  service: Env.string('DD_SERVICE'),
-  version: Env.string('DD_VERSION'),
-} as const;
+const logger = createLogger({
+  eeeoh: { datadog: 'tin', fromEnvironment: true },
+});
 ```
 
 ### AWS Lambda via Serverless
@@ -325,9 +307,9 @@ The simplest approach is to specify a static default tier:
 import { createLogger } from '@seek/logger';
 
 const logger = createLogger({
-  base,
   eeeoh: {
     datadog: 'tin',
+    fromEnvironment: true,
   },
 });
 
@@ -345,7 +327,6 @@ you may specify level-based tiering:
 import { createLogger } from '@seek/logger';
 
 const logger = createLogger({
-  base,
   eeeoh: {
     datadog: [
       // Default
@@ -356,6 +337,7 @@ const logger = createLogger({
         // All levels above warn will inherit `silver`
       },
     ],
+    fromEnvironment: true,
   },
 });
 
@@ -373,8 +355,10 @@ First, define the default:
 
 ```typescript
 const logger = createLogger({
-  base,
-  eeeoh: { datadog: 'tin' },
+  eeeoh: {
+    datadog: 'tin',
+    fromEnvironment: true,
+  },
 });
 ```
 
@@ -411,14 +395,12 @@ functions:
 ```
 
 ```typescript
-import { Eeeoh } from '@seek/logger';
-import { Env } from 'skuba-dive';
-
-const base = {
-  env: Env.oneOf(Eeeoh.envs)('DD_ENV'),
-  service: Env.string('DD_SERVICE'), // 'component-a' | 'component-b'
-  version: Env.string('DD_VERSION'),
-} as const;
+createLogger({
+  eeeoh: {
+    datadog: 'tin',
+    fromEnvironment: true, // DD_SERVICE: 'component-a' | 'component-b'
+  },
+});
 ```
 
 You can also share configuration options between loggers:
@@ -445,13 +427,11 @@ you can create a separate logger per tier.
 
 ```typescript
 export const tinLogger = createLogger({
-  base,
-  eeeoh: { datadog: 'tin' },
+  eeeoh: { datadog: 'tin', fromEnvironment: true },
 });
 
 export const bronzeLogger = createLogger({
-  base,
-  eeeoh: { datadog: 'bronze' },
+  eeeoh: { datadog: 'bronze', fromEnvironment: true },
 });
 ```
 
@@ -459,8 +439,7 @@ Or, you can accomplish a similar effect with [child loggers]:
 
 ```typescript
 const noLogger = createLogger({
-  base,
-  eeeoh: { datadog: false },
+  eeeoh: { datadog: false, fromEnvironment: true },
 });
 
 export const tinLogger = noLogger.child({
