@@ -370,8 +370,10 @@ const configs = {
 const { datadog } = configs[env];
 
 createLogger({
-  base,
-  eeeoh: { datadog: config },
+  eeeoh: {
+    datadog,
+    fromEnvironment: true,
+  },
 });
 ```
 
