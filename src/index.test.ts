@@ -1617,7 +1617,7 @@ describe('eeeoh', () => {
     { DD_SERVICE: '  ' },
     { DD_VERSION: '' },
     { DD_ENV: null, DD_SERVICE: null, DD_VERSION: null },
-  ])('fromEnvironment: invalid environment variables %p', (envOverrides) => {
+  ])('use environment: invalid environment variables %p', (envOverrides) => {
     process.env.DD_ENV = 'development';
     process.env.DD_SERVICE = 'deployment-service-name';
     process.env.DD_VERSION = 'abcdef';
@@ -1626,21 +1626,21 @@ describe('eeeoh', () => {
 
     expect(() =>
       createLogger({
-        eeeoh: { datadog: 'tin', fromEnvironment: true },
+        eeeoh: { datadog: 'tin', use: 'environment' },
       }),
     ).toThrow(
       '@seek/logger found invalid values in environment variables: DD_ENV | DD_SERVICE | DD_VERSION. Review the documentation and ensure your deployment configures these environment variables correctly.',
     );
   });
 
-  test('fromEnvironment: valid environment variables', () => {
+  test('use environment: valid environment variables', () => {
     process.env.DD_ENV = 'development';
     process.env.DD_SERVICE = 'deployment-service-name';
     process.env.DD_VERSION = 'process.env.DD_VERSION';
     delete process.env.VERSION;
 
     createLogger(
-      { eeeoh: { datadog: 'tin', fromEnvironment: true } },
+      { eeeoh: { datadog: 'tin', use: 'environment' } },
       destination,
     ).info(1);
 
@@ -1648,7 +1648,7 @@ describe('eeeoh', () => {
     process.env.VERSION = 'process.env.VERSION';
 
     createLogger(
-      { eeeoh: { datadog: 'tin', fromEnvironment: true } },
+      { eeeoh: { datadog: 'tin', use: 'environment' } },
       destination,
     ).info(2);
 
@@ -1685,6 +1685,38 @@ describe('eeeoh', () => {
           "level": 30,
           "msg": 2,
           "service": "deployment-service-name",
+        },
+      ]
+    `);
+  });
+
+  test('use mock', () => {
+    delete process.env.DD_ENV;
+    delete process.env.DD_SERVICE;
+    delete process.env.DD_VERSION;
+    delete process.env.VERSION;
+
+    createLogger({ eeeoh: { datadog: 'tin', use: 'mock' } }, destination).info(
+      Infinity,
+    );
+
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
+      [
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:test,version:test-version",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "env": "test",
+          "level": 30,
+          "msg": null,
+          "service": "test-service",
         },
       ]
     `);

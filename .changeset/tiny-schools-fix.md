@@ -24,11 +24,11 @@ createLogger({
 });
 ```
 
-`@seek/logger` will now treat this as a type error to encourage adoption and stronger typing of our [built-in eeeoh integration](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md). Take particular note of the [`fromEnvironment` prerequisites](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#getting-started) and option to instead define [`base` attributes](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#getting-started) before proceeding.
+`@seek/logger` will now treat this as a type error to encourage adoption and stronger typing of our [built-in eeeoh integration](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md). Take particular note of the [`use: 'environment'` prerequisites](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#getting-started) and option to instead define [`base` attributes](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#getting-started) before proceeding.
 
 ```typescript
 createLogger({
-  eeeoh: { datadog: 'tin', fromEnvironment: true },
+  eeeoh: { datadog: 'tin', use: 'environment' },
 });
 ```
 

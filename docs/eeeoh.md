@@ -29,11 +29,14 @@ To opt in:
 import { createLogger } from '@seek/logger';
 
 const logger = createLogger({
-  eeeoh: { datadog: 'tin', fromEnvironment: true },
+  eeeoh: {
+    datadog: 'tin',
+    use: process.env.ENVIRONMENT === 'test' ? 'mock' : 'environment',
+  },
 });
 ```
 
-The `fromEnvironment` option assumes that you have the following environment variables set.
+The `use: 'environment'` option assumes that you have the following environment variables set.
 It throws an error if they fail validation as we recommend failing fast over silently continuing in a misconfigured state.
 
 - `DD_ENV`
@@ -60,6 +63,10 @@ const logger = createLogger({
   eeeoh: { datadog: 'tin' },
 });
 ```
+
+The `use: 'mock'` option defaults to static attributes.
+This is provided for test environments that may not have the requisite environment variables set.
+**Do not use for real deployment environments.**
 
 Note that `@seek/logger` uses simplified syntax for its configuration options.
 Logs are internally transformed to the output format expected by eeeoh:
@@ -124,12 +131,12 @@ Reach out if you have a need to set custom values for these attributes.
 ### Automat workload hosting
 
 Components deployed to Automat workload hosting receive `DD_ENV`, `DD_SERVICE`, `DD_VERSION` environment variables at runtime.
-Read the values `fromEnvironment` in your application code:
+Configure the logger to read these environment variables:
 
 ```typescript
 // src/framework/logging.ts
 const logger = createLogger({
-  eeeoh: { datadog: 'tin', fromEnvironment: true },
+  eeeoh: { datadog: 'tin', use: 'environment' },
 });
 ```
 
@@ -174,12 +181,12 @@ openTelemetry:
   useGantryServiceName: true
 ```
 
-Then, read the values `fromEnvironment` in your application code:
+Then, configure the logger to read these environment variables:
 
 ```typescript
 // src/framework/logging.ts
 const logger = createLogger({
-  eeeoh: { datadog: 'tin', fromEnvironment: true },
+  eeeoh: { datadog: 'tin', use: 'environment' },
 });
 ```
 
@@ -220,12 +227,12 @@ const datadog = new DatadogLambda(this, 'datadog', {
 datadog.addLambdaFunctions([worker]);
 ```
 
-Finally, read the values `fromEnvironment` in your application code:
+Finally, configure the logger to read these environment variables:
 
 ```typescript
 // src/framework/logging.ts
 const logger = createLogger({
-  eeeoh: { datadog: 'tin', fromEnvironment: true },
+  eeeoh: { datadog: 'tin', use: 'environment' },
 });
 ```
 
@@ -311,7 +318,7 @@ import { createLogger } from '@seek/logger';
 const logger = createLogger({
   eeeoh: {
     datadog: 'tin',
-    fromEnvironment: true,
+    use: 'environment',
   },
 });
 
@@ -339,7 +346,7 @@ const logger = createLogger({
         // All levels above warn will inherit `silver`
       },
     ],
-    fromEnvironment: true,
+    use: 'environment',
   },
 });
 
@@ -374,7 +381,7 @@ const { datadog } = configs[env];
 createLogger({
   eeeoh: {
     datadog,
-    fromEnvironment: true,
+    use: 'environment',
   },
 });
 ```
@@ -390,7 +397,7 @@ First, define the default:
 const logger = createLogger({
   eeeoh: {
     datadog: 'tin',
-    fromEnvironment: true,
+    use: 'environment',
   },
 });
 ```
@@ -431,7 +438,7 @@ functions:
 createLogger({
   eeeoh: {
     datadog: 'tin',
-    fromEnvironment: true, // DD_SERVICE: 'component-a' | 'component-b'
+    use: 'environment', // DD_SERVICE: 'component-a' | 'component-b'
   },
 });
 ```
@@ -460,11 +467,11 @@ you can create a separate logger per tier.
 
 ```typescript
 export const tinLogger = createLogger({
-  eeeoh: { datadog: 'tin', fromEnvironment: true },
+  eeeoh: { datadog: 'tin', use: 'environment' },
 });
 
 export const bronzeLogger = createLogger({
-  eeeoh: { datadog: 'bronze', fromEnvironment: true },
+  eeeoh: { datadog: 'bronze', use: 'environment' },
 });
 ```
 
@@ -472,7 +479,7 @@ Or, you can accomplish a similar effect with [child loggers]:
 
 ```typescript
 const noLogger = createLogger({
-  eeeoh: { datadog: false, fromEnvironment: true },
+  eeeoh: { datadog: false, use: 'environment' },
 });
 
 export const tinLogger = noLogger.child({
