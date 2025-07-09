@@ -9,17 +9,12 @@ This is an experimental feature that enables first-class support for SEEK's prop
 To opt in:
 
 ```typescript
-import { createLogger } from '@seek/logger';
-
-const base = {
-  env: 'production',
-  service: 'my-component-name',
-  version: 'abcdefa.123',
-} as const;
+// process.env.DD_ENV = 'production';
+// process.env.DD_SERVICE = 'my-component-name';
+// process.env.DD_VERSION = 'abcdefa.123';
 
 const logger = createLogger({
-  base,
-  eeeoh: { datadog: 'tin' },
+  eeeoh: { datadog: 'tin', fromEnvironment: true },
 });
 ```
 

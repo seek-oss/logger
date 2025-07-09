@@ -24,20 +24,11 @@ createLogger({
 });
 ```
 
-`@seek/logger` will now treat this as a type error to encourage adoption and stronger typing of our [built-in eeeoh integration](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md). Take particular note of the [new guidance](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#base-attributes) on deriving `base` attributes before proceeding.
+`@seek/logger` will now treat this as a type error to encourage adoption and stronger typing of our [built-in eeeoh integration](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md). Take particular note of the [`fromEnvironment` prerequisites](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#getting-started) and option to instead define [`base` attributes](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#getting-started) before proceeding.
 
 ```typescript
-// `Env` is like `process.env` but throws an error if the variable is not set.
-// We recommend failing fast over silently continuing in a misconfigured state.
-import { Env } from 'skuba-dive';
-
 createLogger({
-  base: {
-    env: Env.string('DD_ENV'),
-    service: Env.string('DD_SERVICE'),
-    version: Env.string('DD_VERSION'),
-  },
-  eeeoh: { datadog: 'tin' },
+  eeeoh: { datadog: 'tin', fromEnvironment: true },
 });
 ```
 

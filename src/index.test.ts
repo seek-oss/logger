@@ -1590,4 +1590,103 @@ describe('eeeoh', () => {
       },
     ]);
   });
+
+  test.each([
+    { env: 'bad' },
+    { service: '  ' },
+    { version: '' },
+    { env: null, service: null, version: null },
+  ])('invalid base attributes %p', (baseOverrides) => {
+    expect(() =>
+      createLogger({
+        base: {
+          env: 'development',
+          service: 'deployment-service-name',
+          version: 'abcdef',
+          ...(baseOverrides as any),
+        },
+        eeeoh: { datadog: 'tin' },
+      }),
+    ).toThrow(
+      '@seek/logger found invalid values in instantiation options: { base: { env, service, version } }. Review the documentation and ensure your application configures these options correctly.',
+    );
+  });
+
+  test.each([
+    { DD_ENV: 'bad' },
+    { DD_SERVICE: '  ' },
+    { DD_VERSION: '' },
+    { DD_ENV: null, DD_SERVICE: null, DD_VERSION: null },
+  ])('fromEnvironment: invalid environment variables %p', (envOverrides) => {
+    process.env.DD_ENV = 'development';
+    process.env.DD_SERVICE = 'deployment-service-name';
+    process.env.DD_VERSION = 'abcdef';
+    delete process.env.VERSION;
+    Object.assign(process.env, envOverrides);
+
+    expect(() =>
+      createLogger({
+        eeeoh: { datadog: 'tin', fromEnvironment: true },
+      }),
+    ).toThrow(
+      '@seek/logger found invalid values in environment variables: DD_ENV | DD_SERVICE | DD_VERSION. Review the documentation and ensure your deployment configures these environment variables correctly.',
+    );
+  });
+
+  test('fromEnvironment: valid environment variables', () => {
+    process.env.DD_ENV = 'development';
+    process.env.DD_SERVICE = 'deployment-service-name';
+    process.env.DD_VERSION = 'process.env.DD_VERSION';
+    delete process.env.VERSION;
+
+    createLogger(
+      { eeeoh: { datadog: 'tin', fromEnvironment: true } },
+      destination,
+    ).info(1);
+
+    delete process.env.DD_VERSION;
+    process.env.VERSION = 'process.env.VERSION';
+
+    createLogger(
+      { eeeoh: { datadog: 'tin', fromEnvironment: true } },
+      destination,
+    ).info(2);
+
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
+      [
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:process.env.DD_VERSION",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": 1,
+          "service": "deployment-service-name",
+        },
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:process.env.VERSION",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": 2,
+          "service": "deployment-service-name",
+        },
+      ]
+    `);
+  });
 });
