@@ -375,7 +375,30 @@ export type Options<CustomLevels extends string> =
            * See the documentation for more information:
            * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
            */
-          eeeoh: Config<CustomLevels> & { fromEnvironment: true };
+          eeeoh: Config<CustomLevels> & {
+            /**
+             * Whether to infer mandatory `base` attributes from environment
+             * variables.
+             *
+             * This currently requires the following environment variables:
+             *
+             * - `DD_ENV` - The environment that the component is deployed to,
+             *   e.g. `production`.
+             * - `DD_SERVICE` - The name of the component, or the service name
+             *   override on a deployment of the component, e.g.
+             *   `my-component-name` or `my-service-name-override`.
+             * - `DD_VERSION` | `VERSION` - The unique identifier for the
+             *   current deployment, e.g. `abcdefa.123`.
+             *
+             * Carefully set these to enable correlation of observability data.
+             * An error is thrown if they fail validation as we recommend
+             * failing fast over silently continuing in a misconfigured state.
+             *
+             * See the documentation for more information:
+             * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+             */
+            fromEnvironment: true;
+          };
 
           base?: Partial<Base>;
         }
@@ -386,7 +409,30 @@ export type Options<CustomLevels extends string> =
            * See the documentation for more information:
            * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
            */
-          eeeoh: Config<CustomLevels> & { fromEnvironment?: false };
+          eeeoh: Config<CustomLevels> & {
+            /**
+             * Whether to infer mandatory `base` attributes from environment
+             * variables.
+             *
+             * This currently requires the following environment variables:
+             *
+             * - `DD_ENV` - The environment that the component is deployed to,
+             *   e.g. `production`.
+             * - `DD_SERVICE` - The name of the component, or the service name
+             *   override on a deployment of the component, e.g.
+             *   `my-component-name` or `my-service-name-override`.
+             * - `DD_VERSION` | `VERSION` - The unique identifier for the
+             *   current deployment, e.g. `abcdefa.123`.
+             *
+             * Carefully set these to enable correlation of observability data.
+             * An error is thrown if they fail validation as we recommend
+             * failing fast over silently continuing in a misconfigured state.
+             *
+             * See the documentation for more information:
+             * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+             */
+            fromEnvironment?: false;
+          };
 
           base: Base;
         }
