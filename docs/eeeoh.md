@@ -33,7 +33,8 @@ const logger = createLogger({
 });
 ```
 
-The `fromEnvironment` option assumes that you have the following environment variables set:
+The `fromEnvironment` option assumes that you have the following environment variables set.
+It throws an error if they fail validation as we recommend failing fast over silently continuing in a misconfigured state.
 
 - `DD_ENV`
 - `DD_SERVICE`
@@ -306,9 +307,9 @@ The simplest approach is to specify a static default tier:
 import { createLogger } from '@seek/logger';
 
 const logger = createLogger({
-  base,
   eeeoh: {
     datadog: 'tin',
+    fromEnvironment: true,
   },
 });
 
@@ -326,7 +327,6 @@ you may specify level-based tiering:
 import { createLogger } from '@seek/logger';
 
 const logger = createLogger({
-  base,
   eeeoh: {
     datadog: [
       // Default
@@ -337,6 +337,7 @@ const logger = createLogger({
         // All levels above warn will inherit `silver`
       },
     ],
+    fromEnvironment: true,
   },
 });
 
@@ -354,8 +355,10 @@ First, define the default:
 
 ```typescript
 const logger = createLogger({
-  base,
-  eeeoh: { datadog: 'tin' },
+  eeeoh: {
+    datadog: 'tin',
+    fromEnvironment: true,
+  },
 });
 ```
 
@@ -392,14 +395,12 @@ functions:
 ```
 
 ```typescript
-import { Eeeoh } from '@seek/logger';
-import { Env } from 'skuba-dive';
-
-const base = {
-  env: Env.oneOf(Eeeoh.envs)('DD_ENV'),
-  service: Env.string('DD_SERVICE'), // 'component-a' | 'component-b'
-  version: Env.string('DD_VERSION'),
-} as const;
+createLogger({
+  eeeoh: {
+    datadog: 'tin',
+    fromEnvironment: true, // DD_SERVICE: 'component-a' | 'component-b'
+  },
+});
 ```
 
 You can also share configuration options between loggers:
@@ -426,13 +427,11 @@ you can create a separate logger per tier.
 
 ```typescript
 export const tinLogger = createLogger({
-  base,
-  eeeoh: { datadog: 'tin' },
+  eeeoh: { datadog: 'tin', fromEnvironment: true },
 });
 
 export const bronzeLogger = createLogger({
-  base,
-  eeeoh: { datadog: 'bronze' },
+  eeeoh: { datadog: 'bronze', fromEnvironment: true },
 });
 ```
 
@@ -440,8 +439,7 @@ Or, you can accomplish a similar effect with [child loggers]:
 
 ```typescript
 const noLogger = createLogger({
-  base,
-  eeeoh: { datadog: false },
+  eeeoh: { datadog: false, fromEnvironment: true },
 });
 
 export const tinLogger = noLogger.child({
