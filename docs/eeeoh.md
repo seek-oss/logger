@@ -169,6 +169,8 @@ env:
   DD_ENV: '{{values "env"}}'
   DD_SERVICE: '{{values "serviceName"}}'
 openTelemetry:
+  datadogEnvironmentName: '{{values "env"}}'
+  enabled: true
   useGantryServiceName: true
 ```
 
