@@ -364,6 +364,35 @@ logger.warn('A silver message');
 logger.error('A silver message');
 ```
 
+### Tier by environment
+
+To configure a lower tier for non-production environments,
+define your own mapping of environment to tier:
+
+```typescript
+import { Env } from 'skuba-dive';
+
+import { type Eeeoh, createLogger } from '.';
+
+type Env = (typeof envs)[number];
+
+const envs = ['development', 'production'] as const satisfies Eeeoh.Env[];
+
+const env = Env.oneOf(envs)('DD_ENV');
+
+const configs = {
+  production: { datadog: 'tin' },
+  development: { datadog: 'zero' },
+} satisfies Record<Env, { datadog: Eeeoh.DatadogConfig }>;
+
+const { datadog } = configs[env];
+
+createLogger({
+  base,
+  eeeoh: { datadog: config },
+});
+```
+
 ### Tier override
 
 Consider an application with logs where a `tin` default is generally fine.
