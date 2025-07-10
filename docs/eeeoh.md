@@ -175,6 +175,8 @@ service: '{{values "serviceName"}}'
 env:
   DD_ENV: '{{values "env"}}'
   DD_SERVICE: '{{values "serviceName"}}'
+
+# If you're using OTel, set `datadogEnvironmentName` and `useGantryServiceName`
 openTelemetry:
   datadogEnvironmentName: '{{values "env"}}'
   enabled: true
