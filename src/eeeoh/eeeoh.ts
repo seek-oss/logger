@@ -28,6 +28,8 @@ const parseBase = objectCompiled({
   version: parseNonEmptyString,
 });
 
+type ParseBase = Infer<typeof parseBase>;
+
 const parseDatadogTier = oneOf(
   equals('zero'),
   equals('tin'),
@@ -377,10 +379,9 @@ export type Options<CustomLevels extends string> =
            */
           eeeoh: Config<CustomLevels> & {
             /**
-             * Whether to infer mandatory `base` attributes from environment
-             * variables.
+             * Whether to infer mandatory `base` attributes from a source.
              *
-             * This currently requires the following environment variables:
+             * `environment` reads from the following environment variables:
              *
              * - `DD_ENV` - The environment that the component is deployed to,
              *   e.g. `production`.
@@ -394,10 +395,14 @@ export type Options<CustomLevels extends string> =
              * An error is thrown if they fail validation as we recommend
              * failing fast over silently continuing in a misconfigured state.
              *
+             * `mock` defaults to static attributes. This is provided for test
+             * environments that may not have the requisite environment
+             * variables set. **Do not use for real deployment environments.**
+             *
              * See the documentation for more information:
              * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
              */
-            fromEnvironment: true;
+            use: 'environment' | 'mock';
           };
 
           base?: Partial<Base>;
@@ -409,30 +414,7 @@ export type Options<CustomLevels extends string> =
            * See the documentation for more information:
            * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
            */
-          eeeoh: Config<CustomLevels> & {
-            /**
-             * Whether to infer mandatory `base` attributes from environment
-             * variables.
-             *
-             * This currently requires the following environment variables:
-             *
-             * - `DD_ENV` - The environment that the component is deployed to,
-             *   e.g. `production`.
-             * - `DD_SERVICE` - The name of the component, or the service name
-             *   override on a deployment of the component, e.g.
-             *   `my-component-name` or `my-service-name-override`.
-             * - `DD_VERSION` | `VERSION` - The unique identifier for the
-             *   current deployment, e.g. `abcdefa.123`.
-             *
-             * Carefully set these to enable correlation of observability data.
-             * An error is thrown if they fail validation as we recommend
-             * failing fast over silently continuing in a misconfigured state.
-             *
-             * See the documentation for more information:
-             * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
-             */
-            fromEnvironment?: false;
-          };
+          eeeoh: Config<CustomLevels>;
 
           base: Base;
         }
@@ -509,25 +491,45 @@ const getTierForLevel = (
   return defaultTier;
 };
 
+const sourceBaseValues = <CustomLevels extends string>(
+  opts: Extract<CreateOptions<CustomLevels>, { eeeoh: object }>,
+): Record<keyof ParseBase, unknown> => {
+  if (!('use' in opts.eeeoh)) {
+    return {
+      env: opts.base?.env,
+      service: opts.base?.service,
+      version: opts.base?.version,
+    };
+  }
+
+  switch (opts.eeeoh.use) {
+    case 'environment':
+      return {
+        env: process.env.DD_ENV,
+        service: process.env.DD_SERVICE,
+        version:
+          process.env.DD_VERSION ??
+          // Fallback for Gantry which only sets `VERSION`
+          process.env.VERSION,
+      };
+
+    case 'mock':
+      return {
+        env: 'test',
+        service: 'test-service',
+        version: 'test-version',
+      } satisfies ParseBase;
+  }
+};
+
 const getBaseOrThrow = <CustomLevels extends string>(
   opts: Extract<CreateOptions<CustomLevels>, { eeeoh: object }>,
 ) => {
-  const result = parseBase(
-    opts.eeeoh.fromEnvironment
-      ? {
-          env: process.env.DD_ENV,
-          service: process.env.DD_SERVICE,
-          version:
-            process.env.DD_VERSION ??
-            // Fallback for Gantry which only sets `VERSION`
-            process.env.VERSION,
-        }
-      : opts.base,
-  );
+  const result = parseBase(sourceBaseValues(opts));
 
   if (result.error) {
     throw new Error(
-      opts.eeeoh.fromEnvironment
+      'use' in opts.eeeoh
         ? '@seek/logger found invalid values in environment variables: DD_ENV | DD_SERVICE | DD_VERSION. Review the documentation and ensure your deployment configures these environment variables correctly.'
         : '@seek/logger found invalid values in instantiation options: { base: { env, service, version } }. Review the documentation and ensure your application configures these options correctly.',
     );
