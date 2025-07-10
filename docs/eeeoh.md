@@ -112,12 +112,10 @@ createLogger({
 });
 ```
 
-`env` is one of the following values for internal consistency:
+`env` is typically one of the following values for internal consistency:
 
-- `development`
-- `production`
-- `sandbox`
-- `test`
+- `development` for pre-production deployment environments
+- `production` for production deployment environments
 
 `service` is the name of the [component], or the service name override on a [deployment] of the component.
 
