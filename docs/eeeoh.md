@@ -109,6 +109,7 @@ createLogger({
 
     version: Env.string('VERSION'),
   },
++ eeeoh: { datadog: 'tin' },
 });
 ```
 
