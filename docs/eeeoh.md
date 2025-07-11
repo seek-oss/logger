@@ -248,7 +248,7 @@ const datadog = new DatadogLambda(this, 'datadog', {
   // https://docs.datadoghq.com/serverless/libraries_integrations/cdk/#configuration
   addLayers: false,
   apiKeySecret,
-  enableDatadogLogs: false,
+  enableDatadogLogs: false, // Do not ship to Datadog directly; we aggregate logs in eeeoh first
   extensionLayerVersion: DATADOG_EXTENSION_LAYER_VERSION,
   flushMetricsToLogs: false,
   // ...
@@ -305,7 +305,7 @@ custom:
     addLayers: false
     apiKeySecretArn: TODO
     enabled: true
-    enableDDLogs: false
+    enableDDLogs: false # Do not ship to Datadog directly; we aggregate logs in eeeoh first
     injectLogContext: false
 ```
 
