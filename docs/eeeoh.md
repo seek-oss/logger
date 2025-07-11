@@ -43,27 +43,6 @@ It throws an error if they fail validation as we recommend failing fast over sil
 - `DD_SERVICE`
 - `DD_VERSION` | `VERSION`
 
-You can accomplish a similar effect by manually configuring the [base attributes](#base-attributes) like so:
-
-```typescript
-import { Eeeoh } from '@seek/logger';
-
-// `Env` is like `process.env` but throws an error if the variable is not set.
-// We recommend failing fast over silently continuing in a misconfigured state.
-import { Env } from 'skuba-dive';
-
-const base = {
-  env: Env.oneOf(Eeeoh.envs)('DD_ENV'),
-  service: Env.string('DD_SERVICE'),
-  version: Env.string('DD_VERSION'),
-} as const;
-
-const logger = createLogger({
-  base,
-  eeeoh: { datadog: 'tin' },
-});
-```
-
 The `use: 'mock'` option defaults to static attributes.
 This is provided for test environments that may not have the requisite environment variables set.
 **Do not use for real deployment environments.**
@@ -92,7 +71,26 @@ Logs are internally transformed to the output format expected by eeeoh:
 ## Base attributes
 
 eeeoh prescribes [Datadog unified service tagging] as a baseline.
-Opting in mandates these attributes in the `base` configuration option:
+
+The recommended approach to satisfy this requirement is to leverage existing `DD_` environment variables:
+
+```typescript
+// process.env.DD_ENV = 'production';
+// process.env.DD_SERVICE = 'my-component-name';
+// process.env.DD_VERSION = 'abcdefa.123';
+
+import { createLogger } from '@seek/logger';
+
+const logger = createLogger({
+  eeeoh: { datadog: 'tin', use: 'environment' },
+});
+```
+
+See subsequent sections for guidance on propagating these environment variables per workload hosting environment.
+
+`base` attributes may be set manually in your application code as an escape hatch.
+Reach out if you are contemplating this option,
+as we would be keen to understand if we can cater for your use case in a different way.
 
 ```diff
 import { createLogger } from '@seek/logger';
@@ -112,7 +110,7 @@ createLogger({
 });
 ```
 
-`env` is typically one of the following values for internal consistency:
+`env` is typically one of the following values for internal consistency and forward compatibility with [Automat workload hosting](#automat-workload-hosting):
 
 - `development` for pre-production deployment environments
 - `production` for production deployment environments
