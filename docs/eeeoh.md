@@ -45,7 +45,9 @@ It throws an error if they fail validation as we recommend failing fast over sil
 
 The `use: 'mock'` option defaults to static attributes.
 This is provided for test environments that may not have the requisite environment variables set.
-**Do not use for real deployment environments.**
+
+> [!CAUTION]
+> Do not `use: 'mock'` for real deployment environments.
 
 Note that `@seek/logger` uses simplified syntax for its configuration options.
 Logs are internally transformed to the output format expected by eeeoh:
@@ -212,30 +214,68 @@ env:
   VERSION: ${BUILDKITE_COMMIT:0:7}.${BUILDKITE_BUILD_NUMBER}
 ```
 
-Then, pipe through `DD_ENV`, `DD_SERVICE`, and `DD_VERSION` via the [Datadog CDK Construct]:
+Then, pipe through `DD_ENV`, `DD_SERVICE`, and `DD_VERSION` via the [Datadog CDK Construct].
 
 ```typescript
 // infra/appStack.ts
 import { DatadogLambda } from 'datadog-cdk-constructs-v2';
 import { Env } from 'skuba-dive';
 
+// Updated by https://github.com/seek-oss/rynovate
+const DATADOG_EXTENSION_LAYER_VERSION = 64;
+
 const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
+  environment: {
+    // If you rely on a separate environment concept in your application code,
+    // that's fine but use a different environment variable than `DD_ENV`
+    MY_ENVIRONMENT_NAME: 'prod',
+  },
   // ...
 });
 
-const base = {
+const apiKeySecret = aws_secretsmanager.Secret.fromSecretPartialArn(
+  this,
+  'datadog-api-key-secret',
+  config.datadogApiKeySecretArn,
+);
+
+const datadog = new DatadogLambda(this, 'datadog', {
+  // The construct sets these attributes as `DD_{KEY}` environment variables
   env: 'production',
   service: 'my-component-name',
   version: Env.string('VERSION'),
-} as const;
 
-const datadog = new DatadogLambda(this, 'datadog', {
-  // The construct sets these attributes as `DD_{KEY}` environment variables.
-  ...base,
+  // https://docs.datadoghq.com/serverless/libraries_integrations/cdk/#configuration
+  addLayers: false,
+  apiKeySecret,
+  enableDatadogLogs: false, // Do not ship to Datadog directly; we aggregate logs in eeeoh first
+  extensionLayerVersion: DATADOG_EXTENSION_LAYER_VERSION,
+  flushMetricsToLogs: false,
   // ...
 });
 
 datadog.addLambdaFunctions([worker]);
+```
+
+If you do not intend to use the Datadog Lambda Extension,
+you can set the environment variables manually.
+
+> [!NOTE]
+> Manually setting `DD_` environment variables is not necessary if you have set `extensionLayerVersion` above.
+
+```typescript
+const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
+  environment: {
+    DD_ENV: 'production', // 'development' | 'production'
+    DD_SERVICE: 'my-component-name',
+    DD_VERSION: Env.string('VERSION'),
+
+    // If you rely on a separate environment concept in your application code,
+    // that's fine but use a different environment variable than `DD_ENV`
+    MY_ENVIRONMENT_NAME: 'prod',
+  },
+  // ...
+});
 ```
 
 Finally, configure the logger to read these environment variables:
@@ -250,15 +290,43 @@ const logger = createLogger({
 ### AWS Lambda via Serverless
 
 Follow the [above CDK guidance](#aws-lambda-via-aws-cdk),
-except to pipe through environment variables via the [Serverless plugin]:
+except to pipe through environment variables via the [Serverless plugin].
 
 ```yaml
 # serverless.yml
 custom:
   datadog:
-    env: production
-    service: my-component-name
+    # The plugin sets these attributes as `DD_{KEY}` environment variables
+    env: production # development | production
+    service: my-component-name # Also consider ${self:service}
     version: ${env:VERSION}
+
+    # https://docs.datadoghq.com/serverless/libraries_integrations/plugin/#configuration-parameters
+    addLayers: false
+    apiKeySecretArn: TODO
+    enabled: true
+    enableDDLogs: false # Do not ship to Datadog directly; we aggregate logs in eeeoh first
+    injectLogContext: false
+```
+
+If you do not intend to use the Datadog Lambda Extension,
+you can set the environment variables manually.
+
+> [!NOTE]
+> Manually setting `DD_` environment variables is not necessary if you have set `enabled: true` above.
+
+```yaml
+functions:
+  Function:
+    # ...
+    environment:
+      DD_ENV: production # development | production
+      DD_SERVICE: my-component-name # Also consider ${self:service}
+      DD_VERSION: ${env:VERSION}
+
+      # If you rely on a separate environment concept in your application code,
+      # that's fine but use a different environment variable than `DD_ENV`
+      MY_ENVIRONMENT_NAME: prod
 ```
 
 ## Event attributes
