@@ -216,9 +216,6 @@ env:
 
 Then, pipe through `DD_ENV`, `DD_SERVICE`, and `DD_VERSION` via the [Datadog CDK Construct].
 
-If you have a separate concept,
-you can retain that.
-
 ```typescript
 // infra/appStack.ts
 import { DatadogLambda } from 'datadog-cdk-constructs-v2';
@@ -228,6 +225,11 @@ import { Env } from 'skuba-dive';
 const DATADOG_EXTENSION_LAYER_VERSION = 64;
 
 const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
+  environment: {
+    // If you rely on a separate environment concept in your application code,
+    // that's fine but use a different environment variable than `DD_ENV`
+    MY_ENVIRONMENT_NAME: 'prod',
+  },
   // ...
 });
 
