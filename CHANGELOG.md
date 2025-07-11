@@ -1,5 +1,113 @@
 # @seek/logger
 
+## 11.0.0
+
+### Major Changes
+
+- Restrict select log attributes ([#184](https://github.com/seek-oss/logger/pull/184))
+
+  When specifying attributes in a child logger or log method:
+
+  ```typescript
+  logger.child({ env });
+  //             ~~~
+
+  logger.method({ env }, msg);
+  //              ~~~
+  ```
+
+  The following keys now fail type checking:
+
+  | Key        | Replacement                                              |
+  | :--------- | :------------------------------------------------------- |
+  | `ddsource` | None; leave to `createLogger({ eeeoh })` to autogenerate |
+  | `ddtags`   | None; leave to `createLogger({ eeeoh })` to autogenerate |
+  | `eeeeoh`   | Set upfront via `createLogger({ eeeoh })`                |
+  | `eeoh`     | Set upfront via `createLogger({ eeeoh })`                |
+  | `env`      | Set upfront via `createLogger({ base: { env } })`        |
+  | `service`  | Set upfront via `createLogger({ base: { service } })`    |
+  | `version`  | Set upfront via `createLogger({ base: { version } })`    |
+
+  The following keys now have specific TypeScript types associated with them:
+
+  | Key            | Type     |
+  | :------------- | :------- |
+  | `duration`     | `number` |
+  | `eeeoh`        | `object` |
+  | `latency`      | `number` |
+  | `x-request-id` | `string` |
+
+  This change aims to drive alignment with [eeeoh](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md) & Datadog conventions for an improved out-of-box experience. Reach out if these new type definitions pose problems for your application.
+
+- Apply `err` serializer to `error` key ([#184](https://github.com/seek-oss/logger/pull/184))
+
+  This allows applications to opt in to migrating from `err` to `error`. The latter provides a better out-of-box experience in Datadog as a [standard attribute](https://docs.datadoghq.com/standard-attributes/?product=log&search=error).
+
+  If your application was already sending the `error` key, you may observe slightly different output. See [`pino-std-serializers`](https://github.com/pinojs/pino-std-serializers/tree/v7.0.0?tab=readme-ov-file#exportserrerror) for more information about the serializer.
+
+- Restrict manual `base.eeeoh` configuration ([#184](https://github.com/seek-oss/logger/pull/184))
+
+  If you have an application that manually configures eeeoh routing like so:
+
+  ```typescript
+  createLogger({
+    base: {
+      ddsource: 'nodejs',
+      ddtags: `version:${process.env.VERSION || 'missing'},env:${process.env.ENVIRONMENT || 'missing'}`,
+      service: 'my-component-name',
+      eeeoh: {
+        logs: {
+          datadog: {
+            enabled: true,
+            tier: 'tin',
+          },
+        },
+      },
+    },
+  });
+  ```
+
+  `@seek/logger` will now treat this as a type error to encourage adoption and stronger typing of our [built-in eeeoh integration](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md). Take particular note of the [`use: 'environment'` prerequisites](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#getting-started) and option to instead define [`base` attributes](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#base-attributes) before proceeding.
+
+  ```typescript
+  createLogger({
+    eeeoh: { datadog: 'tin', use: 'environment' },
+  });
+  ```
+
+  The built-in integration does not support configuring a Splunk destination; you can append a Splunk destination via your LogCentral strategy.
+
+### Minor Changes
+
+- Export `createLogger` as a named export ([#189](https://github.com/seek-oss/logger/pull/189))
+
+  This improves forward compatibility with TypeScript & ESM. While the named export is recommended, there is no immediate need to migrate existing codebases, and we've left the default export in place.
+
+  **Migration:**
+
+  ```diff
+  - import createLogger from '@seek/logger';
+  + import { createLogger } from '@seek/logger';
+  ```
+
+- Add eeeoh integration ([#184](https://github.com/seek-oss/logger/pull/184))
+
+  This is an experimental feature that enables first-class support for SEEK's proprietary logging solution.
+
+  To opt in:
+
+  ```typescript
+  // process.env.DD_ENV = 'production';
+  // process.env.DD_SERVICE = 'my-component-name';
+  // process.env.DD_VERSION = 'abcdefa.123';
+
+  const logger = createLogger({
+    eeeoh: { datadog: 'tin', use: 'environment' },
+  });
+  ```
+
+  See the [documentation](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md) for more information.
+
 ## 10.0.0
 
 ### Major Changes
