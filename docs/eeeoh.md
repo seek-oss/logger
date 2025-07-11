@@ -156,10 +156,18 @@ metadata:
 
 Components deployed to Gantry workload hosting receive a `VERSION` environment variable at runtime.
 
-Pipe through `DD_ENV` and `DD_SERVICE` yourself:
+Pipe through `DD_ENV` and `DD_SERVICE` yourself.
+
+We recommend setting `DD_ENV` to one of the following values for internal consistency and forward compatibility with Automat workload hosting:
+
+- `development` for pre-production deployment environments
+- `production` for production deployment environments
+
+This environment variable can diverge from your Gantry environment name for now.
+For example, your Gantry service may be deployed into a `prod` Gantry environment with the environment variable `DD_ENV: production`.
 
 ```yaml
-# Values file: .gantry/production.yml | values.yaml
+# Values file: .gantry/prod.yml | values.yaml
 env: production
 serviceName: my-component-name
 ```
@@ -171,6 +179,10 @@ service: '{{values "serviceName"}}'
 env:
   DD_ENV: '{{values "env"}}'
   DD_SERVICE: '{{values "serviceName"}}'
+
+  # If you're using the Gantry environment name in your application code,
+  # that's fine but use a different environment variable than `DD_ENV`
+  GANTRY_ENVIRONMENT_NAME: '{{.Environment}}'
 
 # If you're using OTel, set `datadogEnvironmentName` and `useGantryServiceName`
 openTelemetry:
