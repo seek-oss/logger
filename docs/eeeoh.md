@@ -522,23 +522,6 @@ createLogger({
 });
 ```
 
-You can also share configuration options between loggers:
-
-```typescript
-const optionsForService = (service: string) =>
-  ({
-    base: {
-      ...base,
-      service,
-    },
-    eeeoh: { datadog: 'tin' },
-  }) satisfies LoggerOptions;
-
-export const aLogger = createLogger(optionsForService('component-a'));
-
-export const bLogger = createLogger(optionsForService('component-b'));
-```
-
 ### By tier
 
 If your codebase makes widespread usage of multiple Datadog tiers,
