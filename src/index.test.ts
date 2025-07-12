@@ -1595,6 +1595,7 @@ describe('eeeoh', () => {
     { env: 'bad' },
     { service: '  ' },
     { version: '' },
+    { env: undefined, version: undefined },
     { env: null, service: null, version: null },
   ])('invalid base attributes %p', (baseOverrides) => {
     expect(() =>
@@ -1607,15 +1608,14 @@ describe('eeeoh', () => {
         },
         eeeoh: { datadog: 'tin' },
       }),
-    ).toThrow(
-      '@seek/logger found invalid values in instantiation options: { base: { env, service, version } }. Review the documentation and ensure your application configures these options correctly.',
-    );
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test.each([
     { DD_ENV: 'bad' },
     { DD_SERVICE: '  ' },
     { DD_VERSION: '' },
+    { DD_ENV: undefined, DD_VERSION: undefined },
     { DD_ENV: null, DD_SERVICE: null, DD_VERSION: null },
   ])('use environment: invalid environment variables %p', (envOverrides) => {
     process.env.DD_ENV = 'development';
@@ -1623,14 +1623,17 @@ describe('eeeoh', () => {
     process.env.DD_VERSION = 'abcdef';
     delete process.env.VERSION;
     Object.assign(process.env, envOverrides);
+    for (const [key, value] of Object.entries(envOverrides)) {
+      if (value === undefined) {
+        delete process.env[key];
+      }
+    }
 
     expect(() =>
       createLogger({
         eeeoh: { datadog: 'tin', use: 'environment' },
       }),
-    ).toThrow(
-      '@seek/logger found invalid values in environment variables: DD_ENV | DD_SERVICE | DD_VERSION. Review the documentation and ensure your deployment configures these environment variables correctly.',
-    );
+    ).toThrowErrorMatchingSnapshot();
   });
 
   test('use environment: valid environment variables', () => {
