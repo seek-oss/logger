@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`eeeoh invalid base attributes {"env": "bad"} 1`] = `
+"@seek/logger found invalid values in base attributes. Review the documentation and ensure your deployment configures these correctly.
+env: expected "development" | "production" | "sandbox" | "test", received "bad""
+`;
+
+exports[`eeeoh invalid base attributes {"env": null, "service": null, "version": null} 1`] = `
+"@seek/logger found invalid values in base attributes. Review the documentation and ensure your deployment configures these correctly.
+env: expected "development" | "production" | "sandbox" | "test", received null
+service: expected non-empty string, received null
+version: expected non-empty string, received null"
+`;
+
+exports[`eeeoh invalid base attributes {"env": undefined, "version": undefined} 1`] = `
+"@seek/logger found invalid values in base attributes. Review the documentation and ensure your deployment configures these correctly.
+env: expected "development" | "production" | "sandbox" | "test", received undefined
+version: expected non-empty string, received undefined"
+`;
+
+exports[`eeeoh invalid base attributes {"service": "  "} 1`] = `
+"@seek/logger found invalid values in base attributes. Review the documentation and ensure your deployment configures these correctly.
+service: expected non-empty string, received "  ""
+`;
+
+exports[`eeeoh invalid base attributes {"version": ""} 1`] = `
+"@seek/logger found invalid values in base attributes. Review the documentation and ensure your deployment configures these correctly.
+version: expected non-empty string, received """
+`;
+
+exports[`eeeoh use environment: invalid environment variables {"DD_ENV": "bad"} 1`] = `
+"@seek/logger found invalid values in environment variables. Review the documentation and ensure your deployment configures these correctly.
+DD_ENV: expected "development" | "production" | "sandbox" | "test", received "bad""
+`;
+
+exports[`eeeoh use environment: invalid environment variables {"DD_ENV": null, "DD_SERVICE": null, "DD_VERSION": null} 1`] = `
+"@seek/logger found invalid values in environment variables. Review the documentation and ensure your deployment configures these correctly.
+DD_ENV: expected "development" | "production" | "sandbox" | "test", received "null""
+`;
+
+exports[`eeeoh use environment: invalid environment variables {"DD_ENV": undefined, "DD_VERSION": undefined} 1`] = `
+"@seek/logger found invalid values in environment variables. Review the documentation and ensure your deployment configures these correctly.
+DD_ENV: expected "development" | "production" | "sandbox" | "test", received undefined
+DD_VERSION: expected non-empty string, received undefined"
+`;
+
+exports[`eeeoh use environment: invalid environment variables {"DD_SERVICE": "  "} 1`] = `
+"@seek/logger found invalid values in environment variables. Review the documentation and ensure your deployment configures these correctly.
+DD_SERVICE: expected non-empty string, received "  ""
+`;
+
+exports[`eeeoh use environment: invalid environment variables {"DD_VERSION": ""} 1`] = `
+"@seek/logger found invalid values in environment variables. Review the documentation and ensure your deployment configures these correctly.
+DD_VERSION: expected non-empty string, received """
+`;
