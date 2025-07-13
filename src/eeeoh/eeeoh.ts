@@ -22,8 +22,10 @@ const parseNonEmptyString = chain(parseString, (value) =>
   value.trim().length ? success(value) : failure('String cannot be empty'),
 );
 
+const parseEnv = oneOf(...envs.map((env) => equals(env)));
+
 const parseBase = objectCompiled({
-  env: oneOf(...envs.map((env) => equals(env))),
+  env: parseEnv,
   service: parseNonEmptyString,
   version: parseNonEmptyString,
 });
@@ -522,28 +524,71 @@ const sourceBaseValues = <CustomLevels extends string>(
   }
 };
 
+const validate = {
+  env: (value: unknown) =>
+    parseEnv(value).error
+      ? `expected ${envs.map((e) => JSON.stringify(e)).join(' | ')}, received ${JSON.stringify(value)}`
+      : null,
+
+  nonEmptyString: (value: unknown) =>
+    parseNonEmptyString(value).error
+      ? `expected non-empty string, received ${JSON.stringify(value)}`
+      : null,
+};
+
+const newValidationError = <
+  E extends string,
+  S extends string,
+  V extends string,
+>(
+  preamble: string,
+  data: Record<string, unknown> | undefined,
+  { env, service, version }: { env: E; service: S; version: V },
+) => {
+  const issues = Object.entries({
+    [env]: validate.env(data?.[env]),
+    [service]: validate.nonEmptyString(data?.[service]),
+    [version]: validate.nonEmptyString(data?.[version]),
+  });
+
+  return new Error(
+    [
+      preamble,
+      ...issues.flatMap(([key, issue]) => (issue ? `${key}: ${issue}` : [])),
+    ].join('\n'),
+  );
+};
+
 const getBaseOrThrow = <CustomLevels extends string>(
   opts: Extract<CreateOptions<CustomLevels>, { eeeoh: object }>,
 ) => {
   const result = parseBase(sourceBaseValues(opts));
 
-  if (result.error) {
-    throw new Error(
-      'use' in opts.eeeoh
-        ? '@seek/logger found invalid values in environment variables: DD_ENV | DD_SERVICE | DD_VERSION. Review the documentation and ensure your deployment configures these environment variables correctly.'
-        : '@seek/logger found invalid values in instantiation options: { base: { env, service, version } }. Review the documentation and ensure your application configures these options correctly.',
+  if (!result.error) {
+    const { env, service, version } = result.value;
+
+    return {
+      ddsource: 'nodejs',
+      ddtags: ddtags({ env, version }),
+      env,
+      service,
+      version,
+    };
+  }
+
+  if ('use' in opts.eeeoh && opts.eeeoh.use === 'environment') {
+    throw newValidationError(
+      '@seek/logger found invalid values in environment variables. Review the documentation and ensure your deployment configures these correctly.',
+      process.env,
+      { env: 'DD_ENV', service: 'DD_SERVICE', version: 'DD_VERSION' },
     );
   }
 
-  const { env, service, version } = result.value;
-
-  return {
-    ddsource: 'nodejs',
-    ddtags: ddtags({ env, version }),
-    env,
-    service,
-    version,
-  };
+  throw newValidationError(
+    '@seek/logger found invalid values in base attributes. Review the documentation and ensure your deployment configures these correctly.',
+    opts.base,
+    { env: 'env', service: 'service', version: 'version' },
+  );
 };
 
 type CreateOptions<CustomLevels extends string> = Options<CustomLevels> &
