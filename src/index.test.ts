@@ -1616,7 +1616,7 @@ describe('eeeoh', () => {
     { DD_SERVICE: '  ' },
     { DD_VERSION: '' },
     { DD_ENV: undefined, DD_VERSION: undefined },
-    { DD_ENV: null, DD_SERVICE: null, DD_VERSION: null },
+    { DD_ENV: 'null', DD_SERVICE: 'null', DD_VERSION: 'null' },
   ])('use environment: invalid environment variables %p', (envOverrides) => {
     process.env.DD_ENV = 'development';
     process.env.DD_SERVICE = 'deployment-service-name';
