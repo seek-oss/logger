@@ -33,7 +33,7 @@ exports[`eeeoh use environment: invalid environment variables {"DD_ENV": "bad"} 
 DD_ENV: expected "development" | "production" | "sandbox" | "test", received "bad""
 `;
 
-exports[`eeeoh use environment: invalid environment variables {"DD_ENV": null, "DD_SERVICE": null, "DD_VERSION": null} 1`] = `
+exports[`eeeoh use environment: invalid environment variables {"DD_ENV": "null", "DD_SERVICE": "null", "DD_VERSION": "null"} 1`] = `
 "@seek/logger found invalid values in environment variables. Review the documentation and ensure your deployment configures these correctly.
 DD_ENV: expected "development" | "production" | "sandbox" | "test", received "null""
 `;
