@@ -1636,6 +1636,37 @@ describe('eeeoh', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
+  test('use environment: no environment variables per test environment or Automat v1+', () => {
+    delete process.env.DD_ENV;
+    delete process.env.DD_SERVICE;
+    delete process.env.DD_VERSION;
+
+    delete process.env.VERSION;
+
+    createLogger(
+      { eeeoh: { datadog: 'tin', use: 'environment' } },
+      destination,
+    ).info('no environment variables');
+
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
+      [
+        {
+          "ddsource": "nodejs",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "level": 30,
+          "msg": "no environment variables",
+        },
+      ]
+    `);
+  });
+
   test('use environment: valid environment variables', () => {
     process.env.DD_ENV = 'development';
     process.env.DD_SERVICE = 'deployment-service-name';
@@ -1688,38 +1719,6 @@ describe('eeeoh', () => {
           "level": 30,
           "msg": 2,
           "service": "deployment-service-name",
-        },
-      ]
-    `);
-  });
-
-  test('use mock', () => {
-    delete process.env.DD_ENV;
-    delete process.env.DD_SERVICE;
-    delete process.env.DD_VERSION;
-    delete process.env.VERSION;
-
-    createLogger({ eeeoh: { datadog: 'tin', use: 'mock' } }, destination).info(
-      Infinity,
-    );
-
-    expect(stdoutMock.calls).toMatchInlineSnapshot(`
-      [
-        {
-          "ddsource": "nodejs",
-          "ddtags": "env:test,version:test-version",
-          "eeeoh": {
-            "logs": {
-              "datadog": {
-                "enabled": true,
-                "tier": "tin",
-              },
-            },
-          },
-          "env": "test",
-          "level": 30,
-          "msg": null,
-          "service": "test-service",
         },
       ]
     `);

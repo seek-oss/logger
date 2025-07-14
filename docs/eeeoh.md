@@ -22,32 +22,29 @@ These optional features are not relevant to applications that run outside of SEE
 To opt in:
 
 ```typescript
-// process.env.DD_ENV = 'production';
-// process.env.DD_SERVICE = 'my-component-name';
-// process.env.DD_VERSION = 'abcdefa.123';
-
 import { createLogger } from '@seek/logger';
 
 const logger = createLogger({
   eeeoh: {
     datadog: 'tin',
-    use: process.env.ENVIRONMENT === 'test' ? 'mock' : 'environment',
+    use: 'environment',
   },
 });
 ```
 
-The `use: 'environment'` option assumes that you have the following environment variables set.
-It throws an error if they fail validation as we recommend failing fast over silently continuing in a misconfigured state.
+The `use: 'environment'` option is the recommended approach of sourcing application metadata from the workload hosting environment to annotate logs.
+
+Automat v1+ workload hosting automatically adds base attributes to your logs through a telemetry agent.
+You do not need to manually set `DD_` environment variables in this environment.
+
+You may need to manually propagate environment variables for other workload hosting environments;
+see [environment setup](#environment-setup) for detailed guidance.
+An error is thrown if an environment variable is set to an invalid value (e.g. an empty string),
+as we recommend failing fast over silently continuing in a misconfigured state.
 
 - `DD_ENV`
 - `DD_SERVICE`
 - `DD_VERSION` | `VERSION`
-
-The `use: 'mock'` option defaults to static attributes.
-This is provided for test environments that may not have the requisite environment variables set.
-
-> [!CAUTION]
-> Do not `use: 'mock'` for real deployment environments.
 
 Note that `@seek/logger` uses simplified syntax for its configuration options.
 Logs are internally transformed to the output format expected by eeeoh:
@@ -74,7 +71,11 @@ Logs are internally transformed to the output format expected by eeeoh:
 
 eeeoh prescribes [Datadog unified service tagging] as a baseline.
 
-The recommended approach to satisfy this requirement is to leverage existing `DD_` environment variables:
+The recommended approach to satisfy this requirement is sourcing application metadata from the workload hosting environment.
+
+See [environment setup](#environment-setup) for detailed guidance per workload hosting environment;
+in some cases,
+metadata is derived from `DD_` environment variables:
 
 ```typescript
 // process.env.DD_ENV = 'production';
@@ -87,8 +88,6 @@ const logger = createLogger({
   eeeoh: { datadog: 'tin', use: 'environment' },
 });
 ```
-
-See subsequent sections for guidance on propagating these environment variables per workload hosting environment.
 
 `base` attributes may be set manually in your application code as an escape hatch.
 Reach out if you are contemplating this option,
@@ -127,10 +126,12 @@ see subsequent sections for implementation guidance.
 `@seek/logger` currently auto-generates `ddsource` and `ddtags`.
 Reach out if you have a need to set custom values for these attributes.
 
+## Environment setup
+
 ### Automat workload hosting
 
-Components deployed to Automat workload hosting receive `DD_ENV`, `DD_SERVICE`, `DD_VERSION` environment variables at runtime.
-Configure the logger to read these environment variables:
+Components deployed to Automat v1+ workload hosting have metadata added to their logs by telemetry agents outside of the application process.
+Configure the logger to assume environment-based configuration:
 
 ```typescript
 // src/framework/logging.ts
@@ -139,13 +140,19 @@ const logger = createLogger({
 });
 ```
 
-`DD_SERVICE` is derived from the following attributes:
+`service` is derived from the following attributes:
 
 ```yaml
 # config/{environment}/{region}/{deployment}.yaml
 kind: Deployment
 spec:
   serviceName: my-service-name-override
+# overrides:
+#   - type: webservice
+#     properties:
+#       env:
+#         - name: DD_ENV
+#         - value: 'Do not manually set DD_ environment variables like this'
 ```
 
 ```yaml
