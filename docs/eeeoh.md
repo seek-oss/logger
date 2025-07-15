@@ -94,22 +94,22 @@ Reach out if you are contemplating this option,
 as we would be keen to understand if we can cater for your use case in a different way.
 
 ```diff
-import { createLogger } from '@seek/logger';
-import { Env } from 'skuba-dive';
+  import { createLogger } from '@seek/logger';
+  import { Env } from 'skuba-dive';
 
-createLogger({
-  base: {
--   environment: 'prod',
-+   env: 'production',
+  createLogger({
+    base: {
+-     environment: 'prod',
++     env: 'production',
 
--   app: 'my-app',
--   name: 'my-app',
-+   service: 'my-component-name',
+-     app: 'my-app',
+-     name: 'my-app',
++     service: 'my-component-name',
 
-    version: Env.string('VERSION'),
-  },
-+ eeeoh: { datadog: 'tin' },
-});
+      version: Env.string('VERSION'),
+    },
++   eeeoh: { datadog: 'tin' },
+  });
 ```
 
 `env` is typically one of the following values for internal consistency and forward compatibility with [Automat workload hosting](#automat-workload-hosting):
