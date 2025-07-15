@@ -55,7 +55,7 @@ interface LogFn {
   ): void;
 }
 
-type PinoLogger<CustomLevels extends string = never> = Omit<
+export type Logger<CustomLevels extends string = never> = Omit<
   pino.Logger<CustomLevels>,
   | 'fatal'
   | 'error'
@@ -76,35 +76,35 @@ type PinoLogger<CustomLevels extends string = never> = Omit<
   trace: LogFn;
   silent: LogFn;
 
-  child<ChildCustomLevels extends string = never>(
+  child<ChildCustomLevels extends never = never>(
     bindings: Eeeoh.Bindings<CustomLevels> & pino.Bindings,
-    options?: pino.ChildLoggerOptions<ChildCustomLevels>,
+    options?: undefined,
   ): Logger<CustomLevels | ChildCustomLevels>;
-} & Record<CustomLevels, LogFn>;
 
-export type Logger<CustomLevels extends string = never> = Omit<
-  PinoLogger<CustomLevels>,
-  'child'
-> & {
   child<ChildCustomLevels extends string = never>(
     bindings: Eeeoh.Bindings<CustomLevels> & pino.Bindings,
-    options?: Omit<
-      pino.ChildLoggerOptions<ChildCustomLevels>,
-      /**
-       * As of `pino@9.6.0`, a child that specifies `customLevels` can still
-       * access methods corresponding to the custom levels of the parent logger,
-       * but they will output malformed JSON:
-       *
-       * ```json
-       * undefined,"timestamp":"2000-01-01T00:00:00.000Z","msg":"huh?"}
-       * ```
-       *
-       * We omit child `customLevels` to avoid this issue.
-       */
-      'customLevels'
-    >,
+    options: Omit<pino.ChildLoggerOptions<ChildCustomLevels>, 'customLevels'>,
   ): Logger<CustomLevels | ChildCustomLevels>;
-};
+
+  /**
+   * As of `pino@9.6.0`, a child that specifies `customLevels` can still access
+   * methods corresponding to the custom levels of the parent logger, but they
+   * will output malformed JSON:
+   *
+   * ```json
+   * undefined,"timestamp":"2000-01-01T00:00:00.000Z","msg":"huh?"}
+   * ```
+   *
+   * We hide those "parent" methods on the child to avoid this issue.
+   */
+  child<ChildCustomLevels extends string = never>(
+    bindings: Required<Eeeoh.Bindings<ChildCustomLevels>> & pino.Bindings,
+    options: Omit<
+      pino.ChildLoggerOptions<ChildCustomLevels>,
+      'customLevels'
+    > & { customLevels: Record<ChildCustomLevels, number> },
+  ): Logger<ChildCustomLevels>;
+} & Record<CustomLevels, LogFn>;
 
 /**
  * Creates a logger that can enforce a strict logged object shape.
@@ -140,13 +140,7 @@ export const createLogger = <CustomLevels extends string = never>(
 
   opts.timestamp ??= () => `,"timestamp":"${new Date().toISOString()}"`;
 
-  const logger: PinoLogger<CustomLevels> = pino(
-    opts,
-    withRedaction(destination, opts.redactText),
-  );
-
-  // TypeScript doesn't like us omitting `customLevels`
-  return logger as Logger<CustomLevels>;
+  return pino(opts, withRedaction(destination, opts.redactText));
 };
 
 export default createLogger;
