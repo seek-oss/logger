@@ -14,17 +14,17 @@ logger.method({ env }, msg);
 //              ~~~
 ```
 
-The following keys now fail type checking as they should be set upfront in `createLogger`:
+The following keys now fail type checking:
 
-| Key        | Replacement                                                                                                     |
-| :--------- | :-------------------------------------------------------------------------------------------------------------- |
-| `ddsource` | [`eeeoh`](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md)                                         |
-| `ddtags`   | `eeeoh`                                                                                                         |
-| `eeeeoh`   | `eeeoh`                                                                                                         |
-| `eeoh`     | `eeeoh`                                                                                                         |
-| `env`      | [`eeeoh: { use: 'environment' }`](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#getting-started) |
-| `service`  | `eeeoh: { use: 'environment' }`                                                                                 |
-| `version`  | `eeeoh: { use: 'environment' }`                                                                                 |
+| Key        | Replacement                                              |
+| :--------- | :------------------------------------------------------- |
+| `ddsource` | None; leave to `createLogger({ eeeoh })` to autogenerate |
+| `ddtags`   | None; leave to `createLogger({ eeeoh })` to autogenerate |
+| `eeeeoh`   | Set upfront via `createLogger({ eeeoh })`                |
+| `eeoh`     | Set upfront via `createLogger({ eeeoh })`                |
+| `env`      | Set upfront via `createLogger({ base: { env } })`        |
+| `service`  | Set upfront via `createLogger({ base: { service } })`    |
+| `version`  | Set upfront via `createLogger({ base: { version } })`    |
 
 The following keys now have specific TypeScript types associated with them:
 
