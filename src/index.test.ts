@@ -902,20 +902,16 @@ test('using custom levels does not leak into types or runtypes of other loggers'
 test('bindings in child logger', () => {
   const logger = createLogger();
 
+  // We can't enforce type errors on these problematic bindings unless we are
+  // prepared to drop `LoggerExtras['child']` from our `Logger` type and break
+  // compatibility with the `pino.Logger` type.
   logger.child({
-    // @ts-expect-error - environment should not differ between components
     env: 'test',
 
-    // @ts-expect-error - service should not differ between components
     service: 'i-have-one-root-logger-used-by-multiple-components',
 
-    // @ts-expect-error - version should not differ between components
     version: 'version-should-not-differ-within-a-given-software-bundle',
-
-    // @ts-expect-error - enforce `nodejs` for now
     ddsource: 'locking-this-down-until-we-have-a-need-for-it',
-
-    // @ts-expect-error - limit indexable tags for now
     ddtags: 'locking-this-down-until-we-have-a-need-for-it',
   });
 });
@@ -1359,7 +1355,6 @@ describe('eeeoh', () => {
 
       logger.asplode('silver-plus from asplode level');
 
-      // @ts-expect-error - asserting type error on unsafe child init
       const childLogger = logger.child(
         {},
         {
@@ -1370,7 +1365,6 @@ describe('eeeoh', () => {
       );
 
       expect(() =>
-        // @ts-expect-error - asserting type error on unsafe child init
         childLogger.megaAsplode('broken'),
       ).toThrowErrorMatchingInlineSnapshot(
         `"No numeric value associated with log level: asplode. Ensure custom levels listed in \`eeeoh.datadog\` are configured as \`customLevels\` of the logger instance."`,
@@ -1432,7 +1426,6 @@ describe('eeeoh', () => {
       destination,
     ).child({
       eeeoh: {
-        // @ts-expect-error - asserting runtime behaviour on invalid config
         datadog: 'XXX',
       },
     });
@@ -1723,4 +1716,16 @@ describe('eeeoh', () => {
       ]
     `);
   });
+});
+
+test('type compatibility with Logger', () => {
+  const logger = createLogger() satisfies rootModule.pino.Logger;
+
+  const childLogger = logger.child({}) satisfies rootModule.pino.Logger;
+
+  childLogger.fatal(
+    'This is still blocked',
+    // @ts-expect-error - object should come first
+    { doNotAllowAnObjectHere: true },
+  );
 });
