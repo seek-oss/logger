@@ -14,7 +14,7 @@ logger.method({ env }, msg);
 //              ~~~
 ```
 
-The following keys now fail type checking as they should be set upfront in `createLogger`:
+The following keys are no longer recommended as they should be set upfront in `createLogger`:
 
 | Key        | Replacement                                                                                                     |
 | :--------- | :-------------------------------------------------------------------------------------------------------------- |
