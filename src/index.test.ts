@@ -1724,3 +1724,9 @@ describe('eeeoh', () => {
     `);
   });
 });
+
+test('type compatibility with BaseLogger', () => {
+  const logger = createLogger() satisfies rootModule.pino.BaseLogger;
+
+  logger.child({}) satisfies rootModule.pino.BaseLogger;
+});
