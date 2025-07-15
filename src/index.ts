@@ -76,34 +76,24 @@ export type Logger<CustomLevels extends string = never> = Omit<
   trace: LogFn;
   silent: LogFn;
 
-  child<ChildCustomLevels extends never = never>(
-    bindings: Eeeoh.Bindings<CustomLevels> & pino.Bindings,
-    options?: undefined,
-  ): Logger<CustomLevels | ChildCustomLevels>;
-
   child<ChildCustomLevels extends string = never>(
     bindings: Eeeoh.Bindings<CustomLevels> & pino.Bindings,
-    options: Omit<pino.ChildLoggerOptions<ChildCustomLevels>, 'customLevels'>,
-  ): Logger<CustomLevels | ChildCustomLevels>;
-
-  /**
-   * As of `pino@9.6.0`, a child that specifies `customLevels` can still access
-   * methods corresponding to the custom levels of the parent logger, but they
-   * will output malformed JSON:
-   *
-   * ```json
-   * undefined,"timestamp":"2000-01-01T00:00:00.000Z","msg":"huh?"}
-   * ```
-   *
-   * We hide those "parent" methods on the child to avoid this issue.
-   */
-  child<ChildCustomLevels extends string = never>(
-    bindings: Required<Eeeoh.Bindings<ChildCustomLevels>> & pino.Bindings,
-    options: Omit<
+    options?: Omit<
       pino.ChildLoggerOptions<ChildCustomLevels>,
+      /**
+       * As of `pino@9.6.0`, a child that specifies `customLevels` can still
+       * access methods corresponding to the custom levels of the parent logger,
+       * but they will output malformed JSON:
+       *
+       * ```json
+       * undefined,"timestamp":"2000-01-01T00:00:00.000Z","msg":"huh?"}
+       * ```
+       *
+       * We disable child `customLevels` to avoid this issue.
+       */
       'customLevels'
-    > & { customLevels: Record<ChildCustomLevels, number> },
-  ): Logger<ChildCustomLevels>;
+    >,
+  ): pino.Logger<CustomLevels | ChildCustomLevels>;
 } & Record<CustomLevels, LogFn>;
 
 /**

@@ -1359,10 +1359,10 @@ describe('eeeoh', () => {
 
       logger.asplode('silver-plus from asplode level');
 
-      // @ts-expect-error - asserting type error on unsafe child init
       const childLogger = logger.child(
         {},
         {
+          // @ts-expect-error - asserting type error on unsafe child init
           customLevels: {
             megaAsplode: 9002,
           },
@@ -1723,4 +1723,10 @@ describe('eeeoh', () => {
       ]
     `);
   });
+});
+
+test('child logger is type compatible with pino.Logger', () => {
+  const logger = createLogger();
+
+  logger.child({}) satisfies rootModule.pino.Logger;
 });
