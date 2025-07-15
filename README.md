@@ -51,6 +51,10 @@ This is an experimental feature that enables first-class support for SEEK's prop
 
 See the [documentation](./docs/eeeoh.md) for more information.
 
+### Types
+
+See our guidance on [logger types](/docs/types.md) for forward compatibility.
+
 ### Standardised fields
 
 **@seek/logger** bundles custom `req`, `res` and `headers` serializers along with [Pino]'s standard set.
