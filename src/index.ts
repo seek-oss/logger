@@ -55,7 +55,7 @@ interface LogFn {
   ): void;
 }
 
-export type Logger<CustomLevels extends string = never> = Omit<
+type PinoLogger<CustomLevels extends string = never> = Omit<
   pino.Logger<CustomLevels>,
   | 'fatal'
   | 'error'
@@ -78,6 +78,16 @@ export type Logger<CustomLevels extends string = never> = Omit<
 
   child<ChildCustomLevels extends string = never>(
     bindings: Eeeoh.Bindings<CustomLevels> & pino.Bindings,
+    options?: pino.ChildLoggerOptions<ChildCustomLevels>,
+  ): Logger<CustomLevels | ChildCustomLevels>;
+} & Record<CustomLevels, LogFn>;
+
+export type Logger<CustomLevels extends string = never> = Omit<
+  PinoLogger<CustomLevels>,
+  'child'
+> & {
+  child<ChildCustomLevels extends string = never>(
+    bindings: Eeeoh.Bindings<CustomLevels> & pino.Bindings,
     options?: Omit<
       pino.ChildLoggerOptions<ChildCustomLevels>,
       /**
@@ -89,12 +99,12 @@ export type Logger<CustomLevels extends string = never> = Omit<
        * undefined,"timestamp":"2000-01-01T00:00:00.000Z","msg":"huh?"}
        * ```
        *
-       * We disable child `customLevels` to avoid this issue.
+       * We omit child `customLevels` to avoid this issue.
        */
       'customLevels'
     >,
-  ): pino.Logger<CustomLevels | ChildCustomLevels>;
-} & Record<CustomLevels, LogFn>;
+  ): Logger<CustomLevels | ChildCustomLevels>;
+};
 
 /**
  * Creates a logger that can enforce a strict logged object shape.
@@ -130,7 +140,13 @@ export const createLogger = <CustomLevels extends string = never>(
 
   opts.timestamp ??= () => `,"timestamp":"${new Date().toISOString()}"`;
 
-  return pino(opts, withRedaction(destination, opts.redactText));
+  const logger: PinoLogger<CustomLevels> = pino(
+    opts,
+    withRedaction(destination, opts.redactText),
+  );
+
+  // TypeScript doesn't like us omitting `customLevels`
+  return logger as Logger<CustomLevels>;
 };
 
 export default createLogger;
