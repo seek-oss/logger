@@ -4,7 +4,7 @@
 
 Enforce stricter typing on child loggers
 
-This is a **breaking change** to our types that builds on [v10.0.0](https://github.com/seek-oss/logger/releases/v10.0.0) and propagates stricter parameter typing to child loggers. A consequence of this change is that the return type of `createLogger()` no longer satisfies `pino.Logger`.
+This is a **breaking change** to our types that builds on [v10.0.0](https://github.com/seek-oss/logger/releases/v10.0.0) and enforces stricter typing of child loggers. A consequence of this change is that the return type of `createLogger()` no longer satisfies `pino.Logger`.
 
 ```typescript
 import { createLogger, type pino } from '@seek/logger';
