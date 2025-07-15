@@ -383,7 +383,15 @@ export type Options<CustomLevels extends string> =
             /**
              * Whether to infer mandatory `base` attributes from a source.
              *
-             * `environment` reads from the following environment variables:
+             * `environment` is the recommended approach of sourcing application
+             * metadata from the workload hosting environment to annotate logs.
+             *
+             * Automat v1+ workload hosting automatically adds base attributes
+             * to your logs through a telemetry agent. You do not need to
+             * manually set `DD_` environment variables in this environment.
+             *
+             * AWS Lambda requires your deployment configuration to manually
+             * propagate the following environment variables:
              *
              * - `DD_ENV` - The environment that the component is deployed to,
              *   e.g. `production`.
@@ -393,18 +401,18 @@ export type Options<CustomLevels extends string> =
              * - `DD_VERSION` | `VERSION` - The unique identifier for the
              *   current deployment, e.g. `abcdefa.123`.
              *
-             * Carefully set these to enable correlation of observability data.
-             * An error is thrown if they fail validation as we recommend
-             * failing fast over silently continuing in a misconfigured state.
+             * Gantry workload hosting requires your deployment configuration to
+             * manually propagate `DD_ENV` and `DD_SERVICE`.
              *
-             * `mock` defaults to static attributes. This is provided for test
-             * environments that may not have the requisite environment
-             * variables set. **Do not use for real deployment environments.**
+             * Carefully set these to enable correlation of observability data.
+             * An error is thrown if an environment variable is set to an
+             * invalid value (e.g. an empty string), as we recommend failing
+             * fast over silently continuing in a misconfigured state.
              *
              * See the documentation for more information:
              * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
              */
-            use: 'environment' | 'mock';
+            use: 'environment';
           };
 
           base?: Partial<Base>;
@@ -495,7 +503,7 @@ const getTierForLevel = (
 
 const sourceBaseValues = <CustomLevels extends string>(
   opts: Extract<CreateOptions<CustomLevels>, { eeeoh: object }>,
-): Record<keyof ParseBase, unknown> => {
+): Record<keyof ParseBase, unknown> | null => {
   if (!('use' in opts.eeeoh)) {
     return {
       env: opts.base?.env,
@@ -506,6 +514,16 @@ const sourceBaseValues = <CustomLevels extends string>(
 
   switch (opts.eeeoh.use) {
     case 'environment':
+      if (
+        process.env.DD_ENV === undefined &&
+        process.env.DD_SERVICE === undefined &&
+        process.env.DD_VERSION === undefined
+      ) {
+        // Short circuit for Automat-like workload hosting environments where
+        // base attributes are automatically added by telemetry agents.
+        return null;
+      }
+
       return {
         env: process.env.DD_ENV,
         service: process.env.DD_SERVICE,
@@ -514,13 +532,6 @@ const sourceBaseValues = <CustomLevels extends string>(
           // Fallback for Gantry which only sets `VERSION`
           process.env.VERSION,
       };
-
-    case 'mock':
-      return {
-        env: 'test',
-        service: 'test-service',
-        version: 'test-version',
-      } satisfies ParseBase;
   }
 };
 
@@ -562,7 +573,15 @@ const newValidationError = <
 const getBaseOrThrow = <CustomLevels extends string>(
   opts: Extract<CreateOptions<CustomLevels>, { eeeoh: object }>,
 ) => {
-  const result = parseBase(sourceBaseValues(opts));
+  const baseValues = sourceBaseValues(opts);
+
+  if (!baseValues) {
+    return {
+      ddsource: 'nodejs',
+    };
+  }
+
+  const result = parseBase(baseValues);
 
   if (!result.error) {
     const { env, service, version } = result.value;
