@@ -36,3 +36,5 @@ The following keys now have specific TypeScript types associated with them:
 | `x-request-id` | `string` |
 
 This change aims to drive alignment with [eeeoh](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md) & Datadog conventions for an improved out-of-box experience. Reach out if these new type definitions pose problems for your application.
+
+We also recommend reviewing our guidance on [logger types](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md) and reducing coupling to the `pino.Logger` type for forward compatibility.
