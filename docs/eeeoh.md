@@ -212,7 +212,7 @@ const logger = createLogger({
 
 ### AWS Lambda via AWS CDK
 
-Components deployed to AWS need to derive their own `VERSION`.
+Components deployed to AWS Lambda need to derive their own `VERSION`.
 If you're using Buildkite, we recommend defining the following in your pipeline:
 
 ```yaml
