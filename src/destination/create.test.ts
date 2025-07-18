@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 
-import { createDestination } from './create';
+import { createDestination } from './create.js';
 
 describe('createDestination', () => {
   const msg = JSON.stringify({

@@ -1,4 +1,4 @@
-import { ddtags } from './ddtags';
+import { ddtags } from './ddtags.js';
 
 test('ddtags', () =>
   expect(

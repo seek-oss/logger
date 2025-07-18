@@ -1,9 +1,9 @@
 import split from 'split2';
 
-import { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
+import { DEFAULT_OMIT_HEADER_NAMES } from './serializers/index.js';
 
-import { type LoggerOptions, createLogger } from '.';
-import * as rootModule from '.';
+import { type LoggerOptions, createLogger } from './index.js';
+import * as rootModule from './index.js';
 
 test('exports', () =>
   expect(rootModule).toMatchInlineSnapshot(`

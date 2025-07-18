@@ -1,4 +1,4 @@
-import { omitProperties } from './omitProperties';
+import { omitProperties } from './omitProperties.js';
 
 const omitPropertyNames = ['omit-prop', 'omit.prop', '', '0'];
 
