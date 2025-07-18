@@ -2,10 +2,10 @@ import { trimmer } from 'dtrim';
 import type { pino } from 'pino';
 import { err, errWithCause } from 'pino-std-serializers';
 
-import { DEFAULT_MAX_OBJECT_DEPTH } from '../formatters';
+import { DEFAULT_MAX_OBJECT_DEPTH } from '../formatters/index.js';
 
-import { createOmitPropertiesSerializer } from './omitPropertiesSerializer';
-import type { SerializerFn, TrimmerFn } from './types';
+import { createOmitPropertiesSerializer } from './omitPropertiesSerializer.js';
+import type { SerializerFn, TrimmerFn } from './types.js';
 
 export const DEFAULT_OMIT_HEADER_NAMES = Object.freeze([
   'x-envoy-attempt-count',

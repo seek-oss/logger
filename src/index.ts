@@ -1,16 +1,19 @@
 import pino, { type LoggerExtras } from 'pino';
 
-import base from './base';
-import { createDestination } from './destination/create';
-import { withRedaction } from './destination/redact';
-import * as Eeeoh from './eeeoh/eeeoh';
-import { type FormatterOptions, createFormatters } from './formatters';
-import * as redact from './redact';
-import { type SerializerOptions, createSerializers } from './serializers';
+import base from './base/index.js';
+import { createDestination } from './destination/create.js';
+import { withRedaction } from './destination/redact.js';
+import * as Eeeoh from './eeeoh/eeeoh.js';
+import { type FormatterOptions, createFormatters } from './formatters/index.js';
+import * as redact from './redact/index.js';
+import {
+  type SerializerOptions,
+  createSerializers,
+} from './serializers/index.js';
 
-export { createDestination } from './destination/create';
-export * as Eeeoh from './eeeoh/exports';
-export { DEFAULT_OMIT_HEADER_NAMES } from './serializers';
+export { createDestination } from './destination/create.js';
+export * as Eeeoh from './eeeoh/exports.js';
+export { DEFAULT_OMIT_HEADER_NAMES } from './serializers/index.js';
 
 export { pino };
 

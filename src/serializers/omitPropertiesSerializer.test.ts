@@ -2,9 +2,9 @@ import type { Transform } from 'stream';
 
 import split from 'split2';
 
-import createLogger from '..';
+import createLogger from '../index.js';
 
-import { createOmitPropertiesSerializer } from './omitPropertiesSerializer';
+import { createOmitPropertiesSerializer } from './omitPropertiesSerializer.js';
 
 const omitPropertyNamesBase = ['remove-prop', 'remove.prop'];
 

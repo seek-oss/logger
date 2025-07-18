@@ -1,5 +1,5 @@
-import { omitProperties } from './omitProperties';
-import type { SerializerFn } from './types';
+import { omitProperties } from './omitProperties.js';
+import type { SerializerFn } from './types.js';
 
 export const createOmitPropertiesSerializer = (
   /**

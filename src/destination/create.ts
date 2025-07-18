@@ -4,7 +4,7 @@ import {
   DEFAULT_MOCK_OPTIONS,
   type MockOptions,
   createStdoutMock,
-} from './mock';
+} from './mock.js';
 
 type CreateDestinationOptions = {
   /**

@@ -1,6 +1,6 @@
 import type pino from 'pino';
 
-import type { FormatterOptions } from '../formatters';
+import type { FormatterOptions } from '../formatters/index.js';
 
 const bearerMatcher = /\bbearer\s[\w._-]{25,}/gi;
 const redactedDummy = '[Redacted]';

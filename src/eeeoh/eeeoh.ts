@@ -12,7 +12,7 @@ import {
   tuple,
 } from 'pure-parse';
 
-import { ddtags } from './ddtags';
+import { ddtags } from './ddtags.js';
 
 export const envs = ['development', 'production', 'sandbox', 'test'] as const;
 

@@ -1,4 +1,4 @@
-import { DEFAULT_OMIT_HEADER_NAMES, createSerializers } from '.';
+import { DEFAULT_OMIT_HEADER_NAMES, createSerializers } from './index.js';
 
 const serializers = createSerializers({});
 
