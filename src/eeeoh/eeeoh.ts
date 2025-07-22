@@ -22,10 +22,8 @@ const parseNonEmptyString = chain(parseString, (value) =>
   value.trim().length ? success(value) : failure('String cannot be empty'),
 );
 
-const parseEnv = oneOf(...envs.map((env) => equals(env)));
-
 const parseBase = objectCompiled({
-  env: parseEnv,
+  env: parseNonEmptyString,
   service: parseNonEmptyString,
   version: parseNonEmptyString,
 });
@@ -278,7 +276,7 @@ type Base = {
    * See the documentation for more information:
    * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
    */
-  env: Env;
+  env: Env | (string & {});
 
   /**
    * The name of the component, or the service name override on a
@@ -536,11 +534,6 @@ const sourceBaseValues = <CustomLevels extends string>(
 };
 
 const validate = {
-  env: (value: unknown) =>
-    parseEnv(value).error
-      ? `expected ${envs.map((e) => JSON.stringify(e)).join(' | ')}, received ${JSON.stringify(value)}`
-      : null,
-
   nonEmptyString: (value: unknown) =>
     parseNonEmptyString(value).error
       ? `expected non-empty string, received ${JSON.stringify(value)}`
@@ -557,7 +550,7 @@ const newValidationError = <
   { env, service, version }: { env: E; service: S; version: V },
 ) => {
   const issues = Object.entries({
-    [env]: validate.env(data?.[env]),
+    [env]: validate.nonEmptyString(data?.[env]),
     [service]: validate.nonEmptyString(data?.[service]),
     [version]: validate.nonEmptyString(data?.[version]),
   });

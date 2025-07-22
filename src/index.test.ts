@@ -1585,7 +1585,6 @@ describe('eeeoh', () => {
   });
 
   test.each([
-    { env: 'bad' },
     { service: '  ' },
     { version: '' },
     { env: undefined, version: undefined },
@@ -1605,11 +1604,9 @@ describe('eeeoh', () => {
   });
 
   test.each([
-    { DD_ENV: 'bad' },
     { DD_SERVICE: '  ' },
     { DD_VERSION: '' },
     { DD_ENV: undefined, DD_VERSION: undefined },
-    { DD_ENV: 'null', DD_SERVICE: 'null', DD_VERSION: 'null' },
   ])('use environment: invalid environment variables %p', (envOverrides) => {
     process.env.DD_ENV = 'development';
     process.env.DD_SERVICE = 'deployment-service-name';
@@ -1627,6 +1624,66 @@ describe('eeeoh', () => {
         eeeoh: { datadog: 'tin', use: 'environment' },
       }),
     ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('custom env', () => {
+    const customBase = {
+      env: 'custom',
+      service: 'deployment-service-name',
+      version: 'abcdefa.123',
+    } as const satisfies Extract<LoggerOptions, { eeeoh: unknown }>['base'];
+
+    createLogger(
+      { base: customBase, eeeoh: { datadog: 'tin' } },
+      destination,
+    ).info('custom env in base');
+
+    process.env.DD_ENV = customBase.env;
+    process.env.DD_SERVICE = customBase.service;
+    process.env.DD_VERSION = customBase.version;
+    delete process.env.VERSION;
+
+    createLogger(
+      { eeeoh: { datadog: 'tin', use: 'environment' } },
+      destination,
+    ).info('custom env in environment variable');
+
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
+      [
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:custom,version:abcdefa.123",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "env": "custom",
+          "level": 30,
+          "msg": "custom env in base",
+          "service": "deployment-service-name",
+        },
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:custom,version:abcdefa.123",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "env": "custom",
+          "level": 30,
+          "msg": "custom env in environment variable",
+          "service": "deployment-service-name",
+        },
+      ]
+    `);
   });
 
   test('use environment: no environment variables per test environment or Automat v1+', () => {
