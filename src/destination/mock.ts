@@ -35,7 +35,7 @@ export const DEFAULT_MOCK_OPTIONS = Object.freeze({
     '["x-request-id"]',
   ],
 
-  remove: ['environment', 'name', 'timestamp', 'version'],
+  remove: ['environment', 'name', 'timestamp', 'version', 'eeeoh', 'ddsource'],
 } as const satisfies MockOptions);
 
 export const createStdoutMock = (opts: MockOptions) => {
