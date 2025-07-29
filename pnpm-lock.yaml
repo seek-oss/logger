@@ -21,8 +21,8 @@ importers:
         specifier: ^7.0.0
         version: 7.0.0
       pure-parse:
-        specifier: 1.0.0-rc.1
-        version: 1.0.0-rc.1
+        specifier: ^1.0.1
+        version: 1.0.1
     devDependencies:
       '@changesets/cli':
         specifier: 2.29.2
@@ -3289,8 +3289,8 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  pure-parse@1.0.0-rc.1:
-    resolution: {integrity: sha512-SoEDzfkxPr5gEBdSOtPIDyzeC2xSbKRvuWt89R7OiP20vW+UlM72vBNpOzMX7vEVij3Kb7h8xHz+tqlqVhaQJA==}
+  pure-parse@1.0.1:
+    resolution: {integrity: sha512-UsgFso+aJp//oxsf0nKiSb+dV+/Vf+BC+0kongb650F5iz6cyVjGe8ZSF2iTjSJPqSFAr5MErEOzhQd2YiosAA==}
 
   pure-rand@7.0.1:
     resolution: {integrity: sha512-oTUZM/NAZS8p7ANR3SHh30kXB+zK2r2BPcEn/awJIbOvq82WoMN4p62AWWp3Hhw50G0xMsw1mhIBLqHw64EcNQ==}
@@ -7869,7 +7869,7 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  pure-parse@1.0.0-rc.1: {}
+  pure-parse@1.0.1: {}
 
   pure-rand@7.0.1: {}
 
