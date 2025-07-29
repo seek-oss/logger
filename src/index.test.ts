@@ -918,7 +918,16 @@ test('bindings in child logger', () => {
 
 describe('eeeoh', () => {
   const { destination, stdoutMock } = rootModule.createDestination({
-    mock: true,
+    mock: {
+      redact: [
+        'headers["host"]',
+        'headers["x-request-id"]',
+        'latency',
+        '["x-request-id"]',
+      ],
+
+      remove: ['environment', 'name', 'timestamp', 'version'],
+    },
   });
 
   const base = {
