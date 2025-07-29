@@ -41,7 +41,7 @@
     "fast-redact": "^3.5.0",
     "pino": "^9.0.0",
     "pino-std-serializers": "^7.0.0",
-    "pure-parse": "1.0.1"
+    "pure-parse": "^1.0.1"
   },
   "devDependencies": {
     "@changesets/cli": "2.29.2",
