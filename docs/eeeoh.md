@@ -28,11 +28,14 @@ const logger = createLogger({
   eeeoh: {
     datadog: 'tin',
     use: 'environment',
+    team: 'my-team-name', // Optional
   },
 });
 ```
 
 The `use: 'environment'` option is the recommended approach of sourcing application metadata from the workload hosting environment to annotate logs.
+
+The `team` option is optional and can be used to set the name of the team responsible for the component.
 
 Automat v1+ workload hosting automatically adds base attributes to your logs through a telemetry agent.
 You do not need to manually set `DD_` environment variables in this environment.
@@ -85,7 +88,7 @@ metadata is derived from `DD_` environment variables:
 import { createLogger } from '@seek/logger';
 
 const logger = createLogger({
-  eeeoh: { datadog: 'tin', use: 'environment' },
+  eeeoh: { datadog: 'tin', use: 'environment', team: 'my-team-name' },
 });
 ```
 

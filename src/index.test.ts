@@ -1060,7 +1060,7 @@ describe('eeeoh', () => {
             "logs": {
               "datadog": {
                 "enabled": true,
-                "tier": "silver",
+                "tier": "tin",
               },
             },
           },
@@ -1484,12 +1484,7 @@ describe('eeeoh', () => {
         },
         {
           "eeeoh": {
-            "logs": {
-              "datadog": {
-                "enabled": true,
-                "tier": "tin",
-              },
-            },
+            "datadog": "tin",
           },
           "level": 30,
           "msg": "has eeeoh",
@@ -1777,6 +1772,38 @@ describe('eeeoh', () => {
           "env": "development",
           "level": 30,
           "msg": 2,
+          "service": "deployment-service-name",
+        },
+      ]
+    `);
+  });
+  test('add team value to ddtags field', () => {
+    const logger = createLogger(
+      {
+        base,
+        eeeoh: { datadog: 'tin', team: 'my-team' },
+      },
+      destination,
+    );
+
+    logger.info('tin from my team');
+
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
+      [
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef,team:my-team",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "tin from my team",
           "service": "deployment-service-name",
         },
       ]

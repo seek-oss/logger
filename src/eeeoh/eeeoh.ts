@@ -61,6 +61,7 @@ const parseDatadogTierByLevel = tuple([parseDatadogTier, parseTierByLevelMap]);
 
 const parseEeeohConfig = objectCompiled<Config<string>>({
   datadog: oneOf(parseDatadogTier, parseDatadogTierByLevel, equals(false)),
+  team: parseNonEmptyString,
 });
 
 const parseEeeohField = objectCompiled<NonNullable<Fields['eeeoh']>>({
@@ -95,6 +96,13 @@ export type Config<CustomLevels extends string> = {
    * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
    */
   datadog: DatadogConfig<CustomLevels>;
+
+  /**
+   * The team or domain that owns the component.
+   *
+   * Useful for searching for logs across multiple services.
+   */
+  team?: string;
 };
 
 export type Bindings<CustomLevels extends string> = {
@@ -578,10 +586,11 @@ const getBaseOrThrow = <CustomLevels extends string>(
 
   if (!result.error) {
     const { env, service, version } = result.value;
+    const team = opts.eeeoh?.team;
 
     return {
       ddsource: 'nodejs',
-      ddtags: ddtags({ env, version }),
+      ddtags: ddtags({ env, version, ...(team ? { team } : {}) }),
       env,
       service,
       version,
