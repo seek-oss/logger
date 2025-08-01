@@ -61,7 +61,7 @@ const parseDatadogTierByLevel = tuple([parseDatadogTier, parseTierByLevelMap]);
 
 const parseEeeohConfig = objectCompiled<Config<string>>({
   datadog: oneOf(parseDatadogTier, parseDatadogTierByLevel, equals(false)),
-  team: parseNonEmptyString,
+  team: oneOf(parseNonEmptyString, equals(undefined)),
 });
 
 const parseEeeohField = objectCompiled<NonNullable<Fields['eeeoh']>>({
