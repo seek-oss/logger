@@ -7,6 +7,7 @@ import {
   failure,
   objectCompiled,
   oneOf,
+  optional,
   parseString,
   success,
   tuple,
@@ -61,6 +62,7 @@ const parseDatadogTierByLevel = tuple([parseDatadogTier, parseTierByLevelMap]);
 
 const parseEeeohConfig = objectCompiled<Config<string>>({
   datadog: oneOf(parseDatadogTier, parseDatadogTierByLevel, equals(false)),
+  team: optional(parseNonEmptyString),
 });
 
 const parseEeeohField = objectCompiled<NonNullable<Fields['eeeoh']>>({
@@ -95,6 +97,13 @@ export type Config<CustomLevels extends string> = {
    * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
    */
   datadog: DatadogConfig<CustomLevels>;
+
+  /**
+   * The owner of the component.
+   *
+   * This may be useful to attribute costs and search logs across multiple services.
+   */
+  team?: string;
 };
 
 export type Bindings<CustomLevels extends string> = {
@@ -581,7 +590,6 @@ const getBaseOrThrow = <CustomLevels extends string>(
 
     return {
       ddsource: 'nodejs',
-      ddtags: ddtags({ env, version }),
       env,
       service,
       version,
@@ -713,16 +721,34 @@ export const createOptions = <CustomLevels extends string>(
     mixin: (mergeObject, level, logger) => {
       const tier = getTier(mergeObject, level, logger);
 
+      let ddTags = {};
+
+      if (opts.eeeoh && base?.env && base.version) {
+        const config = getConfigForLogger(logger);
+        const { team } = config ?? opts.eeeoh;
+        const { env, version } = base;
+
+        ddTags = {
+          ddtags: ddtags({
+            env,
+            version,
+            ...(team ? { team } : {}),
+          }),
+        };
+      }
+
       return {
         ...original.mixin?.(mergeObject, level, logger),
-
         // Take precedence over the user-provided `mixin` for the `eeeoh` property
+        ...ddTags,
         ...formatOutput(tier),
       };
     },
 
     mixinMergeStrategy: (mergeObject, mixinObject) => {
-      const retain = 'eeeoh' in mixinObject ? { eeeoh: mixinObject.eeeoh } : {};
+      const eeeoh = 'eeeoh' in mixinObject ? { eeeoh: mixinObject.eeeoh } : {};
+      const ddTags =
+        'ddtags' in mixinObject ? { ddtags: mixinObject.ddtags } : {};
 
       let merged =
         original.mixinMergeStrategy?.(mergeObject, mixinObject) ??
@@ -735,7 +761,7 @@ export const createOptions = <CustomLevels extends string>(
 
       // Mutation would be faster, but it's unlikely to matter too much.
       // Use a shallow clone for safety.
-      return { ...merged, ...retain };
+      return { ...merged, ...eeeoh, ...ddTags };
     },
   };
 };
