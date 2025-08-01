@@ -563,6 +563,36 @@ export const bronzeLogger = noLogger.child({
 });
 ```
 
+### By team
+
+If your service is shared by multiple teams, you can create a separate logger per team.
+
+```typescript
+export const teamALogger = createLogger({
+  eeeoh: { datadog: 'tin', use: 'environment', team: 'team-a' },
+});
+
+export const teamBLogger = createLogger({
+  eeeoh: { datadog: 'tin', use: 'environment', team: 'team-b' },
+});
+```
+
+Or, you can accomplish a similar effect with [child loggers]:
+
+```typescript
+const noTeam = createLogger({
+  eeeoh: { datadog: 'tin', use: 'environment' },
+});
+
+export const teamALogger = noTeam.child({
+  eeeoh: { team: 'team-a' },
+});
+
+export const teamBLogger = noTeam.child({
+  eeeoh: { team: 'team-b' },
+});
+```
+
 [Backstage]: https://backstage.myseek.xyz/docs/default/system/eeeoh
 [child loggers]: https://getpino.io/#/docs/child-loggers
 [component]: https://backstage.myseek.xyz/docs/default/component/automat-docs/v1-pre/concept-maps/automat/concepts/component/
