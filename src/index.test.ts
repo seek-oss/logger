@@ -1782,7 +1782,7 @@ describe('eeeoh', () => {
       ]
     `);
   });
-  test('add team value to ddtags field', () => {
+  test.only('add team value to ddtags field', () => {
     const logger = createLogger(
       {
         base,
@@ -1792,6 +1792,12 @@ describe('eeeoh', () => {
     );
 
     logger.info('tin from my team');
+
+    logger
+      .child({
+        eeeoh: { datadog: 'silver', team: 'some-other-owner' },
+      })
+      .info('silver from another team');
 
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
       [
@@ -1809,6 +1815,22 @@ describe('eeeoh', () => {
           "env": "development",
           "level": 30,
           "msg": "tin from my team",
+          "service": "deployment-service-name",
+        },
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef,team:some-other-owner",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "silver",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "silver from another team",
           "service": "deployment-service-name",
         },
       ]

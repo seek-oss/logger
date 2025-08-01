@@ -575,6 +575,7 @@ const newValidationError = <
 const getBaseOrThrow = <CustomLevels extends string>(
   opts: Extract<CreateOptions<CustomLevels>, { eeeoh: object }>,
 ) => {
+  console.log('Here');
   const baseValues = sourceBaseValues(opts);
 
   if (!baseValues) {
@@ -626,6 +627,7 @@ export const createOptions = <CustomLevels extends string>(
     pino.Logger<CustomLevels>,
     LevelToTier
   >();
+  console.log('W');
 
   const getLevelToTier = (logger: pino.Logger<CustomLevels>): LevelToTier => {
     // This cache implementation does not track out-of-band changes to the
