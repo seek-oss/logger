@@ -575,7 +575,6 @@ const newValidationError = <
 const getBaseOrThrow = <CustomLevels extends string>(
   opts: Extract<CreateOptions<CustomLevels>, { eeeoh: object }>,
 ) => {
-  console.log('Here');
   const baseValues = sourceBaseValues(opts);
 
   if (!baseValues) {
@@ -627,7 +626,6 @@ export const createOptions = <CustomLevels extends string>(
     pino.Logger<CustomLevels>,
     LevelToTier
   >();
-  console.log('W');
 
   const getLevelToTier = (logger: pino.Logger<CustomLevels>): LevelToTier => {
     // This cache implementation does not track out-of-band changes to the
@@ -725,9 +723,25 @@ export const createOptions = <CustomLevels extends string>(
     mixin: (mergeObject, level, logger) => {
       const tier = getTier(mergeObject, level, logger);
 
+      let ddTags = {};
+
+      if (opts.eeeoh && base && base.env && base.version) {
+        const currentConfig = getConfigForLogger(logger);
+        const rootTeam = opts.eeeoh?.team;
+        const currentTeam = currentConfig?.team ?? rootTeam;
+
+        ddTags = {
+          ddtags: ddtags({
+            env: base.env,
+            version: base.version,
+            ...(currentTeam ? { team: currentTeam } : {}),
+          }),
+        };
+      }
+
       return {
         ...original.mixin?.(mergeObject, level, logger),
-
+        ...ddTags,
         // Take precedence over the user-provided `mixin` for the `eeeoh` property
         ...formatOutput(tier),
       };

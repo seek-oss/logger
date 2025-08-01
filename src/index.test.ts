@@ -1782,7 +1782,7 @@ describe('eeeoh', () => {
       ]
     `);
   });
-  test.only('add team value to ddtags field', () => {
+  test('add team value to ddtags field', () => {
     const logger = createLogger(
       {
         base,
