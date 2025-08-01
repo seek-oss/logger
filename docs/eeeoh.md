@@ -28,7 +28,7 @@ const logger = createLogger({
   eeeoh: {
     datadog: 'tin',
     use: 'environment',
-    team: 'my-team-name', // Optional
+    team: 'my-owner-name', // Optional
   },
 });
 ```
@@ -88,7 +88,7 @@ metadata is derived from `DD_` environment variables:
 import { createLogger } from '@seek/logger';
 
 const logger = createLogger({
-  eeeoh: { datadog: 'tin', use: 'environment', team: 'my-team-name' },
+  eeeoh: { datadog: 'tin', use: 'environment', team: 'my-owner-name' },
 });
 ```
 
