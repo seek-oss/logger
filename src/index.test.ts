@@ -1060,7 +1060,7 @@ describe('eeeoh', () => {
             "logs": {
               "datadog": {
                 "enabled": true,
-                "tier": "tin",
+                "tier": "silver",
               },
             },
           },
@@ -1484,7 +1484,12 @@ describe('eeeoh', () => {
         },
         {
           "eeeoh": {
-            "datadog": "tin",
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
           },
           "level": 30,
           "msg": "has eeeoh",
@@ -1781,7 +1786,7 @@ describe('eeeoh', () => {
     const logger = createLogger(
       {
         base,
-        eeeoh: { datadog: 'tin', team: 'my-team' },
+        eeeoh: { datadog: 'tin', team: 'my-owner-name' },
       },
       destination,
     );
@@ -1792,7 +1797,7 @@ describe('eeeoh', () => {
       [
         {
           "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef,team:my-team",
+          "ddtags": "env:development,version:abcdef,team:my-owner-name",
           "eeeoh": {
             "logs": {
               "datadog": {

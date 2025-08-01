@@ -7,6 +7,7 @@ import {
   failure,
   objectCompiled,
   oneOf,
+  optional,
   parseString,
   success,
   tuple,
@@ -61,7 +62,7 @@ const parseDatadogTierByLevel = tuple([parseDatadogTier, parseTierByLevelMap]);
 
 const parseEeeohConfig = objectCompiled<Config<string>>({
   datadog: oneOf(parseDatadogTier, parseDatadogTierByLevel, equals(false)),
-  team: oneOf(parseNonEmptyString, equals(undefined)),
+  team: optional(parseNonEmptyString),
 });
 
 const parseEeeohField = objectCompiled<NonNullable<Fields['eeeoh']>>({
