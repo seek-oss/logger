@@ -1215,19 +1215,19 @@ describe('eeeoh', () => {
     const logger = createLogger(
       {
         base,
-        eeeoh: { datadog: 'tin' },
+        eeeoh: { datadog: 'tin', team: 'my-team' },
         mixinMergeStrategy: (mergeObject, _mixinObject) => mergeObject,
       },
       destination,
     );
 
-    logger.info('eeeoh cherry-picked despite mixin merge strategy');
+    logger.info('eeeoh & ddtags cherry-picked despite mixin merge strategy');
 
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
       [
         {
           "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef",
+          "ddtags": "env:development,version:abcdef,team:my-team",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1238,7 +1238,7 @@ describe('eeeoh', () => {
           },
           "env": "development",
           "level": 30,
-          "msg": "eeeoh cherry-picked despite mixin merge strategy",
+          "msg": "eeeoh & ddtags cherry-picked despite mixin merge strategy",
           "service": "deployment-service-name",
         },
       ]

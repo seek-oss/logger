@@ -590,7 +590,6 @@ const getBaseOrThrow = <CustomLevels extends string>(
 
     return {
       ddsource: 'nodejs',
-      ddtags: ddtags({ env, version }),
       env,
       service,
       version,
@@ -747,7 +746,9 @@ export const createOptions = <CustomLevels extends string>(
     },
 
     mixinMergeStrategy: (mergeObject, mixinObject) => {
-      const retain = 'eeeoh' in mixinObject ? { eeeoh: mixinObject.eeeoh } : {};
+      const eeeoh = 'eeeoh' in mixinObject ? { eeeoh: mixinObject.eeeoh } : {};
+      const ddTags =
+        'ddtags' in mixinObject ? { ddtags: mixinObject.ddtags } : {};
 
       let merged =
         original.mixinMergeStrategy?.(mergeObject, mixinObject) ??
@@ -760,7 +761,7 @@ export const createOptions = <CustomLevels extends string>(
 
       // Mutation would be faster, but it's unlikely to matter too much.
       // Use a shallow clone for safety.
-      return { ...merged, ...retain };
+      return { ...merged, ...eeeoh, ...ddTags };
     },
   };
 };
