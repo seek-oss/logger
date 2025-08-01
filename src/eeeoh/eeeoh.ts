@@ -725,7 +725,7 @@ export const createOptions = <CustomLevels extends string>(
 
       let ddTags = {};
 
-      if (opts.eeeoh && base && base.env && base.version) {
+      if (opts.eeeoh && base?.env && base.version) {
         const currentConfig = getConfigForLogger(logger);
         const rootTeam = opts.eeeoh?.team;
         const currentTeam = currentConfig?.team ?? rootTeam;
