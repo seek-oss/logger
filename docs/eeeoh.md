@@ -55,7 +55,7 @@ Logs are internally transformed to the output format expected by eeeoh:
 ```json
 {
   "ddsource": "nodejs",
-  "ddtags": "env:production,version:abcdefa.123",
+  "ddtags": "env:production,version:abcdefa.123,team:my-owner-name",
   "eeeoh": {
     "logs": {
       "datadog": {
