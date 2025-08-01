@@ -587,11 +587,10 @@ const getBaseOrThrow = <CustomLevels extends string>(
 
   if (!result.error) {
     const { env, service, version } = result.value;
-    const team = opts.eeeoh?.team;
 
     return {
       ddsource: 'nodejs',
-      ddtags: ddtags({ env, version, ...(team ? { team } : {}) }),
+      ddtags: ddtags({ env, version }),
       env,
       service,
       version,
@@ -726,23 +725,23 @@ export const createOptions = <CustomLevels extends string>(
       let ddTags = {};
 
       if (opts.eeeoh && base?.env && base.version) {
-        const currentConfig = getConfigForLogger(logger);
-        const rootTeam = opts.eeeoh?.team;
-        const currentTeam = currentConfig?.team ?? rootTeam;
+        const config = getConfigForLogger(logger);
+        const { team } = config ?? opts.eeeoh;
+        const { env, version } = base;
 
         ddTags = {
           ddtags: ddtags({
-            env: base.env,
-            version: base.version,
-            ...(currentTeam ? { team: currentTeam } : {}),
+            env,
+            version,
+            ...(team ? { team } : {}),
           }),
         };
       }
 
       return {
         ...original.mixin?.(mergeObject, level, logger),
-        ...ddTags,
         // Take precedence over the user-provided `mixin` for the `eeeoh` property
+        ...ddTags,
         ...formatOutput(tier),
       };
     },
