@@ -35,7 +35,7 @@ const logger = createLogger({
 
 The `use: 'environment'` option is the recommended approach of sourcing application metadata from the workload hosting environment to annotate logs.
 
-The `team` option is optional and can be used to set the name of the team responsible for the component.
+The `team` option is optional and can be used to set the name of the team that owns the component or specific log.
 
 Automat v1+ workload hosting automatically adds base attributes to your logs through a telemetry agent.
 You do not need to manually set `DD_` environment variables in this environment.
@@ -565,7 +565,8 @@ export const bronzeLogger = noLogger.child({
 
 ### By team
 
-If your service is shared by multiple teams, you can create a separate logger per team.
+If your service emits logs that correspond to different teams,
+you can create a separate logger per team.
 
 ```typescript
 export const teamALogger = createLogger({
