@@ -594,6 +594,13 @@ export const teamBLogger = noTeam.child({
 });
 ```
 
+Or, by individual log:
+
+```typescript
+logger.info({ eeeoh: { team: 'team-a' } }, 'A message for team A');
+logger.info({ eeeoh: { team: 'team-b' } }, 'A message for team B');
+```
+
 [Backstage]: https://backstage.myseek.xyz/docs/default/system/eeeoh
 [child loggers]: https://getpino.io/#/docs/child-loggers
 [component]: https://backstage.myseek.xyz/docs/default/component/automat-docs/v1-pre/concept-maps/automat/concepts/component/
