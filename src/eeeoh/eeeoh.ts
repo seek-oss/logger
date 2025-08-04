@@ -13,7 +13,7 @@ import {
   tuple,
 } from 'pure-parse';
 
-import { ddtags } from './ddtags.js';
+import { ddTags } from './ddTags.js';
 
 export const envs = ['development', 'production', 'sandbox', 'test'] as const;
 
@@ -731,7 +731,7 @@ export const createOptions = <CustomLevels extends string>(
     const { env, version } = base ?? {};
 
     if (env && version) {
-      return ddtags({
+      return ddTags({
         env,
         version,
         ...(team ? { team } : {}),
@@ -754,12 +754,12 @@ export const createOptions = <CustomLevels extends string>(
 
     mixin: (mergeObject, level, logger) => {
       const tier = getTier(mergeObject, level, logger);
-      const ddTags = getTags(mergeObject, logger);
+      const ddtags = getTags(mergeObject, logger);
 
       return {
         ...original.mixin?.(mergeObject, level, logger),
         // Take precedence over the user-provided `mixin` for the `eeeoh` & `ddtags` properties
-        ...formatOutput(tier, ddTags, base?.ddsource),
+        ...formatOutput(tier, ddtags, base?.ddsource),
       };
     },
 
@@ -774,7 +774,7 @@ export const createOptions = <CustomLevels extends string>(
         delete cleanMergeObject.ddsource;
       }
 
-      const ddTags =
+      const ddtags =
         'ddtags' in mixinObject ? { ddtags: mixinObject.ddtags } : {};
 
       let merged =
@@ -788,7 +788,7 @@ export const createOptions = <CustomLevels extends string>(
 
       // Mutation would be faster, but it's unlikely to matter too much.
       // Use a shallow clone for safety.
-      return { ...merged, ...eeeoh, ...ddTags };
+      return { ...merged, ...eeeoh, ...ddtags };
     },
   };
 };

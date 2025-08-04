@@ -1,8 +1,8 @@
-import { ddtags } from './ddtags.js';
+import { ddTags } from './ddTags.js';
 
 test('ddtags', () =>
   expect(
-    ddtags({
+    ddTags({
       env: 'test',
       one: 'two:three',
       'a:b': 'c',
