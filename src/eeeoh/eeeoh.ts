@@ -466,10 +466,16 @@ export type Options<CustomLevels extends string> =
       useOnlyCustomLevels?: false;
     });
 
-const formatOutput = (tier: DatadogTier | false | null) =>
+const formatOutput = (
+  tier: DatadogTier | false | null,
+  ddtags: string | undefined,
+  ddsource: string | undefined,
+) =>
   tier === null
     ? {}
     : {
+        ...(ddsource ? { ddsource } : {}),
+        ...(ddtags ? { ddtags } : {}),
         eeeoh: {
           logs: {
             datadog: tier ? { enabled: true, tier } : { enabled: false },
@@ -706,6 +712,34 @@ export const createOptions = <CustomLevels extends string>(
     return levelToTier(level);
   };
 
+  const getTeam = (input: object, logger: pino.Logger<CustomLevels>) => {
+    if ('eeeoh' in input) {
+      const result = parseEeeohConfig(input.eeeoh);
+
+      if (result?.tag === 'success') {
+        return result.value.team;
+      }
+    }
+
+    const { team } = getConfigForLogger(logger) ?? opts.eeeoh ?? {};
+    return team;
+  };
+
+  const getTags = (input: object, logger: pino.Logger<CustomLevels>) => {
+    const team = getTeam(input, logger);
+    const base = opts.eeeoh ? getBaseOrThrow(opts) : undefined;
+    const { env, version } = base ?? {};
+
+    if (env && version) {
+      return ddtags({
+        env,
+        version,
+        ...(team ? { team } : {}),
+      });
+    }
+    return;
+  };
+
   const original = {
     mixinMergeStrategy: opts.mixinMergeStrategy,
     mixin: opts.mixin,
@@ -720,39 +754,32 @@ export const createOptions = <CustomLevels extends string>(
 
     mixin: (mergeObject, level, logger) => {
       const tier = getTier(mergeObject, level, logger);
-
-      let ddTags = {};
-
-      if (opts.eeeoh && base?.env && base.version) {
-        const config = getConfigForLogger(logger);
-        const { team } = config ?? opts.eeeoh;
-        const { env, version } = base;
-
-        ddTags = {
-          ddtags: ddtags({
-            env,
-            version,
-            ...(team ? { team } : {}),
-          }),
-        };
-      }
+      const ddTags = getTags(mergeObject, logger);
 
       return {
         ...original.mixin?.(mergeObject, level, logger),
-        // Take precedence over the user-provided `mixin` for the `eeeoh` property
-        ...ddTags,
-        ...formatOutput(tier),
+        // Take precedence over the user-provided `mixin` for the `eeeoh` & `ddtags` properties
+        ...formatOutput(tier, ddTags, base?.ddsource),
       };
     },
 
     mixinMergeStrategy: (mergeObject, mixinObject) => {
       const eeeoh = 'eeeoh' in mixinObject ? { eeeoh: mixinObject.eeeoh } : {};
+
+      const cleanMergeObject = { ...mergeObject };
+      if ('ddtags' in cleanMergeObject) {
+        delete cleanMergeObject.ddtags;
+      }
+      if ('ddsource' in cleanMergeObject) {
+        delete cleanMergeObject.ddsource;
+      }
+
       const ddTags =
         'ddtags' in mixinObject ? { ddtags: mixinObject.ddtags } : {};
 
       let merged =
         original.mixinMergeStrategy?.(mergeObject, mixinObject) ??
-        Object.assign(mixinObject, mergeObject);
+        Object.assign(mixinObject, cleanMergeObject);
 
       if ('eeeoh' in merged && 'err' in merged && !('error' in merged)) {
         const { err, ...rest } = merged;

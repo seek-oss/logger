@@ -1782,6 +1782,141 @@ describe('eeeoh', () => {
       ]
     `);
   });
+
+  test('should throw away manually defined ddtags and ddsource', () => {
+    const logger = createLogger(
+      {
+        base,
+        eeeoh: { datadog: 'tin', team: 'my-owner-name' },
+      },
+      destination,
+    );
+
+    logger.info('tin from my team');
+
+    logger
+      .child({
+        ddtags: 'sometag:some-value',
+        ddsource: 'some-other-source',
+        eeeoh: { datadog: 'silver', team: 'some-other-owner' },
+      })
+      .info('silver from another team');
+
+    // @ts-expect-error - testings things
+    logger.info({ ddtags: 'sometag:some-value' }, 'tin from my team');
+    logger.info(
+      { eeeoh: { datadog: 'bronze', team: 'new-owner' } },
+      'tin from my team',
+    );
+
+    // @ts-expect-error - testings things
+    logger.info({ ddsource: 'some-other-source' }, 'tin from my team');
+    logger.info(
+      { eeeoh: { datadog: 'bronze', team: 'new-owner' } },
+      'tin from my team',
+    );
+
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
+      [
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef,team:my-owner-name",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "tin from my team",
+          "service": "deployment-service-name",
+        },
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef,team:some-other-owner",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "silver",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "silver from another team",
+          "service": "deployment-service-name",
+        },
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef,team:my-owner-name",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "tin from my team",
+          "service": "deployment-service-name",
+        },
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef,team:new-owner",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "bronze",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "tin from my team",
+          "service": "deployment-service-name",
+        },
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef,team:my-owner-name",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "tin from my team",
+          "service": "deployment-service-name",
+        },
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef,team:new-owner",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "bronze",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "tin from my team",
+          "service": "deployment-service-name",
+        },
+      ]
+    `);
+  });
   test('add team value to ddtags field', () => {
     const logger = createLogger(
       {

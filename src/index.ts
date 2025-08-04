@@ -58,6 +58,11 @@ interface LogFn {
   ): void;
 }
 
+type NoForbiddenKeys<T> = T & {
+  ddtags?: '❌ ddtags is forbidden in child bindings';
+  ddsource?: '❌ ddsource is forbidden in child bindings';
+};
+
 export type Logger<CustomLevels extends string = never> = Omit<
   pino.Logger<CustomLevels>,
   | 'fatal'
