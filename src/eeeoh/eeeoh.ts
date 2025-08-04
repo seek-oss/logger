@@ -13,7 +13,7 @@ import {
   tuple,
 } from 'pure-parse';
 
-import { ddTags } from './ddTags.js';
+import { ddtags } from './ddtags.js';
 
 export const envs = ['development', 'production', 'sandbox', 'test'] as const;
 
@@ -468,14 +468,14 @@ export type Options<CustomLevels extends string> =
 
 const formatOutput = (
   tier: DatadogTier | false | null,
-  ddtags: string | undefined,
+  ddTags: string | undefined,
   ddsource: string | undefined,
 ) =>
   tier === null
     ? {}
     : {
         ...(ddsource ? { ddsource } : {}),
-        ...(ddtags ? { ddtags } : {}),
+        ...(ddTags ? { ddtags: ddTags } : {}),
         eeeoh: {
           logs: {
             datadog: tier ? { enabled: true, tier } : { enabled: false },
@@ -731,7 +731,7 @@ export const createOptions = <CustomLevels extends string>(
     const { env, version } = base ?? {};
 
     if (env && version) {
-      return ddTags({
+      return ddtags({
         env,
         version,
         ...(team ? { team } : {}),
