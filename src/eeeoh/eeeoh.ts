@@ -754,12 +754,12 @@ export const createOptions = <CustomLevels extends string>(
 
     mixin: (mergeObject, level, logger) => {
       const tier = getTier(mergeObject, level, logger);
-      const ddtags = getTags(mergeObject, logger);
+      const ddTags = getTags(mergeObject, logger);
 
       return {
         ...original.mixin?.(mergeObject, level, logger),
         // Take precedence over the user-provided `mixin` for the `eeeoh` & `ddtags` properties
-        ...formatOutput(tier, ddtags, base?.ddsource),
+        ...formatOutput(tier, ddTags, base?.ddsource),
       };
     },
 
@@ -774,7 +774,7 @@ export const createOptions = <CustomLevels extends string>(
         delete cleanMergeObject.ddsource;
       }
 
-      const ddtags =
+      const ddTags =
         'ddtags' in mixinObject ? { ddtags: mixinObject.ddtags } : {};
 
       let merged =
@@ -788,7 +788,7 @@ export const createOptions = <CustomLevels extends string>(
 
       // Mutation would be faster, but it's unlikely to matter too much.
       // Use a shallow clone for safety.
-      return { ...merged, ...eeeoh, ...ddtags };
+      return { ...merged, ...eeeoh, ...ddTags };
     },
   };
 };
