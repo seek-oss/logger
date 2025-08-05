@@ -28,11 +28,14 @@ const logger = createLogger({
   eeeoh: {
     datadog: 'tin',
     use: 'environment',
+    team: 'my-owner-name', // Optional
   },
 });
 ```
 
 The `use: 'environment'` option is the recommended approach of sourcing application metadata from the workload hosting environment to annotate logs.
+
+The `team` option is optional and can be used to assign the [team] owner of the component or specific log.
 
 Automat v1+ workload hosting automatically adds base attributes to your logs through a telemetry agent.
 You do not need to manually set `DD_` environment variables in this environment.
@@ -52,7 +55,7 @@ Logs are internally transformed to the output format expected by eeeoh:
 ```json
 {
   "ddsource": "nodejs",
-  "ddtags": "env:production,version:abcdefa.123",
+  "ddtags": "env:production,version:abcdefa.123,team:my-owner-name",
   "eeeoh": {
     "logs": {
       "datadog": {
@@ -85,7 +88,7 @@ metadata is derived from `DD_` environment variables:
 import { createLogger } from '@seek/logger';
 
 const logger = createLogger({
-  eeeoh: { datadog: 'tin', use: 'environment' },
+  eeeoh: { datadog: 'tin', use: 'environment', team: 'my-owner-name' },
 });
 ```
 
@@ -560,6 +563,44 @@ export const bronzeLogger = noLogger.child({
 });
 ```
 
+### By team
+
+If your component emits logs that correspond to different teams,
+you can create a separate logger per team.
+
+```typescript
+export const teamALogger = createLogger({
+  eeeoh: { datadog: 'tin', use: 'environment', team: 'team-a' },
+});
+
+export const teamBLogger = createLogger({
+  eeeoh: { datadog: 'tin', use: 'environment', team: 'team-b' },
+});
+```
+
+Or, you can accomplish a similar effect with [child loggers]:
+
+```typescript
+const noTeam = createLogger({
+  eeeoh: { datadog: 'tin', use: 'environment' },
+});
+
+export const teamALogger = noTeam.child({
+  eeeoh: { team: 'team-a' },
+});
+
+export const teamBLogger = noTeam.child({
+  eeeoh: { team: 'team-b' },
+});
+```
+
+Or, by individual log:
+
+```typescript
+logger.info({ eeeoh: { team: 'team-a' } }, 'A message for team A');
+logger.info({ eeeoh: { team: 'team-b' } }, 'A message for team B');
+```
+
 [Backstage]: https://backstage.myseek.xyz/docs/default/system/eeeoh
 [child loggers]: https://getpino.io/#/docs/child-loggers
 [component]: https://backstage.myseek.xyz/docs/default/component/automat-docs/v1-pre/concept-maps/automat/concepts/component/
@@ -570,3 +611,4 @@ export const bronzeLogger = noLogger.child({
 [deployment]: https://backstage.myseek.xyz/docs/default/component/automat-docs/v1-pre/concept-maps/automat/concepts/deployment/
 [RFC002]: https://backstage.myseek.xyz/docs/default/component/rfcs/RFC002-RequestIds/
 [Serverless plugin]: https://docs.datadoghq.com/serverless/libraries_integrations/plugin/#configuration-parameters
+[team]: https://docs.datadoghq.com/getting_started/tagging/#overview

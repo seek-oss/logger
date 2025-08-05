@@ -7,6 +7,7 @@ import {
   failure,
   objectCompiled,
   oneOf,
+  optional,
   parseString,
   success,
   tuple,
@@ -61,10 +62,12 @@ const parseDatadogTierByLevel = tuple([parseDatadogTier, parseTierByLevelMap]);
 
 const parseEeeohConfig = objectCompiled<Config<string>>({
   datadog: oneOf(parseDatadogTier, parseDatadogTierByLevel, equals(false)),
+  team: optional(parseNonEmptyString),
 });
 
 const parseEeeohField = objectCompiled<NonNullable<Fields['eeeoh']>>({
   datadog: oneOf(parseDatadogTier, equals(false)),
+  team: optional(parseNonEmptyString),
 });
 
 export type Config<CustomLevels extends string> = {
@@ -95,6 +98,13 @@ export type Config<CustomLevels extends string> = {
    * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
    */
   datadog: DatadogConfig<CustomLevels>;
+
+  /**
+   * The owner of the component or specific log.
+   *
+   * This can attribute costs and correlate telemetry across multiple services.
+   */
+  team?: string;
 };
 
 export type Bindings<CustomLevels extends string> = {
@@ -225,6 +235,8 @@ export type Fields = {
    */
   eeeoh?: {
     datadog: DatadogTier | false;
+
+    team?: string;
   };
 
   /**
@@ -457,10 +469,16 @@ export type Options<CustomLevels extends string> =
       useOnlyCustomLevels?: false;
     });
 
-const formatOutput = (tier: DatadogTier | false | null) =>
+const formatOutput = (
+  tier: DatadogTier | false | null,
+  ddTags: string | undefined,
+  ddsource: string | undefined,
+) =>
   tier === null
     ? {}
     : {
+        ...(ddsource ? { ddsource } : {}),
+        ...(ddTags ? { ddtags: ddTags } : {}),
         eeeoh: {
           logs: {
             datadog: tier ? { enabled: true, tier } : { enabled: false },
@@ -581,7 +599,6 @@ const getBaseOrThrow = <CustomLevels extends string>(
 
     return {
       ddsource: 'nodejs',
-      ddtags: ddtags({ env, version }),
       env,
       service,
       version,
@@ -612,29 +629,39 @@ export const createOptions = <CustomLevels extends string>(
   pino.LoggerOptions<CustomLevels>,
   'base' | 'errorKey' | 'mixin' | 'mixinMergeStrategy'
 > => {
-  const levelToTierCache = new WeakMap<
-    pino.Logger<CustomLevels>,
-    LevelToTier
-  >();
+  type CacheableConfig = { levelToTier: LevelToTier; tags: string | undefined };
 
-  const getLevelToTier = (logger: pino.Logger<CustomLevels>): LevelToTier => {
+  const configCache = new WeakMap<pino.Logger<CustomLevels>, CacheableConfig>();
+
+  const getCacheableConfig = (
+    logger: pino.Logger<CustomLevels>,
+  ): CacheableConfig => {
     // This cache implementation does not track out-of-band changes to the
     // logger binding, i.e. `logger.setBindings({ eeeoh: { /* ... */ } })`.
     // There should be no good reason to do that and we should discourage it.
-    const cached = levelToTierCache.get(logger);
+    const cached = configCache.get(logger);
     if (cached) {
       return cached;
     }
 
-    const { datadog } = getConfigForLogger(logger) ??
+    const { datadog, team } = getConfigForLogger(logger) ??
       opts.eeeoh ?? { datadog: null };
 
+    const tags = ddtags({
+      env: base?.env,
+      team,
+      version: base?.version,
+    });
+
     if (datadog === false || datadog === null) {
-      const levelToTier: LevelToTier = () => datadog;
+      const config = {
+        levelToTier: () => datadog,
+        tags,
+      } satisfies CacheableConfig;
 
-      levelToTierCache.set(logger, levelToTier);
+      configCache.set(logger, config);
 
-      return levelToTier;
+      return config;
     }
 
     const tierDefault = Array.isArray(datadog) ? datadog[0] : datadog;
@@ -670,32 +697,48 @@ export const createOptions = <CustomLevels extends string>(
       ]),
     );
 
-    const levelToTier: LevelToTier = (level) =>
-      // No known way of choosing a level that isn't in `logger.levels`
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      precomputations[level]!;
+    const config = {
+      levelToTier: (level) =>
+        // No known way of choosing a level that isn't in `logger.levels`
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        precomputations[level]!,
+      tags,
+    } satisfies CacheableConfig;
 
-    levelToTierCache.set(logger, levelToTier);
+    configCache.set(logger, config);
 
-    return levelToTier;
+    return config;
   };
 
-  const getTier = (
+  const getTagsAndTier = (
     input: object,
     level: number,
     logger: pino.Logger<CustomLevels>,
-  ): DatadogTier | false | null => {
+  ): { tags: string | undefined; tier: DatadogTier | false | null } => {
+    let tier: DatadogTier | false | undefined;
+
     if ('eeeoh' in input) {
       const result = parseEeeohField(input.eeeoh);
 
       if (result?.tag === 'success') {
-        return result.value.datadog;
+        tier = result.value.datadog;
+
+        if (result.value.team) {
+          return {
+            tags: ddtags({
+              env: base?.env,
+              team: result.value.team,
+              version: base?.version,
+            }),
+            tier: result.value.datadog,
+          };
+        }
       }
     }
 
-    const levelToTier = getLevelToTier(logger);
+    const { levelToTier, tags } = getCacheableConfig(logger);
 
-    return levelToTier(level);
+    return { tags, tier: tier ?? levelToTier(level) };
   };
 
   const original = {
@@ -711,18 +754,21 @@ export const createOptions = <CustomLevels extends string>(
     errorKey: opts.eeeoh ? 'error' : 'err',
 
     mixin: (mergeObject, level, logger) => {
-      const tier = getTier(mergeObject, level, logger);
+      const { tags, tier } = getTagsAndTier(mergeObject, level, logger);
 
       return {
         ...original.mixin?.(mergeObject, level, logger),
-
-        // Take precedence over the user-provided `mixin` for the `eeeoh` property
-        ...formatOutput(tier),
+        // Take precedence over the user-provided `mixin` for the `eeeoh` & `ddtags` properties
+        ...formatOutput(tier, tags, base?.ddsource),
       };
     },
 
     mixinMergeStrategy: (mergeObject, mixinObject) => {
-      const retain = 'eeeoh' in mixinObject ? { eeeoh: mixinObject.eeeoh } : {};
+      const retain = {
+        ddsource: 'ddsource' in mixinObject ? mixinObject.ddsource : undefined,
+        ddtags: 'ddtags' in mixinObject ? mixinObject.ddtags : undefined,
+        eeeoh: 'eeeoh' in mixinObject ? mixinObject.eeeoh : undefined,
+      };
 
       let merged =
         original.mixinMergeStrategy?.(mergeObject, mixinObject) ??
