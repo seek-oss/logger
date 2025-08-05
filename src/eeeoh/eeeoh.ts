@@ -764,22 +764,15 @@ export const createOptions = <CustomLevels extends string>(
     },
 
     mixinMergeStrategy: (mergeObject, mixinObject) => {
-      const eeeoh = 'eeeoh' in mixinObject ? { eeeoh: mixinObject.eeeoh } : {};
-
-      const cleanMergeObject = { ...mergeObject };
-      if ('ddtags' in cleanMergeObject) {
-        delete cleanMergeObject.ddtags;
-      }
-      if ('ddsource' in cleanMergeObject) {
-        delete cleanMergeObject.ddsource;
-      }
-
-      const ddTags =
-        'ddtags' in mixinObject ? { ddtags: mixinObject.ddtags } : {};
+      const retain = {
+        ddsource: 'ddsource' in mixinObject ? mixinObject.ddsource : undefined,
+        ddtags: 'ddtags' in mixinObject ? mixinObject.ddtags : undefined,
+        eeeoh: 'eeeoh' in mixinObject ? mixinObject.eeeoh : undefined,
+      };
 
       let merged =
         original.mixinMergeStrategy?.(mergeObject, mixinObject) ??
-        Object.assign(mixinObject, cleanMergeObject);
+        Object.assign(mixinObject, mergeObject);
 
       if ('eeeoh' in merged && 'err' in merged && !('error' in merged)) {
         const { err, ...rest } = merged;
@@ -788,7 +781,7 @@ export const createOptions = <CustomLevels extends string>(
 
       // Mutation would be faster, but it's unlikely to matter too much.
       // Use a shallow clone for safety.
-      return { ...merged, ...eeeoh, ...ddTags };
+      return { ...merged, ...retain };
     },
   };
 };
