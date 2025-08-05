@@ -1227,7 +1227,7 @@ describe('eeeoh', () => {
       [
         {
           "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef,team:my-team",
+          "ddtags": "env:development,team:my-team,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1820,7 +1820,7 @@ describe('eeeoh', () => {
       [
         {
           "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef,team:my-owner-name",
+          "ddtags": "env:development,team:my-owner-name,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1836,7 +1836,7 @@ describe('eeeoh', () => {
         },
         {
           "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef,team:some-other-owner",
+          "ddtags": "env:development,team:some-other-owner,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1852,7 +1852,7 @@ describe('eeeoh', () => {
         },
         {
           "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef,team:my-owner-name",
+          "ddtags": "env:development,team:my-owner-name,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1868,7 +1868,7 @@ describe('eeeoh', () => {
         },
         {
           "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef,team:new-owner",
+          "ddtags": "env:development,team:new-owner,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1884,7 +1884,7 @@ describe('eeeoh', () => {
         },
         {
           "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef,team:my-owner-name",
+          "ddtags": "env:development,team:my-owner-name,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1900,7 +1900,7 @@ describe('eeeoh', () => {
         },
         {
           "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef,team:new-owner",
+          "ddtags": "env:development,team:new-owner,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1938,7 +1938,7 @@ describe('eeeoh', () => {
       [
         {
           "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef,team:my-owner-name",
+          "ddtags": "env:development,team:my-owner-name,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1954,7 +1954,7 @@ describe('eeeoh', () => {
         },
         {
           "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef,team:some-other-owner",
+          "ddtags": "env:development,team:some-other-owner,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
