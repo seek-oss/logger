@@ -14,7 +14,11 @@ To opt in:
 // process.env.DD_VERSION = 'abcdefa.123';
 
 const logger = createLogger({
-  eeeoh: { datadog: 'tin', use: 'environment' },
+  eeeoh: {
+    datadog: 'tin',
+    use: 'environment',
+    team: 'my-owner-name', // Optional
+  },
 });
 ```
 

@@ -99,9 +99,9 @@ export type Config<CustomLevels extends string> = {
   datadog: DatadogConfig<CustomLevels>;
 
   /**
-   * The owner of the component.
+   * The owner of the component or specific log.
    *
-   * This may be useful to attribute costs and search logs across multiple services.
+   * This can attribute costs and correlate telemetry across multiple services.
    */
   team?: string;
 };
