@@ -5,11 +5,14 @@ const processTag = (s: string) => s.replace(/[^a-zA-Z0-9_\-:./]/g, '_');
  */
 export const ddtags = (tags: Record<string, string | undefined>) => {
   const entries = Object.entries(tags).flatMap((entry) => {
-    const [key, value] = entry.map((element) =>
-      processTag(element?.trim() ?? ''),
-    );
+    const originalKey = entry[0]?.trim();
+    const originalValue = entry[1]?.trim();
 
-    return key && value ? `${key}:${value}` : [];
+    if (!originalKey || !originalValue) {
+      return [];
+    }
+
+    return [originalKey, originalValue].map(processTag).join(':');
   });
 
   return entries.length ? entries.join(',') : undefined;
