@@ -1,4 +1,6 @@
-import pino, { type LoggerExtras } from 'pino';
+import type { EventEmitter } from 'events';
+
+import pino from 'pino';
 
 import base from './base/index.js';
 import { createDestination } from './destination/create.js';
@@ -109,6 +111,108 @@ export type Logger<CustomLevels extends string = never> = Omit<
   ): Logger<ChildCustomLevels>;
 } & Record<CustomLevels, LogFn> &
   LoggerExtras<CustomLevels>;
+
+type OnChildCallback<CustomLevels extends string = never> = (
+  child: pino.Logger<CustomLevels>,
+) => void;
+
+interface LoggerExtras<
+  CustomLevels extends string = never,
+  UseOnlyCustomLevels extends boolean = boolean,
+> extends EventEmitter {
+  /**
+   * Exposes the Pino package version. Also available on the exported pino function.
+   */
+  readonly version: string;
+
+  levels: pino.LevelMapping;
+
+  /**
+   * Outputs the level as a string instead of integer.
+   */
+  useLevelLabels: boolean;
+  /**
+   * Returns the integer value for the logger instance's logging level.
+   */
+  levelVal: number;
+
+  /**
+   * Creates a child logger, setting all key-value pairs in `bindings` as properties in the log lines. All serializers will be applied to the given pair.
+   * Child loggers use the same output stream as the parent and inherit the current log level of the parent at the time they are spawned.
+   * From v2.x.x the log level of a child is mutable (whereas in v1.x.x it was immutable), and can be set independently of the parent.
+   * If a `level` property is present in the object passed to `child` it will override the child logger level.
+   *
+   * @param bindings: an object of key-value pairs to include in log lines as properties.
+   * @param options: an options object that will override child logger inherited options.
+   * @returns a child logger instance.
+   */
+  child<ChildCustomLevels extends string = never>(
+    bindings: pino.Bindings,
+    options?: pino.ChildLoggerOptions<ChildCustomLevels>,
+  ): pino.Logger<CustomLevels | ChildCustomLevels>;
+
+  /**
+   * This can be used to modify the callback function on creation of a new child.
+   */
+  onChild: OnChildCallback<CustomLevels>;
+
+  /**
+   * Registers a listener function that is triggered when the level is changed.
+   * Note: When browserified, this functionality will only be available if the `events` module has been required elsewhere
+   * (e.g. if you're using streams in the browser). This allows for a trade-off between bundle size and functionality.
+   *
+   * @param event: only ever fires the `'level-change'` event
+   * @param listener: The listener is passed four arguments: `levelLabel`, `levelValue`, `previousLevelLabel`, `previousLevelValue`.
+   */
+  on(
+    event: 'level-change',
+    listener: pino.LevelChangeEventListener<CustomLevels, UseOnlyCustomLevels>,
+  ): this;
+  addListener(
+    event: 'level-change',
+    listener: pino.LevelChangeEventListener<CustomLevels, UseOnlyCustomLevels>,
+  ): this;
+  once(
+    event: 'level-change',
+    listener: pino.LevelChangeEventListener<CustomLevels, UseOnlyCustomLevels>,
+  ): this;
+  prependListener(
+    event: 'level-change',
+    listener: pino.LevelChangeEventListener<CustomLevels, UseOnlyCustomLevels>,
+  ): this;
+  prependOnceListener(
+    event: 'level-change',
+    listener: pino.LevelChangeEventListener<CustomLevels, UseOnlyCustomLevels>,
+  ): this;
+  removeListener(
+    event: 'level-change',
+    listener: pino.LevelChangeEventListener<CustomLevels, UseOnlyCustomLevels>,
+  ): this;
+
+  /**
+   * A utility method for determining if a given log level will write to the destination.
+   */
+  isLevelEnabled(level: pino.LevelWithSilentOrString): boolean;
+
+  /**
+   * Returns an object containing all the current bindings, cloned from the ones passed in via logger.child().
+   */
+  bindings(): pino.Bindings;
+
+  /**
+   * Adds to the bindings of this logger instance.
+   * Note: Does not overwrite bindings. Can potentially result in duplicate keys in log lines.
+   *
+   * @param bindings: an object of key-value pairs to include in log lines as properties.
+   */
+  setBindings(bindings: pino.Bindings): void;
+
+  /**
+   * Flushes the content of the buffer when using pino.destination({ sync: false }).
+   * call the callback when finished
+   */
+  flush(cb?: (err?: Error) => void): void;
+}
 
 /**
  * Creates a logger that can enforce a strict logged object shape.
