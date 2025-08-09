@@ -1,17 +1,5 @@
 # eeeoh
 
-> [!IMPORTANT]
->
-> The eeeoh integration is ready for user adoption and feedback.
->
-> However, it is currently classified as an experimental feature to reflect the facts:
-> it targets a platform that is still rapidly evolving,
-> and is yet to go through an intensive feedback phase.
->
-> Its design aims to be flexible and forward facing.
-> We do not anticipate significant breaking changes at this time,
-> and will do our best to minimise disruption while the feature stabilises.
-
 This page contains usage guidance for SEEK's proprietary logging solution.
 
 SEEKers can visit [Backstage] for more information.
