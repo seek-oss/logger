@@ -354,11 +354,11 @@ you can create a separate logger per team.
 
 ```typescript
 export const teamALogger = createLogger({
-  eeeoh: { datadog: 'tin', team: 'team-a', use: 'environment' },
+  eeeoh: { datadog: 'tin', team: 'owner-a', use: 'environment' },
 });
 
 export const teamBLogger = createLogger({
-  eeeoh: { datadog: 'tin', team: 'team-b', use: 'environment' },
+  eeeoh: { datadog: 'tin', team: 'owner-b', use: 'environment' },
 });
 ```
 
@@ -370,19 +370,26 @@ const noTeam = createLogger({
 });
 
 export const teamALogger = noTeam.child({
-  eeeoh: { team: 'team-a' },
+  eeeoh: { datadog: 'tin', team: 'owner-a' },
 });
 
 export const teamBLogger = noTeam.child({
-  eeeoh: { team: 'team-b' },
+  eeeoh: { datadog: 'tin', team: 'owner-b' },
 });
 ```
 
 Or, by individual log:
 
 ```typescript
-logger.info({ eeeoh: { team: 'team-a' } }, 'A message for team A');
-logger.info({ eeeoh: { team: 'team-b' } }, 'A message for team B');
+logger.info(
+  { eeeoh: { datadog: 'tin', team: 'owner-a' } },
+  'A message for team A',
+);
+
+logger.info(
+  { eeeoh: { datadog: 'tin', team: 'owner-b' } },
+  'A message for team B',
+);
 ```
 
 [internal logging guidance]: https://backstage.myseek.xyz/docs/default/component/sig-backend-tooling/guidance/logging/
