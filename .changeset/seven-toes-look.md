@@ -4,7 +4,7 @@
 
 Add eeeoh integration
 
-This is an experimental feature that enables first-class support for SEEK's proprietary logging solution.
+This feature enables first-class support for SEEK's proprietary logging solution.
 
 To opt in:
 

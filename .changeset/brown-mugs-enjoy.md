@@ -22,7 +22,7 @@ The following keys are no longer recommended as they should be set upfront in `c
 | `ddtags`   | `eeeoh`                                                                                                         |
 | `eeeeoh`   | `eeeoh`                                                                                                         |
 | `eeoh`     | `eeeoh`                                                                                                         |
-| `env`      | [`eeeoh: { use: 'environment' }`](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#getting-started) |
+| `env`      | [`eeeoh: { use: 'environment' }`](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#use-environment) |
 | `service`  | `eeeoh: { use: 'environment' }`                                                                                 |
 | `version`  | `eeeoh: { use: 'environment' }`                                                                                 |
 

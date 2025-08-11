@@ -1,5 +1,5 @@
 import { trimmer } from 'dtrim';
-import type { pino } from 'pino';
+import type pino from 'pino';
 import { err, errWithCause } from 'pino-std-serializers';
 
 import { DEFAULT_MAX_OBJECT_DEPTH } from '../formatters/index.js';
