@@ -15,8 +15,8 @@ import { createLogger } from '@seek/logger';
 const logger = createLogger({
   eeeoh: {
     datadog: 'tin',
-    use: 'environment',
     team: 'my-owner-name', // Optional
+    use: 'environment',
   },
 });
 ```
@@ -49,7 +49,7 @@ Logs are internally transformed to the output format expected by eeeoh:
 ```json
 {
   "ddsource": "nodejs",
-  "ddtags": "env:production,version:abcdefa.123,team:my-owner-name",
+  "ddtags": "env:production,team:my-owner-name,version:abcdefa.123",
   "eeeoh": {
     "logs": {
       "datadog": {
@@ -68,9 +68,9 @@ Logs are internally transformed to the output format expected by eeeoh:
 
 eeeoh prescribes [Datadog unified service tagging] as a baseline.
 
-The recommended approach to satisfy this requirement is sourcing application metadata from the workload hosting environment.
+The recommended approach to satisfy this requirement is sourcing metadata from the workload hosting environment.
 
-See [environment setup](#environment-setup) for detailed guidance per workload hosting environment;
+See our [internal logging guidance] for detailed guidance per workload hosting environment;
 in some cases,
 metadata is derived from `DD_` environment variables:
 
@@ -82,7 +82,7 @@ metadata is derived from `DD_` environment variables:
 import { createLogger } from '@seek/logger';
 
 const logger = createLogger({
-  eeeoh: { datadog: 'tin', use: 'environment', team: 'my-owner-name' },
+  eeeoh: { datadog: 'tin', team: 'my-owner-name', use: 'environment' },
 });
 ```
 
@@ -109,7 +109,7 @@ as we would be keen to understand if we can cater for your use case in a differe
   });
 ```
 
-`env` is typically one of the following values for internal consistency and forward compatibility with [Automat workload hosting](#automat-workload-hosting):
+`env` is typically one of the following values for internal consistency and forward compatibility with Automat workload hosting:
 
 - `development` for pre-production deployment environments
 - `production` for production deployment environments
@@ -354,11 +354,11 @@ you can create a separate logger per team.
 
 ```typescript
 export const teamALogger = createLogger({
-  eeeoh: { datadog: 'tin', use: 'environment', team: 'team-a' },
+  eeeoh: { datadog: 'tin', team: 'team-a', use: 'environment' },
 });
 
 export const teamBLogger = createLogger({
-  eeeoh: { datadog: 'tin', use: 'environment', team: 'team-b' },
+  eeeoh: { datadog: 'tin', team: 'team-b', use: 'environment' },
 });
 ```
 
