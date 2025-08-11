@@ -370,19 +370,26 @@ const noTeam = createLogger({
 });
 
 export const teamALogger = noTeam.child({
-  eeeoh: { team: 'team-a' },
+  eeeoh: { datadog: 'tin', team: 'team-a' },
 });
 
 export const teamBLogger = noTeam.child({
-  eeeoh: { team: 'team-b' },
+  eeeoh: { datadog: 'tin', team: 'team-b' },
 });
 ```
 
 Or, by individual log:
 
 ```typescript
-logger.info({ eeeoh: { team: 'team-a' } }, 'A message for team A');
-logger.info({ eeeoh: { team: 'team-b' } }, 'A message for team B');
+logger.info(
+  { eeeoh: { datadog: 'tin', team: 'team-a' } },
+  'A message for team A',
+);
+
+logger.info(
+  { eeeoh: { datadog: 'tin', team: 'team-b' } },
+  'A message for team B',
+);
 ```
 
 [internal logging guidance]: https://backstage.myseek.xyz/docs/default/component/sig-backend-tooling/guidance/logging/
