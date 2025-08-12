@@ -1,5 +1,147 @@
 # @seek/logger
 
+## 11.0.0
+
+This much-delayed release introduces an [**opt-in `eeeoh` integration**](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md) for SEEK's proprietary logging solution and Datadog observability practices. It supports standard `DD_` environment variables and [advanced log tiering behaviour](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#datadog-log-tiers).
+
+```typescript
+// process.env.DD_ENV = 'production';
+// process.env.DD_SERVICE = 'my-component-name';
+// process.env.DD_VERSION = 'abcdefa.123';
+
+const logger = createLogger({
+  eeeoh: {
+    datadog: 'tin',
+    team: 'my-owner-name', // Optional
+    use: 'environment',
+  },
+});
+
+logger.info('Hello');
+// {
+//   "ddsource": "nodejs",
+//   "ddtags": "env:production,team:my-owner-name,version:abcdefa.123",
+//   "eeeoh": {
+//     "logs": {
+//       "datadog": {
+//         "enabled": true,
+//         "tier": "tin"
+//       }
+//     }
+//   },
+//   "env": "production",
+//   "msg": "Hello",
+//   "service": "my-component-name",
+//   "version": "abcdefa.123"
+// }
+```
+
+Our new [**Datadog logging guidance**](https://backstage.myseek.xyz/docs/default/component/sig-backend-tooling/guidance/logging/) on Backstage walks through recommendations to reduce gotchas and rework down the track.
+
+While you don't need to upgrade overnight, we have tested the new version on multiple production components for several weeks, and more feedback will improve the Datadog experience for all 🙏
+
+> [!WARNING]
+>
+> Propagating the `DD_ENV` environment variable to a workload container can unexpectedly change the `env` tag that [`hot-shots`](https://github.com/bdeitte/hot-shots) applies to custom metrics. If your Gantry service uses this package directly or alongside [`seek-datadog-custom-metrics`](https://github.com/seek-oss/datadog-custom-metrics) and [`seek-koala`](https://github.com/seek-oss/koala), heed our [Gantry logging guidance](https://backstage.myseek.xyz/docs/default/component/sig-backend-tooling/guidance/logging/gantry/#option-1-nodejs) to avoid a breaking change to custom metrics and dependent resources (dashboards, monitors, etc).
+
+### Major Changes
+
+- Restrict select log attributes ([#184](https://github.com/seek-oss/logger/pull/184))
+
+  When specifying attributes in a child logger or log method:
+
+  ```typescript
+  logger.child({ env });
+  //             ~~~
+
+  logger.method({ env }, msg);
+  //              ~~~
+  ```
+
+  The following keys are no longer recommended as they should be set upfront in `createLogger`:
+
+  | Key        | Replacement                                                                                                     |
+  | :--------- | :-------------------------------------------------------------------------------------------------------------- |
+  | `ddsource` | [`eeeoh`](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md)                                         |
+  | `ddtags`   | `eeeoh`                                                                                                         |
+  | `eeeeoh`   | `eeeoh`                                                                                                         |
+  | `eeoh`     | `eeeoh`                                                                                                         |
+  | `env`      | [`eeeoh: { use: 'environment' }`](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#use-environment) |
+  | `service`  | `eeeoh: { use: 'environment' }`                                                                                 |
+  | `version`  | `eeeoh: { use: 'environment' }`                                                                                 |
+
+  The following keys now have specific TypeScript types associated with them:
+
+  | Key            | Type     |
+  | :------------- | :------- |
+  | `duration`     | `number` |
+  | `eeeoh`        | `object` |
+  | `latency`      | `number` |
+  | `x-request-id` | `string` |
+
+  This change aims to drive alignment with [eeeoh](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md) & Datadog conventions for an improved out-of-box experience. Reach out if these new type definitions pose problems for your application.
+
+  We also recommend reviewing our guidance on [logger types](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md) and reducing coupling to the `pino.Logger` type for forward compatibility.
+
+- Apply `err` serializer to `error` key ([#184](https://github.com/seek-oss/logger/pull/184))
+
+  This makes it easier to move between `logger({ err }, 'msg')` and `logger({ error }, 'msg')` . If your application was already sending the `error` key, you may observe slightly different output. See [`pino-std-serializers`](https://github.com/pinojs/pino-std-serializers/tree/v7.0.0?tab=readme-ov-file#exportserrerror) for more information about the serializer.
+
+  The `error` key provides a better out-of-box experience in Datadog as a [standard attribute](https://docs.datadoghq.com/standard-attributes/?product=log&search=error). SEEK applications do not need to rewrite existing `err`s at this time; `@seek/logger` will automatically re-map `err` to `error` when you opt in to the [eeeoh integration](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md), and we may investigate a codemod or an equivalent bulk migration option in the future.
+
+- Restrict manual `base.eeeoh` configuration ([#184](https://github.com/seek-oss/logger/pull/184))
+
+  If you have an application that manually configures eeeoh routing like so:
+
+  ```typescript
+  createLogger({
+    base: {
+      ddsource: 'nodejs',
+      ddtags: `version:${process.env.VERSION || 'missing'},env:${process.env.ENVIRONMENT || 'missing'}`,
+      service: 'my-component-name',
+      eeeoh: {
+        logs: {
+          datadog: {
+            enabled: true,
+            tier: 'tin',
+          },
+        },
+      },
+    },
+  });
+  ```
+
+  `@seek/logger` will now treat this as a type error to encourage adoption and stronger typing of our [built-in eeeoh integration](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md). Take particular note of the [`use: 'environment'` prerequisites](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#use-environment) before proceeding.
+
+  ```typescript
+  createLogger({
+    eeeoh: { datadog: 'tin', use: 'environment' },
+  });
+  ```
+
+  The built-in integration does not support configuring a Splunk destination; you can append a Splunk destination via your LogCentral strategy.
+
+### Minor Changes
+
+- **createDestination:** Remove `ddsource`, `eeeoh`, `env` and `service` with `mock: true` ([#218](https://github.com/seek-oss/logger/pull/218))
+
+  These `mock` defaults can be overwritten; see our [documentation](https://github.com/seek-oss/logger/blob/master/docs/testing.md#createdestination) for more information.
+
+- Export `createLogger` as a named export ([#189](https://github.com/seek-oss/logger/pull/189))
+
+  This improves forward compatibility with TypeScript & ESM. While the named export is recommended, there is no immediate need to migrate existing codebases, and we've left the default export in place.
+
+  **Migration:**
+
+  ```diff
+  - import createLogger from '@seek/logger';
+  + import { createLogger } from '@seek/logger';
+  ```
+
+- Add eeeoh integration ([#184](https://github.com/seek-oss/logger/pull/184))
+
+  See the [documentation](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md) for more information.
+
 ## 10.0.0
 
 ### Major Changes
