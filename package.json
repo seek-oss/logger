@@ -48,7 +48,7 @@
     "@changesets/get-github-info": "0.6.0",
     "@types/fast-redact": "3.0.4",
     "@types/split2": "4.2.3",
-    "skuba": "12.0.2",
+    "skuba": "12.1.1",
     "split2": "4.2.0"
   },
   "packageManager": "pnpm@10.13.1",
@@ -63,6 +63,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "11.0.0"
+    "version": "12.1.1"
   }
 }
