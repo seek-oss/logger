@@ -1917,6 +1917,152 @@ describe('eeeoh', () => {
       ]
     `);
   });
+  test('splunk config', () => {
+    const logger = createLogger(
+      {
+        base,
+        eeeoh: {
+          datadog: 'tin',
+          splunk: {
+            index: 'root-index',
+            source: 'root-source',
+            sourcetype: 'root-sourcetype',
+          },
+          team: 'root-owner',
+        },
+      },
+      destination,
+    );
+
+    logger.info('root');
+
+    logger
+      .child({
+        eeeoh: {
+          datadog: 'tin',
+          splunk: { index: 'child-index-only' },
+          // Note that this will strip the root `team`
+        },
+      })
+      .info('child index only');
+
+    const childLogger = logger.child({
+      eeeoh: {
+        datadog: 'tin',
+        splunk: {
+          index: 'child-index',
+          source: 'child-source',
+          sourcetype: 'child-sourcetype',
+        },
+        team: 'child-owner',
+      },
+    });
+
+    childLogger.info('child all attributes');
+
+    childLogger.info(
+      {
+        eeeoh: {
+          datadog: 'tin',
+          splunk: {
+            index: 'inline-index',
+            source: 'inline-source',
+            sourcetype: 'inline-sourcetype',
+          },
+          team: 'inline-owner',
+        },
+      },
+      'inline all attributes',
+    );
+
+    expect(stdoutMock.calls).toMatchInlineSnapshot(`
+      [
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,team:root-owner,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+              "splunk": {
+                "index": "root-index",
+                "source": "root-source",
+                "sourcetype": "root-sourcetype",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "root",
+          "service": "deployment-service-name",
+        },
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+              "splunk": {
+                "index": "child-index-only",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "child index only",
+          "service": "deployment-service-name",
+        },
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,team:child-owner,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+              "splunk": {
+                "index": "child-index",
+                "source": "child-source",
+                "sourcetype": "child-sourcetype",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "child all attributes",
+          "service": "deployment-service-name",
+        },
+        {
+          "ddsource": "nodejs",
+          "ddtags": "env:development,team:inline-owner,version:abcdef",
+          "eeeoh": {
+            "logs": {
+              "datadog": {
+                "enabled": true,
+                "tier": "tin",
+              },
+              "splunk": {
+                "index": "inline-index",
+                "source": "inline-source",
+                "sourcetype": "inline-sourcetype",
+              },
+            },
+          },
+          "env": "development",
+          "level": 30,
+          "msg": "inline all attributes",
+          "service": "deployment-service-name",
+        },
+      ]
+    `);
+  });
+
   test('add team value to ddtags field', () => {
     const logger = createLogger(
       {

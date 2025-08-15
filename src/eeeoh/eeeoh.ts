@@ -60,13 +60,29 @@ const parseTierByLevelMap = dictionary<string, DatadogTier>(
 
 const parseDatadogTierByLevel = tuple([parseDatadogTier, parseTierByLevelMap]);
 
+export type SplunkConfig = {
+  index: string;
+  source?: string;
+  sourcetype?: '_json' | (string & {});
+};
+
+const parseSplunkConfig = objectCompiled<SplunkConfig>({
+  index: parseNonEmptyString,
+  source: optional(parseNonEmptyString),
+  sourcetype: optional(parseNonEmptyString),
+});
+
 const parseEeeohConfig = objectCompiled<Config<string>>({
   datadog: oneOf(parseDatadogTier, parseDatadogTierByLevel, equals(false)),
+  splunk: optional(parseSplunkConfig),
   team: optional(parseNonEmptyString),
 });
 
-const parseEeeohField = objectCompiled<NonNullable<Fields['eeeoh']>>({
+type EeeohFields = NonNullable<Fields['eeeoh']>;
+
+const parseEeeohField = objectCompiled<EeeohFields>({
   datadog: oneOf(parseDatadogTier, equals(false)),
+  splunk: optional(parseSplunkConfig),
   team: optional(parseNonEmptyString),
 });
 
@@ -100,7 +116,16 @@ export type Config<CustomLevels extends string> = {
   datadog: DatadogConfig<CustomLevels>;
 
   /**
-   * The owner of the component or specific log.
+   * Configuration for routing logs to Splunk.
+   *
+   * @deprecated Ongoing Splunk support is only available for select use cases.
+   * Ensure that your use case has been endorsed by Engineering Platforms before
+   * adopting this destination.
+   */
+  splunk?: SplunkConfig;
+
+  /**
+   * The owner of the component or specific subset of logs.
    *
    * This can attribute costs and correlate telemetry across multiple services.
    */
@@ -234,8 +259,42 @@ export type Fields = {
    * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
    */
   eeeoh?: {
+    /**
+     * Configuration for routing logs to Datadog.
+     *
+     * The following options are currently supported at an individual log basis:
+     *
+     * 1. Specify a static default tier:
+     *
+     *    ```typescript
+     *    'tin'
+     *    ```
+     *
+     * 2. Disable routing to Datadog:
+     *
+     *    ```typescript
+     *    false
+     *    ```
+     *
+     * See the documentation for more information:
+     * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+     */
     datadog: DatadogTier | false;
 
+    /**
+     * Configuration for routing logs to Splunk.
+     *
+     * @deprecated Ongoing Splunk support is only available for select use cases.
+     * Ensure that your use case has been endorsed by Engineering Platforms before
+     * adopting this destination.
+     */
+    splunk?: SplunkConfig;
+
+    /**
+     * The owner of the specific log.
+     *
+     * This can attribute costs and correlate telemetry across multiple services.
+     */
     team?: string;
   };
 
@@ -470,6 +529,7 @@ export type Options<CustomLevels extends string> =
     });
 
 const formatOutput = (
+  splunk: SplunkConfig | undefined,
   tier: DatadogTier | false | null,
   ddTags: string | undefined,
   ddsource: string | undefined,
@@ -482,6 +542,7 @@ const formatOutput = (
         eeeoh: {
           logs: {
             datadog: tier ? { enabled: true, tier } : { enabled: false },
+            ...(splunk ? { splunk } : {}),
           },
         },
       };
@@ -629,7 +690,11 @@ export const createOptions = <CustomLevels extends string>(
   pino.LoggerOptions<CustomLevels>,
   'base' | 'errorKey' | 'mixin' | 'mixinMergeStrategy'
 > => {
-  type CacheableConfig = { levelToTier: LevelToTier; tags: string | undefined };
+  type CacheableConfig = {
+    levelToTier: LevelToTier;
+    splunk: SplunkConfig | undefined;
+    tags: string | undefined;
+  };
 
   const configCache = new WeakMap<pino.Logger<CustomLevels>, CacheableConfig>();
 
@@ -644,7 +709,7 @@ export const createOptions = <CustomLevels extends string>(
       return cached;
     }
 
-    const { datadog, team } = getConfigForLogger(logger) ??
+    const { datadog, splunk, team } = getConfigForLogger(logger) ??
       opts.eeeoh ?? { datadog: null };
 
     const tags = ddtags({
@@ -656,6 +721,7 @@ export const createOptions = <CustomLevels extends string>(
     if (datadog === false || datadog === null) {
       const config = {
         levelToTier: () => datadog,
+        splunk,
         tags,
       } satisfies CacheableConfig;
 
@@ -702,6 +768,7 @@ export const createOptions = <CustomLevels extends string>(
         // No known way of choosing a level that isn't in `logger.levels`
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         precomputations[level]!,
+      splunk,
       tags,
     } satisfies CacheableConfig;
 
@@ -710,35 +777,49 @@ export const createOptions = <CustomLevels extends string>(
     return config;
   };
 
-  const getTagsAndTier = (
+  const getMixinConfig = (
     input: object,
     level: number,
     logger: pino.Logger<CustomLevels>,
-  ): { tags: string | undefined; tier: DatadogTier | false | null } => {
-    let tier: DatadogTier | false | undefined;
+  ): {
+    splunk: SplunkConfig | undefined;
+    tags: string | undefined;
+    tier: DatadogTier | false | null;
+  } => {
+    let fields: (EeeohFields & { tags?: string }) | undefined;
 
     if ('eeeoh' in input) {
       const result = parseEeeohField(input.eeeoh);
 
       if (result?.tag === 'success') {
-        tier = result.value.datadog;
+        fields = {
+          ...result.value,
+          tags: result.value.team
+            ? ddtags({
+                env: base?.env,
+                team: result.value.team,
+                version: base?.version,
+              })
+            : undefined,
+        };
 
-        if (result.value.team) {
+        if (fields.datadog && fields.splunk && fields.tags) {
           return {
-            tags: ddtags({
-              env: base?.env,
-              team: result.value.team,
-              version: base?.version,
-            }),
-            tier: result.value.datadog,
+            splunk: fields.splunk,
+            tags: fields.tags,
+            tier: fields.datadog,
           };
         }
       }
     }
 
-    const { levelToTier, tags } = getCacheableConfig(logger);
+    const { levelToTier, splunk, tags } = getCacheableConfig(logger);
 
-    return { tags, tier: tier ?? levelToTier(level) };
+    return {
+      splunk: fields?.splunk ?? splunk,
+      tags: fields?.tags ?? tags,
+      tier: fields?.datadog ?? levelToTier(level),
+    };
   };
 
   const original = {
@@ -754,12 +835,12 @@ export const createOptions = <CustomLevels extends string>(
     errorKey: opts.eeeoh ? 'error' : 'err',
 
     mixin: (mergeObject, level, logger) => {
-      const { tags, tier } = getTagsAndTier(mergeObject, level, logger);
+      const { splunk, tags, tier } = getMixinConfig(mergeObject, level, logger);
 
       return {
         ...original.mixin?.(mergeObject, level, logger),
         // Take precedence over the user-provided `mixin` for the `eeeoh` & `ddtags` properties
-        ...formatOutput(tier, tags, base?.ddsource),
+        ...formatOutput(splunk, tier, tags, base?.ddsource),
       };
     },
 
