@@ -472,13 +472,12 @@ export type Options<CustomLevels extends string> =
 const formatOutput = (
   tier: DatadogTier | false | null,
   ddTags: string | undefined,
-  ddsource: string | undefined,
 ) =>
   tier === null
     ? {}
     : {
-        ...(ddsource ? { ddsource } : {}),
-        ...(ddTags ? { ddtags: ddTags } : {}),
+        ...(tier !== false ? { ddsource: 'nodejs' } : {}),
+        ...(ddTags && tier !== false ? { ddtags: ddTags } : {}),
         eeeoh: {
           logs: {
             datadog: tier ? { enabled: true, tier } : { enabled: false },
@@ -587,9 +586,7 @@ const getBaseOrThrow = <CustomLevels extends string>(
   const baseValues = sourceBaseValues(opts);
 
   if (!baseValues) {
-    return {
-      ddsource: 'nodejs',
-    };
+    return {};
   }
 
   const result = parseBase(baseValues);
@@ -598,7 +595,6 @@ const getBaseOrThrow = <CustomLevels extends string>(
     const { env, service, version } = result.value;
 
     return {
-      ddsource: 'nodejs',
       env,
       service,
       version,
@@ -759,7 +755,7 @@ export const createOptions = <CustomLevels extends string>(
       return {
         ...original.mixin?.(mergeObject, level, logger),
         // Take precedence over the user-provided `mixin` for the `eeeoh` & `ddtags` properties
-        ...formatOutput(tier, tags, base?.ddsource),
+        ...formatOutput(tier, tags),
       };
     },
 

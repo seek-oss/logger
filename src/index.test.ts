@@ -1039,8 +1039,6 @@ describe('eeeoh', () => {
           "service": "deployment-service-name",
         },
         {
-          "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1270,8 +1268,6 @@ describe('eeeoh', () => {
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
       [
         {
-          "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1285,8 +1281,6 @@ describe('eeeoh', () => {
           "service": "deployment-service-name",
         },
         {
-          "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1300,8 +1294,6 @@ describe('eeeoh', () => {
           "service": "deployment-service-name",
         },
         {
-          "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1483,6 +1475,7 @@ describe('eeeoh', () => {
           "msg": "no eeeoh",
         },
         {
+          "ddsource": "nodejs",
           "eeeoh": {
             "logs": {
               "datadog": {
