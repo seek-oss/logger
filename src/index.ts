@@ -147,7 +147,7 @@ interface LoggerExtras<
    * @returns a child logger instance.
    */
   child<ChildCustomLevels extends string = never>(
-    bindings: pino.Bindings,
+    bindings: Eeeoh.Bindings<CustomLevels> & pino.Bindings,
     options?: pino.ChildLoggerOptions<ChildCustomLevels>,
   ): pino.Logger<CustomLevels | ChildCustomLevels>;
 
