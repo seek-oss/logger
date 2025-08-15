@@ -1,5 +1,5 @@
 ---
-'@seek/logger': patch
+'@seek/logger': minor
 ---
 
 eeeoh: Add support for routing logs to Splunk
