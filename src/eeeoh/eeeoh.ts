@@ -534,7 +534,7 @@ const formatOutput = (
   ddTags: string | undefined,
   ddsource: string | undefined,
 ) =>
-  tier === null
+  !splunk && tier === null
     ? {}
     : {
         ...(ddsource ? { ddsource } : {}),
