@@ -93,6 +93,7 @@ function testLog(
 
     const log: any = await once(stream, 'data');
     expect(log).toStrictEqual({
+      ddsource: 'nodejs',
       level: 30,
       name: 'my-app',
       timestamp: expect.any(String),
@@ -1040,8 +1041,6 @@ describe('eeeoh', () => {
           "service": "deployment-service-name",
         },
         {
-          "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1271,8 +1270,6 @@ describe('eeeoh', () => {
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
       [
         {
-          "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1286,8 +1283,6 @@ describe('eeeoh', () => {
           "service": "deployment-service-name",
         },
         {
-          "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1301,8 +1296,6 @@ describe('eeeoh', () => {
           "service": "deployment-service-name",
         },
         {
-          "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1481,10 +1474,12 @@ describe('eeeoh', () => {
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
       [
         {
+          "ddsource": "nodejs",
           "level": 30,
           "msg": "no eeeoh",
         },
         {
+          "ddsource": "nodejs",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1517,6 +1512,7 @@ describe('eeeoh', () => {
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
       [
         {
+          "ddsource": "nodejs",
           "eeeoh": "test",
           "level": 30,
           "msg": "still works",
