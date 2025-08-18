@@ -46,7 +46,6 @@ type ParseLogFnArgs<
     : ParseLogFnArgs<Rest, Acc>
   : Acc;
 
-// FIXME: Remove if pinojs/pino#2230 lands in a release.
 interface LogFn {
   <T, TMsg extends string = string>(
     obj: T extends object ? Eeeoh.Fields & T : T,
