@@ -545,11 +545,14 @@ const formatOutput = (
     : {
         eeeoh: {
           logs: {
-            ...(tier === null ? {} : {
-              datadog: tier === false
-                : { enabled: false },
-                ? { enabled: true, tier: tier satisfies DatadogTier },
-             }),
+            ...(tier === null
+              ? {}
+              : {
+                  datadog:
+                    tier === false
+                      ? { enabled: false }
+                      : { enabled: true, tier: tier satisfies DatadogTier },
+                }),
             ...(splunk ? { splunk } : {}),
           },
         },
