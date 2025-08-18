@@ -528,7 +528,7 @@ export type Options<CustomLevels extends string> =
       useOnlyCustomLevels?: false;
     });
 
-const formatOutput = (
+export const formatOutput = (
   splunk: SplunkConfig | undefined,
   tier: DatadogTier | false | null,
   ddTags: string | undefined,
