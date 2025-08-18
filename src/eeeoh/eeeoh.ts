@@ -472,18 +472,27 @@ export type Options<CustomLevels extends string> =
 const formatOutput = (
   tier: DatadogTier | false | null,
   ddTags: string | undefined,
-) =>
-  tier === null
+) => ({
+  // Include `ddsource` in the absence of payload-level routing configuration.
+  // This improves the Datadog experience for workloads that rely on external
+  // routing configuration (e.g. via LogCentral).
+  ...(tier === false ? {} : { ddsource: 'nodejs' }),
+
+  ...(tier === false || tier === null || !ddTags ? {} : { ddtags: ddTags }),
+
+  ...(tier === null
     ? {}
     : {
-        ...(tier !== false ? { ddsource: 'nodejs' } : {}),
-        ...(ddTags && tier !== false ? { ddtags: ddTags } : {}),
         eeeoh: {
           logs: {
-            datadog: tier ? { enabled: true, tier } : { enabled: false },
+            datadog:
+              tier === false
+                ? { enabled: false }
+                : { enabled: true, tier: tier satisfies DatadogTier },
           },
         },
-      };
+      }),
+});
 
 const getConfigForLogger = <CustomLevels extends string>(
   logger: pino.Logger<CustomLevels>,
@@ -586,7 +595,7 @@ const getBaseOrThrow = <CustomLevels extends string>(
   const baseValues = sourceBaseValues(opts);
 
   if (!baseValues) {
-    return {};
+    return;
   }
 
   const result = parseBase(baseValues);

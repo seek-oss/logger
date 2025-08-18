@@ -93,6 +93,7 @@ function testLog(
 
     const log: any = await once(stream, 'data');
     expect(log).toStrictEqual({
+      ddsource: 'nodejs',
       level: 30,
       name: 'my-app',
       timestamp: expect.any(String),
@@ -1473,6 +1474,7 @@ describe('eeeoh', () => {
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
       [
         {
+          "ddsource": "nodejs",
           "level": 30,
           "msg": "no eeeoh",
         },
@@ -1510,6 +1512,7 @@ describe('eeeoh', () => {
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
       [
         {
+          "ddsource": "nodejs",
           "eeeoh": "test",
           "level": 30,
           "msg": "still works",
