@@ -46,7 +46,6 @@ type ParseLogFnArgs<
     : ParseLogFnArgs<Rest, Acc>
   : Acc;
 
-// FIXME: Remove if pinojs/pino#2230 lands in a release.
 interface LogFn {
   <T, TMsg extends string = string>(
     obj: T extends object ? Eeeoh.Fields & T : T,
@@ -147,7 +146,7 @@ interface LoggerExtras<
    * @returns a child logger instance.
    */
   child<ChildCustomLevels extends string = never>(
-    bindings: pino.Bindings,
+    bindings: Eeeoh.Bindings<CustomLevels> & pino.Bindings,
     options?: pino.ChildLoggerOptions<ChildCustomLevels>,
   ): pino.Logger<CustomLevels | ChildCustomLevels>;
 

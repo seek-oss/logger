@@ -532,20 +532,29 @@ const formatOutput = (
   splunk: SplunkConfig | undefined,
   tier: DatadogTier | false | null,
   ddTags: string | undefined,
-  ddsource: string | undefined,
-) =>
-  !splunk && tier === null
+) => ({
+  // Include `ddsource` in the absence of payload-level routing configuration.
+  // This improves the Datadog experience for workloads that rely on external
+  // routing configuration (e.g. via LogCentral).
+  ...(tier === false ? {} : { ddsource: 'nodejs' }),
+
+  ...(tier === false || tier === null || !ddTags ? {} : { ddtags: ddTags }),
+
+  ...(tier === null && !splunk
     ? {}
     : {
-        ...(ddsource ? { ddsource } : {}),
-        ...(ddTags ? { ddtags: ddTags } : {}),
         eeeoh: {
           logs: {
-            datadog: tier ? { enabled: true, tier } : { enabled: false },
+            ...(tier === null ? {} : {
+              datadog: tier === false
+                : { enabled: false },
+                ? { enabled: true, tier: tier satisfies DatadogTier },
+             }),
             ...(splunk ? { splunk } : {}),
           },
         },
-      };
+      }),
+});
 
 const getConfigForLogger = <CustomLevels extends string>(
   logger: pino.Logger<CustomLevels>,
@@ -648,9 +657,7 @@ const getBaseOrThrow = <CustomLevels extends string>(
   const baseValues = sourceBaseValues(opts);
 
   if (!baseValues) {
-    return {
-      ddsource: 'nodejs',
-    };
+    return;
   }
 
   const result = parseBase(baseValues);
@@ -659,7 +666,6 @@ const getBaseOrThrow = <CustomLevels extends string>(
     const { env, service, version } = result.value;
 
     return {
-      ddsource: 'nodejs',
       env,
       service,
       version,
@@ -840,7 +846,7 @@ export const createOptions = <CustomLevels extends string>(
       return {
         ...original.mixin?.(mergeObject, level, logger),
         // Take precedence over the user-provided `mixin` for the `eeeoh` & `ddtags` properties
-        ...formatOutput(splunk, tier, tags, base?.ddsource),
+        ...formatOutput(splunk, tier, tags),
       };
     },
 

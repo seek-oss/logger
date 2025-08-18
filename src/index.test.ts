@@ -93,6 +93,7 @@ function testLog(
 
     const log: any = await once(stream, 'data');
     expect(log).toStrictEqual({
+      ddsource: 'nodejs',
       level: 30,
       name: 'my-app',
       timestamp: expect.any(String),
@@ -583,7 +584,7 @@ test('enforces a specified object interface', async () => {
   logger.info<ExampleMessageContext>(
     {
       activity: 'Testing Logger',
-      // @ts-expect-error - test assertion
+      // @ts-expect-error - test unrecognised inline property
       propertyNotAllowed: 'Linting error',
       input: {
         foo: 0xf00,
@@ -887,8 +888,9 @@ test('using custom levels does not leak into types or runtypes of other loggers'
   const logger = createLogger({ name: 'my-app' }, stream);
 
   expect(() => {
-    // @ts-expect-error - should not work
-    logger.something('foo');
+    logger
+      // @ts-expect-error - test unrecognised custom level
+      .something('foo');
   }).toThrow();
 
   logger.info('info');
@@ -902,9 +904,7 @@ test('using custom levels does not leak into types or runtypes of other loggers'
 test('bindings in child logger', () => {
   const logger = createLogger();
 
-  // We can't enforce type errors on these problematic bindings unless we are
-  // prepared to drop `LoggerExtras['child']` from our `Logger` type and break
-  // compatibility with the `pino.Logger` type.
+  // @ts-expect-error - test unsupported inline properties
   logger.child({
     env: 'test',
 
@@ -971,8 +971,10 @@ describe('eeeoh', () => {
     void (() =>
       logger.info(
         {
-          // @ts-expect-error - asserting type error on complex inline config
-          eeeoh: { datadog: ['bronze', { info: 'silver' }] },
+          eeeoh: {
+            // @ts-expect-error - test unsupported complex inline config
+            datadog: ['bronze', { info: 'silver' }],
+          },
         },
         'silver from inline equal to level',
       ));
@@ -1039,8 +1041,6 @@ describe('eeeoh', () => {
           "service": "deployment-service-name",
         },
         {
-          "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1103,7 +1103,7 @@ describe('eeeoh', () => {
     );
     logger.debug(
       {
-        // @ts-expect-error - asserting runtime behaviour on invalid config
+        // @ts-expect-error - test runtime behaviour on invalid config
         eeeoh: { datadog: NaN },
       },
       'tin from default because invalid inline config is ignored',
@@ -1270,8 +1270,6 @@ describe('eeeoh', () => {
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
       [
         {
-          "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1285,8 +1283,6 @@ describe('eeeoh', () => {
           "service": "deployment-service-name",
         },
         {
-          "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1300,8 +1296,6 @@ describe('eeeoh', () => {
           "service": "deployment-service-name",
         },
         {
-          "ddsource": "nodejs",
-          "ddtags": "env:development,version:abcdef",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1435,6 +1429,7 @@ describe('eeeoh', () => {
       destination,
     ).child({
       eeeoh: {
+        // @ts-expect-error - test unrecognised tier
         datadog: 'XXX',
       },
     });
@@ -1479,10 +1474,12 @@ describe('eeeoh', () => {
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
       [
         {
+          "ddsource": "nodejs",
           "level": 30,
           "msg": "no eeeoh",
         },
         {
+          "ddsource": "nodejs",
           "eeeoh": {
             "logs": {
               "datadog": {
@@ -1502,7 +1499,7 @@ describe('eeeoh', () => {
     const logger = createLogger(
       {
         base: {
-          // @ts-expect-error - asserting type error
+          // @ts-expect-error - test unsupported base property
           eeeoh: 'test',
         },
       },
@@ -1515,6 +1512,7 @@ describe('eeeoh', () => {
     expect(stdoutMock.calls).toMatchInlineSnapshot(`
       [
         {
+          "ddsource": "nodejs",
           "eeeoh": "test",
           "level": 30,
           "msg": "still works",
@@ -1795,6 +1793,7 @@ describe('eeeoh', () => {
     logger.info('tin from my team');
 
     logger
+      // @ts-expect-error - test unsupported child properties
       .child({
         ddtags: 'sometag:some-value',
         ddsource: 'some-other-source',
@@ -1802,15 +1801,25 @@ describe('eeeoh', () => {
       })
       .info('silver from another team');
 
-    // @ts-expect-error - testings things
-    logger.info({ ddtags: 'sometag:some-value' }, 'tin from my team');
+    logger.info(
+      {
+        // @ts-expect-error - test unsupported inline property
+        ddtags: 'sometag:some-value',
+      },
+      'tin from my team',
+    );
     logger.info(
       { eeeoh: { datadog: 'bronze', team: 'new-owner' } },
       'tin from my team',
     );
 
-    // @ts-expect-error - testings things
-    logger.info({ ddsource: 'some-other-source' }, 'tin from my team');
+    logger.info(
+      {
+        // @ts-expect-error - test unsupported inline property
+        ddsource: 'some-other-source',
+      },
+      'tin from my team',
+    );
     logger.info(
       { eeeoh: { datadog: 'bronze', team: 'new-owner' } },
       'tin from my team',
