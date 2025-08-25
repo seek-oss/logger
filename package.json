@@ -51,7 +51,7 @@
     "skuba": "12.1.1",
     "split2": "4.2.0"
   },
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.14.0",
   "engines": {
     "node": ">=20.9.0"
   },
