@@ -7,7 +7,7 @@ export const envs = ['development', 'production', 'sandbox', 'test'] as const;
 
 export type Env = (typeof envs)[number];
 
-const nonEmptyString = S.trim(S.min(S.string, 1, 'String cannot be empty'));
+const nonEmptyString = S.min(S.trim(S.string), 1, 'String cannot be empty');
 
 const parseNonEmptyString = S.compile(nonEmptyString, 'Any', 'Output', 'Sync');
 
