@@ -555,7 +555,8 @@ const sourceBaseValues = <CustomLevels extends string>(
 const validate = {
   nonEmptyString: (value: unknown) => {
     try {
-      return parseNonEmptyString(value);
+      parseNonEmptyString(value);
+      return null;
     } catch {
       return `expected non-empty string, received ${JSON.stringify(value)}`;
     }
