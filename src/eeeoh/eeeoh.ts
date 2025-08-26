@@ -43,7 +43,8 @@ export type DatadogConfig<CustomLevels extends string = never> =
 
 type LevelToTier = (level: number) => DatadogTier | false | null;
 
-const tierByLevelMapSchema = S.record(datadogTierSchema);
+const tierByLevelMapSchema: S.Schema<Partial<Record<string, DatadogTier>>> =
+  S.record(datadogTierSchema);
 
 const datadogTierByLevelSchema = S.schema([
   datadogTierSchema,
