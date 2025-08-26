@@ -1,6 +1,6 @@
 import { Jest } from 'skuba';
 
-export default Jest.mergePreset({
+const preset = Jest.mergePreset({
   coveragePathIgnorePatterns: ['src/testing'],
   coverageThreshold: {
     global: {
@@ -12,4 +12,14 @@ export default Jest.mergePreset({
   },
   setupFiles: ['<rootDir>/jest.setup.ts'],
   testPathIgnorePatterns: ['/test\\.ts'],
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*(?<!\\.res))\\.js$': '$1',
+  },
 });
+
+export default {
+  ...preset,
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*(?<!\\.res))\\.js$': '$1',
+  },
+};
