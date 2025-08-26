@@ -48,7 +48,7 @@
     "@changesets/get-github-info": "0.6.0",
     "@types/fast-redact": "3.0.4",
     "@types/split2": "4.2.3",
-    "skuba": "12.1.1",
+    "skuba": "12.2.0-main-20250826233130",
     "split2": "4.2.0"
   },
   "packageManager": "pnpm@10.14.0",

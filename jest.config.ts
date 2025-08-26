@@ -1,6 +1,6 @@
 import { Jest } from 'skuba';
 
-const preset = Jest.mergePreset({
+export default Jest.mergePreset({
   coveragePathIgnorePatterns: ['src/testing'],
   coverageThreshold: {
     global: {
@@ -16,10 +16,3 @@ const preset = Jest.mergePreset({
     '^(\\.{1,2}/.*(?<!\\.res))\\.js$': '$1',
   },
 });
-
-export default {
-  ...preset,
-  moduleNameMapper: {
-    '^(\\.{1,2}/.*(?<!\\.res))\\.js$': '$1',
-  },
-};
