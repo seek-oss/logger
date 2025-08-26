@@ -20,9 +20,9 @@ importers:
       pino-std-serializers:
         specifier: ^7.0.0
         version: 7.0.0
-      pure-parse:
-        specifier: ^1.0.1
-        version: 1.0.1
+      sury:
+        specifier: 10.0.4
+        version: 10.0.4
     devDependencies:
       '@changesets/cli':
         specifier: 2.29.5
@@ -3278,9 +3278,6 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  pure-parse@1.0.1:
-    resolution: {integrity: sha512-UsgFso+aJp//oxsf0nKiSb+dV+/Vf+BC+0kongb650F5iz6cyVjGe8ZSF2iTjSJPqSFAr5MErEOzhQd2YiosAA==}
-
   pure-rand@7.0.1:
     resolution: {integrity: sha512-oTUZM/NAZS8p7ANR3SHh30kXB+zK2r2BPcEn/awJIbOvq82WoMN4p62AWWp3Hhw50G0xMsw1mhIBLqHw64EcNQ==}
 
@@ -3707,6 +3704,14 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  sury@10.0.4:
+    resolution: {integrity: sha512-dWKqOv+6D4AwGCjeKyaWr157RVBtvnPUp1I6RxReYD1dYuBl4k6oUd/t5INh1mBhUuAEC9SP+rZmIunCyNjXzQ==}
+    peerDependencies:
+      rescript: 11.x
+    peerDependenciesMeta:
+      rescript:
+        optional: true
 
   synckit@0.11.11:
     resolution: {integrity: sha512-MeQTA1r0litLUf0Rp/iisCaL8761lKAZHaimlbGK4j0HysC4PLfqygQj9srcs0m2RdtDYnF8UuYyKpbjHYp7Jw==}
@@ -7881,8 +7886,6 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  pure-parse@1.0.1: {}
-
   pure-rand@7.0.1: {}
 
   quansync@0.2.10: {}
@@ -8466,6 +8469,8 @@ snapshots:
       supports-color: 7.2.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  sury@10.0.4: {}
 
   synckit@0.11.11:
     dependencies:
