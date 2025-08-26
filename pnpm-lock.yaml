@@ -21,8 +21,8 @@ importers:
         specifier: ^7.0.0
         version: 7.0.0
       sury:
-        specifier: ^10.0.4
-        version: 10.0.4
+        specifier: 11.0.0-alpha.3
+        version: 11.0.0-alpha.3
     devDependencies:
       '@changesets/cli':
         specifier: 2.29.5
@@ -3705,10 +3705,10 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  sury@10.0.4:
-    resolution: {integrity: sha512-dWKqOv+6D4AwGCjeKyaWr157RVBtvnPUp1I6RxReYD1dYuBl4k6oUd/t5INh1mBhUuAEC9SP+rZmIunCyNjXzQ==}
+  sury@11.0.0-alpha.3:
+    resolution: {integrity: sha512-gYMHfco6+IqXNgxnhImtpx3sIb6q1GTbpY9ygTOmdzP2R3muMBt3TqEnAmkFVTDJNOj6T8/zTORjOs2vGPvaJA==}
     peerDependencies:
-      rescript: 11.x
+      rescript: 12.x
     peerDependenciesMeta:
       rescript:
         optional: true
@@ -8470,7 +8470,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  sury@10.0.4: {}
+  sury@11.0.0-alpha.3: {}
 
   synckit@0.11.11:
     dependencies:
