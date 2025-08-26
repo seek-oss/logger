@@ -12,7 +12,4 @@ export default Jest.mergePreset({
   },
   setupFiles: ['<rootDir>/jest.setup.ts'],
   testPathIgnorePatterns: ['/test\\.ts'],
-  moduleNameMapper: {
-    '^(\\.{1,2}/.*(?<!\\.res))\\.js$': '$1',
-  },
 });
