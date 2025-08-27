@@ -16,17 +16,14 @@
     "name": "SEEK"
   },
   "sideEffects": false,
-  "main": "./lib-commonjs/index.js",
-  "module": "./lib-es2015/index.js",
-  "types": "./lib-types/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "files": [
-    "lib*/**/*.d.ts",
-    "lib*/**/*.js",
-    "lib*/**/*.js.map",
-    "lib*/**/*.json"
+    "dist"
   ],
   "scripts": {
-    "build": "skuba build-package",
+    "build": "tsdown",
     "clean": "rm -fr lib",
     "format": "skuba format",
     "lint": "skuba lint",
@@ -49,7 +46,8 @@
     "@types/fast-redact": "3.0.4",
     "@types/split2": "4.2.3",
     "skuba": "12.1.1",
-    "split2": "4.2.0"
+    "split2": "4.2.0",
+    "tsdown": "0.14.2"
   },
   "packageManager": "pnpm@10.14.0",
   "engines": {
@@ -64,5 +62,12 @@
     "template": null,
     "type": "package",
     "version": "12.1.1"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
   }
 }
