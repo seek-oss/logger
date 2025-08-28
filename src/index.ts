@@ -232,8 +232,8 @@ export const createLogger = <CustomLevels extends string = never>(
   } = opts;
 
   const serializers = createSerializers({
-    omitHeaderNames,
     maxObjectDepth,
+    omitHeaderNames,
     serializers: opts.serializers,
   });
 
