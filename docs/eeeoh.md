@@ -41,6 +41,29 @@ as we recommend failing fast over silently continuing in a misconfigured state.
 
 The `team` option is optional and can be used to assign the [team] owner of the component or specific log.
 
+### `splunk`
+
+> [!WARNING]
+>
+> Ongoing Splunk support is only available for select use cases.
+> Ensure that your use case has been endorsed by Engineering Platforms before adopting this destination.
+
+```typescript
+import { createLogger } from '@seek/logger';
+
+const logger = createLogger({
+  eeeoh: {
+    datadog: false,
+    splunk: {
+      index: 'my_index_prod',
+      source: 'my-component-name',
+      sourcetype: '_json',
+    },
+    use: 'environment',
+  },
+});
+```
+
 ### Output format
 
 `@seek/logger` uses simplified syntax for its configuration options.
