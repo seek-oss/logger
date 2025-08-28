@@ -1,17 +1,5 @@
 import pino from 'pino';
-import {
-  type Infer,
-  chain,
-  dictionary,
-  equals,
-  failure,
-  objectCompiled,
-  oneOf,
-  optional,
-  parseString,
-  success,
-  tuple,
-} from 'pure-parse';
+import * as S from 'sury';
 
 import { ddtags } from './ddtags.js';
 
@@ -19,32 +7,34 @@ export const envs = ['development', 'production', 'sandbox', 'test'] as const;
 
 export type Env = (typeof envs)[number];
 
-const parseNonEmptyString = chain(parseString, (value) =>
-  value.trim().length ? success(value) : failure('String cannot be empty'),
-);
+const nonEmptyString = S.min(S.trim(S.string), 1, 'String cannot be empty');
 
-const parseBase = objectCompiled({
-  env: parseNonEmptyString,
-  service: parseNonEmptyString,
-  version: parseNonEmptyString,
+const parseNonEmptyString = S.compile(nonEmptyString, 'Any', 'Output', 'Sync');
+
+const baseSchema = S.schema({
+  env: nonEmptyString,
+  service: nonEmptyString,
+  version: nonEmptyString,
 });
 
-type ParseBase = Infer<typeof parseBase>;
+const parseBase = S.compile(baseSchema, 'Any', 'Output', 'Sync');
 
-const parseDatadogTier = oneOf(
-  equals('zero'),
-  equals('tin'),
-  equals('tin-plus'),
-  equals('tin-plus-plus'),
-  equals('bronze'),
-  equals('bronze-plus'),
-  equals('bronze-plus-plus'),
-  equals('silver'),
-  equals('silver-plus'),
-  equals('silver-plus-plus'),
-);
+type ParseBase = ReturnType<typeof parseBase>;
 
-export type DatadogTier = Infer<typeof parseDatadogTier>;
+const datadogTierSchema = S.union([
+  'zero',
+  'tin',
+  'tin-plus',
+  'tin-plus-plus',
+  'bronze',
+  'bronze-plus',
+  'bronze-plus-plus',
+  'silver',
+  'silver-plus',
+  'silver-plus-plus',
+]);
+
+export type DatadogTier = S.Output<typeof datadogTierSchema>;
 
 export type DatadogConfig<CustomLevels extends string = never> =
   | DatadogTier
@@ -53,22 +43,27 @@ export type DatadogConfig<CustomLevels extends string = never> =
 
 type LevelToTier = (level: number) => DatadogTier | false | null;
 
-const parseTierByLevelMap = dictionary<string, DatadogTier>(
-  parseString,
-  parseDatadogTier,
-);
+const tierByLevelMapSchema: S.Schema<Partial<Record<string, DatadogTier>>> =
+  S.record(datadogTierSchema);
 
-const parseDatadogTierByLevel = tuple([parseDatadogTier, parseTierByLevelMap]);
+const datadogTierByLevelSchema = S.schema([
+  datadogTierSchema,
+  tierByLevelMapSchema,
+]);
 
-const parseEeeohConfig = objectCompiled<Config<string>>({
-  datadog: oneOf(parseDatadogTier, parseDatadogTierByLevel, equals(false)),
-  team: optional(parseNonEmptyString),
+const eeeohConfigSchema = S.schema({
+  datadog: S.union([datadogTierSchema, datadogTierByLevelSchema, false]),
+  team: S.optional(nonEmptyString),
 });
 
-const parseEeeohField = objectCompiled<NonNullable<Fields['eeeoh']>>({
-  datadog: oneOf(parseDatadogTier, equals(false)),
-  team: optional(parseNonEmptyString),
+const parseEeeohConfig = S.compile(eeeohConfigSchema, 'Any', 'Output', 'Sync');
+
+const eeeohFieldSchema = S.schema({
+  datadog: S.union([datadogTierSchema, false]),
+  team: S.optional(nonEmptyString),
 });
+
+const parseEeeohField = S.compile(eeeohFieldSchema, 'Any', 'Output', 'Sync');
 
 export type Config<CustomLevels extends string> = {
   /**
@@ -503,12 +498,11 @@ const getConfigForLogger = <CustomLevels extends string>(
     return null;
   }
 
-  const result = parseEeeohConfig(eeeoh);
-  if (result.error) {
+  try {
+    return parseEeeohConfig(eeeoh);
+  } catch {
     return null;
   }
-
-  return result.value;
 };
 
 const getTierForLevel = (
@@ -560,10 +554,14 @@ const sourceBaseValues = <CustomLevels extends string>(
 };
 
 const validate = {
-  nonEmptyString: (value: unknown) =>
-    parseNonEmptyString(value).error
-      ? `expected non-empty string, received ${JSON.stringify(value)}`
-      : null,
+  nonEmptyString: (value: unknown) => {
+    try {
+      parseNonEmptyString(value);
+      return null;
+    } catch {
+      return `expected non-empty string, received ${JSON.stringify(value)}`;
+    }
+  },
 };
 
 const newValidationError = <
@@ -598,31 +596,23 @@ const getBaseOrThrow = <CustomLevels extends string>(
     return;
   }
 
-  const result = parseBase(baseValues);
+  try {
+    return parseBase(baseValues);
+  } catch {
+    if ('use' in opts.eeeoh && opts.eeeoh.use === 'environment') {
+      throw newValidationError(
+        '@seek/logger found invalid values in environment variables. Review the documentation and ensure your deployment configures these correctly.',
+        process.env,
+        { env: 'DD_ENV', service: 'DD_SERVICE', version: 'DD_VERSION' },
+      );
+    }
 
-  if (!result.error) {
-    const { env, service, version } = result.value;
-
-    return {
-      env,
-      service,
-      version,
-    };
-  }
-
-  if ('use' in opts.eeeoh && opts.eeeoh.use === 'environment') {
     throw newValidationError(
-      '@seek/logger found invalid values in environment variables. Review the documentation and ensure your deployment configures these correctly.',
-      process.env,
-      { env: 'DD_ENV', service: 'DD_SERVICE', version: 'DD_VERSION' },
+      '@seek/logger found invalid values in base attributes. Review the documentation and ensure your deployment configures these correctly.',
+      opts.base,
+      { env: 'env', service: 'service', version: 'version' },
     );
   }
-
-  throw newValidationError(
-    '@seek/logger found invalid values in base attributes. Review the documentation and ensure your deployment configures these correctly.',
-    opts.base,
-    { env: 'env', service: 'service', version: 'version' },
-  );
 };
 
 type CreateOptions<CustomLevels extends string> = Options<CustomLevels> &
@@ -723,22 +713,22 @@ export const createOptions = <CustomLevels extends string>(
     let tier: DatadogTier | false | undefined;
 
     if ('eeeoh' in input) {
-      const result = parseEeeohField(input.eeeoh);
+      try {
+        const result = parseEeeohField(input.eeeoh);
 
-      if (result?.tag === 'success') {
-        tier = result.value.datadog;
+        tier = result.datadog;
 
-        if (result.value.team) {
+        if (result.team) {
           return {
             tags: ddtags({
               env: base?.env,
-              team: result.value.team,
+              team: result.team,
               version: base?.version,
             }),
-            tier: result.value.datadog,
+            tier: result.datadog,
           };
         }
-      }
+      } catch {}
     }
 
     const { levelToTier, tags } = getCacheableConfig(logger);

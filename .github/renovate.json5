@@ -1,4 +1,10 @@
 {
   extends: ['github>seek-oss/rynovate'],
-  timezone: 'Australia/Melbourne',
+  packageRules: [
+    {
+      matchManagers: ['npm'],
+      matchDepNames: ['sury'],
+      groupName: 'sury',
+    },
+  ],
 }
