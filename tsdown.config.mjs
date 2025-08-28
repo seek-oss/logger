@@ -6,6 +6,6 @@ export default defineConfig({
   exports: true,
   dts: {
     // Bundles type declarations for the specified packages
-    resolve: ['sury']
-  }
+    resolve: ['sury'],
+  },
 });
