@@ -1,5 +1,13 @@
 # @seek/logger
 
+## 11.1.1
+
+### Patch Changes
+
+- Improve compatibility with ESM/Bundlers ([#238](https://github.com/seek-oss/logger/pull/238))
+
+- **deps:** Switch configuration parsing library from `pure-parse` to `sury` ([#237](https://github.com/seek-oss/logger/pull/237))
+
 ## 11.1.0
 
 ### Minor Changes
