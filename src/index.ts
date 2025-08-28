@@ -219,35 +219,47 @@ interface LoggerExtras<
  * @param destination - Destination stream. Default: `pino.destination({ sync: true })`.
  */
 export const createLogger = <CustomLevels extends string = never>(
-  opts: LoggerOptions<CustomLevels> = {},
+  opts: Readonly<LoggerOptions<CustomLevels>> = {},
   destination: pino.DestinationStream = createDestination({ mock: false })
     .destination,
 ): Logger<CustomLevels> => {
-  opts.redact = redact.addDefaultRedactPathStrings(opts.redact);
+  const {
+    eeeoh: _,
+    maxObjectDepth,
+    omitHeaderNames,
+    redactText,
+    ...pinoOpts
+  } = opts;
+
+  const serializers = createSerializers({
+    omitHeaderNames,
+    maxObjectDepth,
+    serializers: opts.serializers,
+  });
+
+  const formatters = createFormatters({
+    maxObjectDepth,
+    redactText,
+    serializers,
+  });
 
   const eeeoh = Eeeoh.createOptions(opts);
-  opts.errorKey ??= eeeoh.errorKey;
-  opts.mixin = eeeoh.mixin;
-  opts.mixinMergeStrategy = eeeoh.mixinMergeStrategy;
 
-  const serializers = createSerializers(opts);
-
-  opts.serializers = serializers;
-
-  const formatters = createFormatters({ ...opts, serializers });
-  opts.base = {
-    ...base,
-    ...eeeoh.base,
-    ...opts.base,
-  };
-  opts.formatters = {
-    ...formatters,
-    ...opts.formatters,
-  };
-
-  opts.timestamp ??= () => `,"timestamp":"${new Date().toISOString()}"`;
-
-  return pino(opts, withRedaction(destination, opts.redactText));
+  return pino(
+    {
+      ...pinoOpts,
+      base: { ...base, ...eeeoh.base, ...opts.base },
+      errorKey: opts.errorKey ?? eeeoh.errorKey,
+      formatters: { ...formatters, ...opts.formatters },
+      mixin: eeeoh.mixin,
+      mixinMergeStrategy: eeeoh.mixinMergeStrategy,
+      redact: redact.addDefaultRedactPathStrings(opts.redact),
+      serializers,
+      timestamp:
+        opts.timestamp ?? (() => `,"timestamp":"${new Date().toISOString()}"`),
+    },
+    withRedaction(destination, redactText),
+  );
 };
 
 export default createLogger;

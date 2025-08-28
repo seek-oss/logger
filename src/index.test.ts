@@ -1993,3 +1993,19 @@ test('type compatibility with Logger', () => {
     { doNotAllowAnObjectHere: true },
   );
 });
+
+test('options are not mutated', () => {
+  const opts = Object.freeze({
+    base: {
+      env: 'development',
+      service: 'deployment-service-name',
+      version: 'abcdef',
+    },
+    eeeoh: { datadog: 'tin', team: 'my-owner-name' },
+    maxObjectDepth: 5,
+    mixin: () => ({}),
+    omitHeaderNames: ['x-request-id'],
+  } as const satisfies LoggerOptions);
+
+  expect(() => createLogger(opts)).not.toThrow();
+});
