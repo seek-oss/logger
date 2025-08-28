@@ -25,8 +25,8 @@ importers:
         version: 1.0.1
     devDependencies:
       '@changesets/cli':
-        specifier: 2.29.5
-        version: 2.29.5
+        specifier: 2.29.6
+        version: 2.29.6(@types/node@22.17.1)
       '@changesets/get-github-info':
         specifier: 0.6.0
         version: 0.6.0(encoding@0.1.13)
@@ -239,8 +239,8 @@ packages:
   '@changesets/changelog-git@0.2.1':
     resolution: {integrity: sha512-x/xEleCFLH28c3bQeQIyeZf8lFXyDFVn1SgcBiR2Tw/r4IAWlk1fzxCEZ6NxQAjF2Nwtczoen3OA2qR+UawQ8Q==}
 
-  '@changesets/cli@2.29.5':
-    resolution: {integrity: sha512-0j0cPq3fgxt2dPdFsg4XvO+6L66RC0pZybT9F4dG5TBrLA3jA/1pNkdTXH9IBBVHkgsKrNKenI3n1mPyPlIydg==}
+  '@changesets/cli@2.29.6':
+    resolution: {integrity: sha512-6qCcVsIG1KQLhpQ5zE8N0PckIx4+9QlHK3z6/lwKnw7Tir71Bjw8BeOZaxA/4Jt00pcgCnCSWZnyuZf5Il05QQ==}
     hasBin: true
 
   '@changesets/config@3.1.1':
@@ -538,6 +538,15 @@ packages:
   '@humanwhocodes/retry@0.4.3':
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
+
+  '@inquirer/external-editor@1.0.1':
+    resolution: {integrity: sha512-Oau4yL24d2B5IL4ma4UpbQigkVhzPDXLoqy1ggK4gnHg/stmkffJE4oOXHXF3uz0UEpywG68KcyXsyYpA1Re/Q==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
 
   '@isaacs/balanced-match@4.0.1':
     resolution: {integrity: sha512-yzMTt9lEb8Gv7zRioUilSglI0c0smZ9k5D65677DLWLtWJaXIS3CqcGyUFByYKlnUj6TkjLVs54fBl6+TiGQDQ==}
@@ -1420,8 +1429,8 @@ packages:
     resolution: {integrity: sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==}
     engines: {node: '>=10'}
 
-  chardet@0.7.0:
-    resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
+  chardet@2.1.0:
+    resolution: {integrity: sha512-bNFETTG/pM5ryzQ9Ad0lJOTa6HWD/YsScAR3EnCPZRPlQh77JocYktSHOUHelyhm8IARL+o4c4F1bP5KVOjiRA==}
 
   chokidar@4.0.3:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
@@ -1959,10 +1968,6 @@ packages:
   extendable-error@0.1.7:
     resolution: {integrity: sha512-UOiS2in6/Q0FK0R0q6UY9vYpQ21mr/Qn1KOnte7vsACuNJf514WvCCUHSRCPcgjPT2bAhNIJdlE6bVap1GKmeg==}
 
-  external-editor@3.1.0:
-    resolution: {integrity: sha512-hMQ4CX1p1izmuLYyZqLMO/qGNw10wSv9QDCPfzXfyFrOaCSSoRfqE1Kf1s5an66J5JZC62NewG+mK49jOCtQew==}
-    engines: {node: '>=4'}
-
   fast-content-type-parse@3.0.0:
     resolution: {integrity: sha512-ZvLdcY8P+N8mGQJahJV5G4U88CSvT1rP8ApL6uETe88MBXrBHAkZlSEySdUlyztF7ccb+Znos3TFqaepHxdhBg==}
 
@@ -2300,10 +2305,6 @@ packages:
   human-signals@8.0.1:
     resolution: {integrity: sha512-eKCa6bwnJhvxj14kZk5NCPc6Hb6BdsU9DZcOnmQKSnO1VKrfV0zCvtttPZUsBvjmNDn8rpcJfpwSYnHBjc95MQ==}
     engines: {node: '>=18.18.0'}
-
-  iconv-lite@0.4.24:
-    resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
-    engines: {node: '>=0.10.0'}
 
   iconv-lite@0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
@@ -3176,10 +3177,6 @@ packages:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
 
-  os-tmpdir@1.0.2:
-    resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
-    engines: {node: '>=0.10.0'}
-
   outdent@0.5.0:
     resolution: {integrity: sha512-/jHxFIzoMXdqPzTaCpFzAAWhpkSjZPF4Vsn6jAfNpmbH/ymsmd7Qc6VE9BGn0L6YMj6uwpQLxCECpus4ukKS9Q==}
 
@@ -3933,10 +3930,6 @@ packages:
     resolution: {integrity: sha512-tX5e7OM1HnYr2+a2C/4V0htOcSQcoSTH9KgJnVvNm5zm/cyEWKJ7j7YutsH9CxMdtOkkLFy2AHrMci9IM8IPZQ==}
     engines: {node: '>=12.0.0'}
 
-  tmp@0.0.33:
-    resolution: {integrity: sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==}
-    engines: {node: '>=0.6.0'}
-
   tmpl@1.0.5:
     resolution: {integrity: sha512-3f0uOEAQwIqGuWW2MVzYg8fV/QNnc/IpuJNG837rLuczAaLVHslWHZQj4IGiEl5Hs3kkbhwL9Ab7Hrsmuj+Smw==}
 
@@ -4546,7 +4539,7 @@ snapshots:
     dependencies:
       '@changesets/types': 6.1.0
 
-  '@changesets/cli@2.29.5':
+  '@changesets/cli@2.29.6(@types/node@22.17.1)':
     dependencies:
       '@changesets/apply-release-plan': 7.0.12
       '@changesets/assemble-release-plan': 6.0.9
@@ -4562,11 +4555,11 @@ snapshots:
       '@changesets/should-skip-package': 0.1.2
       '@changesets/types': 6.1.0
       '@changesets/write': 0.4.0
+      '@inquirer/external-editor': 1.0.1(@types/node@22.17.1)
       '@manypkg/get-packages': 1.1.3
       ansi-colors: 4.1.3
       ci-info: 3.9.0
       enquirer: 2.4.1
-      external-editor: 3.1.0
       fs-extra: 7.0.1
       mri: 1.2.0
       p-limit: 2.3.0
@@ -4576,6 +4569,8 @@ snapshots:
       semver: 7.7.2
       spawndamnit: 3.0.1
       term-size: 2.2.1
+    transitivePeerDependencies:
+      - '@types/node'
 
   '@changesets/config@3.1.1':
     dependencies:
@@ -4847,6 +4842,13 @@ snapshots:
   '@humanwhocodes/retry@0.3.1': {}
 
   '@humanwhocodes/retry@0.4.3': {}
+
+  '@inquirer/external-editor@1.0.1(@types/node@22.17.1)':
+    dependencies:
+      chardet: 2.1.0
+      iconv-lite: 0.6.3
+    optionalDependencies:
+      '@types/node': 22.17.1
 
   '@isaacs/balanced-match@4.0.1': {}
 
@@ -5920,7 +5922,7 @@ snapshots:
 
   char-regex@1.0.2: {}
 
-  chardet@0.7.0: {}
+  chardet@2.1.0: {}
 
   chokidar@4.0.3:
     dependencies:
@@ -6594,12 +6596,6 @@ snapshots:
 
   extendable-error@0.1.7: {}
 
-  external-editor@3.1.0:
-    dependencies:
-      chardet: 0.7.0
-      iconv-lite: 0.4.24
-      tmp: 0.0.33
-
   fast-content-type-parse@3.0.0: {}
 
   fast-deep-equal@3.1.3: {}
@@ -6943,14 +6939,9 @@ snapshots:
 
   human-signals@8.0.1: {}
 
-  iconv-lite@0.4.24:
-    dependencies:
-      safer-buffer: 2.1.2
-
   iconv-lite@0.6.3:
     dependencies:
       safer-buffer: 2.1.2
-    optional: true
 
   ignore@5.3.2: {}
 
@@ -7979,8 +7970,6 @@ snapshots:
       type-check: 0.4.0
       word-wrap: 1.2.5
 
-  os-tmpdir@1.0.2: {}
-
   outdent@0.5.0: {}
 
   own-keys@1.0.1:
@@ -8875,10 +8864,6 @@ snapshots:
     dependencies:
       fdir: 6.4.6(picomatch@4.0.3)
       picomatch: 4.0.3
-
-  tmp@0.0.33:
-    dependencies:
-      os-tmpdir: 1.0.2
 
   tmpl@1.0.5: {}
 

@@ -1,6 +1,6 @@
 {
   "name": "@seek/logger",
-  "version": "11.0.0",
+  "version": "11.1.0",
   "private": false,
   "description": "Standardized logging",
   "homepage": "https://github.com/seek-oss/logger#readme",
@@ -48,7 +48,7 @@
     "pure-parse": "^1.0.1"
   },
   "devDependencies": {
-    "@changesets/cli": "2.29.5",
+    "@changesets/cli": "2.29.6",
     "@changesets/get-github-info": "0.6.0",
     "@types/fast-redact": "3.0.4",
     "@types/split2": "4.2.3",
