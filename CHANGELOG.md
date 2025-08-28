@@ -1,5 +1,21 @@
 # @seek/logger
 
+## 11.1.0
+
+### Minor Changes
+
+- **createLogger:** Include `"ddsource": "nodejs"` attribute by default ([#234](https://github.com/seek-oss/logger/pull/234))
+
+  This applies when the [`eeeoh` integration](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md) is not active and improves the Datadog experience for workloads that rely on external routing configuration (e.g. via LogCentral).
+
+### Patch Changes
+
+- **eeeoh:** Omit `ddsource` and `ddtags` on `datadog: false` ([#234](https://github.com/seek-oss/logger/pull/234))
+
+- **createLogger:** Avoid mutating `opts` argument ([#239](https://github.com/seek-oss/logger/pull/239))
+
+- **types:** Make `logger.child()` bindings stricter ([#233](https://github.com/seek-oss/logger/pull/233))
+
 ## 11.0.0
 
 This much-delayed release introduces an [**opt-in `eeeoh` integration**](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md) for SEEK's proprietary logging solution and Datadog observability practices. It supports standard `DD_` environment variables and [advanced log tiering behaviour](https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#datadog-log-tiers).
