@@ -1,5 +1,9 @@
 // TODO: Redact cookies?
 export const defaultRedact = [
+  'err.config.body',
+  'err.config.data',
+  "err.config.headers['user-email']",
+  'err.response.config',
   'error.config.body',
   'error.config.data',
   "error.config.headers['user-email']",
