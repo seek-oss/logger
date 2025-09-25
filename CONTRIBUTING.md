@@ -152,13 +152,13 @@ The changesets are used to infer the next semantic version and to update the [ch
 
 This PR may be left open to collate multiple changes into the next version.
 A maintainer will merge it once ready,
-and our [release](https://github.com/seek-oss/logger/blob/master/.github/workflows/release.yml) GitHub Actions workflow will publish the associated GitHub release and npm package version.
+and our [release workflow] will publish the associated GitHub release and npm package version.
 
 ### Publishing a prerelease
 
 Prereleases can be created on demand via [seek-oss/changesets-snapshot].
 
-Run the [Snapshot workflow] in GitHub Actions to publish a new snapshot version to npm.
+Manually run the [release workflow] on any branch in GitHub Actions to publish a new snapshot version to npm.
 
 <https://www.npmjs.com/package/@seek/logger?activeTab=versions>
 
@@ -171,6 +171,6 @@ Run the [Snapshot workflow] in GitHub Actions to publish a new snapshot version 
 [release notes]: https://github.com/seek-oss/logger/releases
 [seek-oss/changesets-snapshot]: https://github.com/seek-oss/changesets-snapshot
 [semantic versioning]: https://semver.org/
-[snapshot workflow]: https://github.com/seek-oss/logger/actions/workflows/snapshot.yml
+[release workflow]: https://github.com/seek-oss/logger/actions/workflows/release.yml
 [submit an issue]: https://github.com/seek-oss/logger/issues/new/choose
 [windows subsystem for linux]: https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
