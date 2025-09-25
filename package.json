@@ -51,7 +51,7 @@
     "@changesets/get-github-info": "0.6.0",
     "@types/fast-redact": "3.0.4",
     "@types/split2": "4.2.3",
-    "skuba": "12.2.0",
+    "skuba": "12.3.0",
     "split2": "4.2.0",
     "sury": "11.0.0-alpha.3",
     "tsdown": "0.14.2"
