@@ -535,19 +535,15 @@ testLog(
   'allow consumers access to the full text log for redaction',
   {
     err: {
-      response: {
-        config: {
-          data: 'client_secret=super_secret_client_secret&audience=https%3A%2F%2Fseek%2Fapi%2Fcandidate',
-        },
+      internal: {
+        data: 'client_secret=super_secret_client_secret&audience=https%3A%2F%2Fseek%2Fapi%2Fcandidate',
       },
     },
   },
   {
     err: {
-      response: {
-        config: {
-          data: 'client_secret=[Redacted]&audience=https%3A%2F%2Fseek%2Fapi%2Fcandidate',
-        },
+      internal: {
+        data: 'client_secret=[Redacted]&audience=https%3A%2F%2Fseek%2Fapi%2Fcandidate',
       },
     },
   },
