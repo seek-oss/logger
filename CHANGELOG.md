@@ -1,5 +1,11 @@
 # @seek/logger
 
+## 11.2.1
+
+### Patch Changes
+
+- **types:** Resolve `error TS2304: Cannot find name 'exports_d_exports'.` errors ([#245](https://github.com/seek-oss/logger/pull/245))
+
 ## 11.2.0
 
 ### Minor Changes
