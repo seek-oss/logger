@@ -2,4 +2,4 @@
 '@seek/logger': patch
 ---
 
-Resolve type declaration issues
+types: Resolve `error TS2304: Cannot find name 'exports_d_exports'.` errors
