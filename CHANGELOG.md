@@ -6,7 +6,7 @@
 
 - **createLogger:** Redact request body in HTTP client errors ([#247](https://github.com/seek-oss/logger/pull/247))
 
-  An HTTP request body _may_ contain sensitive information. While `@seek/logger` currently avoids logging body content when it is supplied with a `req` or `res`, HTTP clients may include equivalent information in errors, creating another avenue for information exposure.
+  An HTTP request body _may_ contain sensitive information. While `@seek/logger` already avoids logging body content when it is supplied with a `req` or `res`, HTTP clients may include equivalent information in errors, creating another avenue for information exposure.
 
   `@seek/logger` now automatically redacts the following property paths under `err` or `error`:
   - `config.body`
