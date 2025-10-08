@@ -1,4 +1,4 @@
-import fastRedact from 'fast-redact';
+import slowRedact from 'slow-redact';
 
 type Call = Readonly<Record<PropertyKey, unknown>>;
 
@@ -11,8 +11,8 @@ export type MockOptions = {
    *
    * List non-determistic properties like `latency` to stabilise snapshots.
    *
-   * See `fast-redact` for supported syntax:
-   * https://github.com/davidmarkclements/fast-redact/blob/v3.5.0/readme.md#paths--array
+   * See `slow-redact` for supported syntax:
+   * https://github.com/pinojs/slow-redact#options
    */
   redact?: string[];
 
@@ -21,8 +21,8 @@ export type MockOptions = {
    *
    * List common properties like `timestamp` to declutter test assertions.
    *
-   * See `fast-redact` for supported syntax:
-   * https://github.com/davidmarkclements/fast-redact/blob/v3.5.0/readme.md#paths--array
+   * See `slow-redact` for supported syntax:
+   * https://github.com/pinojs/slow-redact#options
    */
   remove?: string[];
 };
@@ -48,7 +48,7 @@ export const DEFAULT_MOCK_OPTIONS = Object.freeze({
 } as const satisfies MockOptions);
 
 export const createStdoutMock = (opts: MockOptions) => {
-  const redact = fastRedact({
+  const redact = slowRedact({
     censor: '-',
     paths: opts.redact ?? DEFAULT_MOCK_OPTIONS.redact,
     serialize: false,
@@ -56,7 +56,7 @@ export const createStdoutMock = (opts: MockOptions) => {
     strict: true,
   });
 
-  const remove = fastRedact({
+  const remove = slowRedact({
     censor: undefined,
     paths: opts.remove ?? DEFAULT_MOCK_OPTIONS.remove,
     serialize: JSON.stringify,
@@ -130,9 +130,12 @@ export const createStdoutMock = (opts: MockOptions) => {
         );
       }
 
-      redact(call);
+      const redacted = redact(call) as Record<PropertyKey, unknown>;
 
-      calls.push(call);
+      // slow-redact adds a `restore` method to the redacted object
+      delete redacted.restore;
+
+      calls.push(redacted);
     },
   };
 };

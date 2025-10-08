@@ -11,15 +11,15 @@ importers:
       dtrim:
         specifier: ^1.11.0
         version: 1.12.0
-      fast-redact:
-        specifier: ^3.5.0
-        version: 3.5.0
       pino:
         specifier: ^10.0.0
         version: 10.0.0
       pino-std-serializers:
         specifier: ^7.0.0
         version: 7.0.0
+      slow-redact:
+        specifier: ^0.3.1
+        version: 0.3.1
     devDependencies:
       '@changesets/cli':
         specifier: 2.29.7
@@ -27,9 +27,6 @@ importers:
       '@changesets/get-github-info':
         specifier: 0.6.0
         version: 0.6.0(encoding@0.1.13)
-      '@types/fast-redact':
-        specifier: 3.0.4
-        version: 3.0.4
       '@types/split2':
         specifier: 4.2.3
         version: 4.2.3
@@ -939,9 +936,6 @@ packages:
 
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
-
-  '@types/fast-redact@3.0.4':
-    resolution: {integrity: sha512-tgGJaXucrCH4Yx2l/AI6e/JQksZhKGIQsVwBMTh+nxUhQDv5tXScTs5DHTw+qSKDXnHL2dTAh1e2rd5pcFQyNQ==}
 
   '@types/istanbul-lib-coverage@2.0.6':
     resolution: {integrity: sha512-2QF/t/auWm0lsy8XtKVPG19v3sSOQlJe/YHZgfjb/KBBHOGSV+J2q/S671rcq9uTBrLAXmZpqJiaQbMT+zNU1w==}
@@ -1975,10 +1969,6 @@ packages:
 
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
-
-  fast-redact@3.5.0:
-    resolution: {integrity: sha512-dwsoQlS7h9hMeYUq1W++23NDcBLV4KqONnITDV9DjfS3q1SgDGVrBdvvTLUotWtPSD7asWDV9/CmsZPy8Hf70A==}
-    engines: {node: '>=6'}
 
   fastq@1.19.1:
     resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
@@ -5404,8 +5394,6 @@ snapshots:
 
   '@types/estree@1.0.8': {}
 
-  '@types/fast-redact@3.0.4': {}
-
   '@types/istanbul-lib-coverage@2.0.6': {}
 
   '@types/istanbul-lib-report@3.0.3':
@@ -6599,8 +6587,6 @@ snapshots:
   fast-json-stable-stringify@2.1.0: {}
 
   fast-levenshtein@2.0.6: {}
-
-  fast-redact@3.5.0: {}
 
   fastq@1.19.1:
     dependencies:

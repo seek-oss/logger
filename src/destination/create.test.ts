@@ -39,7 +39,7 @@ describe('createDestination', () => {
       const { stdoutMock } = createDestination({ mock: true });
 
       expect(() => stdoutMock.write('null')).toThrowErrorMatchingInlineSnapshot(
-        `"fast-redact: primitives cannot be redacted"`,
+        `"@seek/logger mocking failed to process a log message: null"`,
       );
     });
 
