@@ -27,58 +27,16 @@ export type LoggerOptions<CustomLevels extends string = never> = Exclude<
   FormatterOptions &
   SerializerOptions;
 
-type PlaceholderSpecifier = 'd' | 's' | 'j' | 'o' | 'O';
-type PlaceholderTypeMapping<T extends PlaceholderSpecifier> = T extends 'd'
-  ? number
-  : T extends 's'
-    ? string
-    : T extends 'j' | 'o' | 'O'
-      ? object
-      : never;
-
-type ParseLogFnArgs<
-  T,
-  Acc extends unknown[] = [],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-> = T extends `${infer _}%${infer Placeholder}${infer Rest}`
-  ? Placeholder extends PlaceholderSpecifier
-    ? ParseLogFnArgs<Rest, [...Acc, PlaceholderTypeMapping<Placeholder>]>
-    : ParseLogFnArgs<Rest, Acc>
-  : Acc;
-
-interface LogFn {
-  <T, TMsg extends string = string>(
-    obj: T extends object ? Eeeoh.Fields & T : T,
-    msg?: T extends string ? never : TMsg,
-    ...args: ParseLogFnArgs<TMsg> | []
-  ): void;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  <_, TMsg extends string = string>(
-    msg: TMsg,
-    ...args: ParseLogFnArgs<TMsg> | []
-  ): void;
+declare module 'pino' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface LogFnFields extends Eeeoh.Fields {}
 }
 
 export type Logger<CustomLevels extends string = never> = Omit<
   pino.Logger<CustomLevels>,
-  | 'fatal'
-  | 'error'
-  | 'warn'
-  | 'info'
-  | 'debug'
-  | 'trace'
-  | 'silent'
-  | 'child'
-  | CustomLevels
+  'child' | CustomLevels
 > & {
   level: pino.LevelWithSilentOrString;
-  fatal: LogFn;
-  error: LogFn;
-  warn: LogFn;
-  info: LogFn;
-  debug: LogFn;
-  trace: LogFn;
-  silent: LogFn;
 
   child<ChildCustomLevels extends never = never>(
     bindings: Eeeoh.Bindings<CustomLevels> & pino.Bindings,
@@ -108,7 +66,7 @@ export type Logger<CustomLevels extends string = never> = Omit<
       'customLevels'
     > & { customLevels: Record<ChildCustomLevels, number> },
   ): Logger<ChildCustomLevels>;
-} & Record<CustomLevels, LogFn> &
+} & Record<CustomLevels, pino.LogFn> &
   LoggerExtras<CustomLevels>;
 
 type OnChildCallback<CustomLevels extends string = never> = (
