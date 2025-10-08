@@ -133,7 +133,9 @@ export const createStdoutMock = (opts: MockOptions) => {
       const redacted = redact(call) as Record<PropertyKey, unknown>;
 
       // slow-redact adds a `restore` method to the redacted object
-      delete redacted.restore;
+      if (typeof redacted.restore === 'function') {
+        delete redacted.restore;
+      }
 
       calls.push(redacted);
     },
