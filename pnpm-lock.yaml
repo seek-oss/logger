@@ -43,8 +43,8 @@ importers:
         specifier: 11.0.0-alpha.4
         version: 11.0.0-alpha.4
       tsdown:
-        specifier: 0.15.4
-        version: 0.15.4(typescript@5.9.3)
+        specifier: 0.15.6
+        version: 0.15.6(typescript@5.9.3)
 
 packages:
 
@@ -4011,8 +4011,8 @@ packages:
   tsconfig-seek@2.0.0:
     resolution: {integrity: sha512-pcKqW1I+CxGS6LI2QcNSdHGkJUWIP4VzcRzYAFH/LcQOlCBtD2q5w7RXZrIQxSANtcdN2RIT+o5pYEIPd81vRQ==}
 
-  tsdown@0.15.4:
-    resolution: {integrity: sha512-aoFE8disBg8BgYcOgradr/5Yd+QDBRQ+6z8mXo/Ib7+GIaJwJsI5l/ppve05CZGcSDqwdhF4gdrA0HPHBtbBqA==}
+  tsdown@0.15.6:
+    resolution: {integrity: sha512-W6++O3JeV9gm3JY6P/vLiC7zzTcJbZhQxXb+p3AvRMpDOPBIg82yXULyZCcwjsihY/bFG+Qw37HkezZbP7fzUg==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
@@ -8923,7 +8923,7 @@ snapshots:
 
   tsconfig-seek@2.0.0: {}
 
-  tsdown@0.15.4(typescript@5.9.3):
+  tsdown@0.15.6(typescript@5.9.3):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
