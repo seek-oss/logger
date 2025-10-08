@@ -2,4 +2,4 @@
 '@seek/logger': minor
 ---
 
-deps: Switch with slow-redact
+deps: Migrate from `fast-redact` to `slow-redact` 🐢
