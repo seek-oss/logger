@@ -50,7 +50,7 @@
     "@changesets/cli": "2.29.7",
     "@changesets/get-github-info": "0.6.0",
     "@types/split2": "4.2.3",
-    "skuba": "12.4.1",
+    "skuba": "13.0.3",
     "split2": "4.2.0",
     "sury": "11.0.0-alpha.4",
     "tsdown": "0.15.6"
@@ -67,6 +67,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "12.4.1"
+    "version": "13.0.3"
   }
 }
