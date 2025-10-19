@@ -1,4 +1,4 @@
-import slowRedact from 'slow-redact';
+import pinoRedact from '@pinojs/redact';
 
 type Call = Readonly<Record<PropertyKey, unknown>>;
 
@@ -11,8 +11,8 @@ export type MockOptions = {
    *
    * List non-determistic properties like `latency` to stabilise snapshots.
    *
-   * See `slow-redact` for supported syntax:
-   * https://github.com/pinojs/slow-redact#options
+   * See `@pinojs/redact` for supported syntax:
+   * https://github.com/pinojs/redact#options
    */
   redact?: string[];
 
@@ -21,8 +21,8 @@ export type MockOptions = {
    *
    * List common properties like `timestamp` to declutter test assertions.
    *
-   * See `slow-redact` for supported syntax:
-   * https://github.com/pinojs/slow-redact#options
+   * See `@pinojs/redact` for supported syntax:
+   * https://github.com/pinojs/redact#options
    */
   remove?: string[];
 };
@@ -48,7 +48,7 @@ export const DEFAULT_MOCK_OPTIONS = Object.freeze({
 } as const satisfies MockOptions);
 
 export const createStdoutMock = (opts: MockOptions) => {
-  const redact = slowRedact({
+  const redact = pinoRedact({
     censor: '-',
     paths: opts.redact ?? DEFAULT_MOCK_OPTIONS.redact,
     serialize: false,
@@ -56,7 +56,7 @@ export const createStdoutMock = (opts: MockOptions) => {
     strict: true,
   });
 
-  const remove = slowRedact({
+  const remove = pinoRedact({
     censor: undefined,
     paths: opts.remove ?? DEFAULT_MOCK_OPTIONS.remove,
     serialize: JSON.stringify,
@@ -132,7 +132,7 @@ export const createStdoutMock = (opts: MockOptions) => {
 
       const redacted = redact(call) as Record<PropertyKey, unknown>;
 
-      // slow-redact adds a `restore` method to the redacted object
+      // @pinojs/redact adds a `restore` method to the redacted object
       delete redacted.restore;
 
       calls.push(redacted);
