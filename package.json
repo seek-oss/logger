@@ -41,10 +41,10 @@
     "test:watch": "skuba test --watch"
   },
   "dependencies": {
+    "@pinojs/redact": "0.4.0",
     "dtrim": "^1.11.0",
-    "pino": "^10.0.0",
-    "pino-std-serializers": "^7.0.0",
-    "slow-redact": "^0.3.1"
+    "pino": "^10.1.0",
+    "pino-std-serializers": "^7.0.0"
   },
   "devDependencies": {
     "@changesets/cli": "2.29.7",
