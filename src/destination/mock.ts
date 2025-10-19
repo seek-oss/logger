@@ -1,4 +1,4 @@
-import slowRedact from '@pinojs/redact';
+import pinoRedact from '@pinojs/redact';
 
 type Call = Readonly<Record<PropertyKey, unknown>>;
 
@@ -48,7 +48,7 @@ export const DEFAULT_MOCK_OPTIONS = Object.freeze({
 } as const satisfies MockOptions);
 
 export const createStdoutMock = (opts: MockOptions) => {
-  const redact = slowRedact({
+  const redact = pinoRedact({
     censor: '-',
     paths: opts.redact ?? DEFAULT_MOCK_OPTIONS.redact,
     serialize: false,
@@ -56,7 +56,7 @@ export const createStdoutMock = (opts: MockOptions) => {
     strict: true,
   });
 
-  const remove = slowRedact({
+  const remove = pinoRedact({
     censor: undefined,
     paths: opts.remove ?? DEFAULT_MOCK_OPTIONS.remove,
     serialize: JSON.stringify,
