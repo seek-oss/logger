@@ -183,9 +183,11 @@ export const createLogger = <CustomLevels extends string = never>(
 ): Logger<CustomLevels> => {
   const {
     eeeoh: _,
+    functions,
     maxObjectDepth,
     omitHeaderNames,
     redactText,
+    stringLength,
     ...pinoOpts
   } = opts;
 
@@ -197,8 +199,10 @@ export const createLogger = <CustomLevels extends string = never>(
 
   const formatters = createFormatters({
     maxObjectDepth,
+    functions,
     redactText,
     serializers,
+    stringLength,
   });
 
   const eeeoh = Eeeoh.createOptions(opts);

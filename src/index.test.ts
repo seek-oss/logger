@@ -226,6 +226,22 @@ testLog(
 );
 
 testLog(
+  'should truncate strings longer than 100 characters',
+  { foo: { url: 'a'.repeat(101) } },
+  { foo: { url: `${'a'.repeat(100)}...` } },
+  undefined,
+  { stringLength: 100 },
+);
+
+testLog(
+  'should omit functions',
+  { foo: { message: () => 'Hello, world!', test: 'test' } },
+  { foo: { test: 'test' } },
+  undefined,
+  { functions: false },
+);
+
+testLog(
   'should truncate arrays containing more than 64 items',
   { foo: { message: 'a'.repeat(64 + 10).split('') } },
   {
