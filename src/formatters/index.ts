@@ -10,9 +10,19 @@ export interface FormatterOptions {
   maxObjectDepth?: number;
 
   /**
+   * Allows functions in log objects. Default: true
+   */
+  functions?: boolean;
+
+  /**
    * This allows finer control of redaction by providing access to the full text.
    */
   redactText?: (input: string, redactionPlaceholder: string) => string;
+
+  /**
+   * Maximum length loggable string length. Default: 512
+   */
+  stringLength?: number;
 }
 
 export const createFormatters = (
@@ -20,7 +30,9 @@ export const createFormatters = (
 ): LoggerOptions['formatters'] => {
   const trim = trimmer({
     depth: opts.maxObjectDepth ?? DEFAULT_MAX_OBJECT_DEPTH,
+    functions: opts.functions,
     retain: new Set(Object.keys(opts.serializers)),
+    string: opts.stringLength,
   });
 
   return {

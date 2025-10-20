@@ -2,6 +2,7 @@
 ignorePatchFailures: false
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
+  - 'dtrim'
   - '@seek/*'
   - '@skuba-lib/*'
   - eslint-config-seek

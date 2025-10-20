@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@pinojs/redact": "^0.4.0",
-    "dtrim": "^1.11.0",
+    "dtrim": "^1.13.0",
     "pino": "^10.1.0",
     "pino-std-serializers": "^7.0.0"
   },
@@ -63,6 +63,9 @@
     "access": "public",
     "provenance": true
   },
+  "minimumReleaseAgeExcludeOverload": [
+    "dtrim"
+  ],
   "skuba": {
     "entryPoint": "src/index.ts",
     "template": null,
