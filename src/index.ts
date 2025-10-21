@@ -6,9 +6,16 @@ import base from './base/index.js';
 import { createDestination } from './destination/create.js';
 import { withRedaction } from './destination/redact.js';
 import * as Eeeoh from './eeeoh/eeeoh.js';
-import { type FormatterOptions, createFormatters } from './formatters/index.js';
-import * as redact from './redact/index.js';
 import {
+  DEFAULT_MAX_OBJECT_DEPTH,
+  DEFAULT_OMIT_FUNCTIONS,
+  DEFAULT_STRING_LENGTH,
+  type FormatterOptions,
+  createFormatters,
+} from './formatters/index.js';
+import { addDefaultRedactPathStrings } from './redact/index.js';
+import {
+  DEFAULT_OMIT_HEADER_NAMES,
   type SerializerOptions,
   createSerializers,
 } from './serializers/index.js';
@@ -19,13 +26,11 @@ export { DEFAULT_OMIT_HEADER_NAMES } from './serializers/index.js';
 
 export { pino };
 
-export type LoggerOptions<CustomLevels extends string = never> = Exclude<
+export type LoggerOptions<CustomLevels extends string = never> = Omit<
   pino.LoggerOptions<CustomLevels>,
-  'base'
+  'base' | 'redact'
 > &
-  Eeeoh.Options<CustomLevels> &
-  FormatterOptions &
-  SerializerOptions;
+  Eeeoh.Options<CustomLevels> & { logFormattingOptions?: LogFormattingOptions };
 
 declare module 'pino' {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -172,6 +177,37 @@ interface LoggerExtras<
 }
 
 /**
+ * Configuration options for customizing log output formatting.
+ *
+ * - `maxObjectDepth`: Maximum property depth of objects being logged. Default: 4.
+ * - `omitFunctions`: Whether to omit function properties from logged objects. Default: false (functions are included as "[Function]").
+ * - `stringLength`: Maximum length for string values in logs. Strings longer than this will be truncated. Default: 512.
+ * - `omitHeaderNames`: An array of header names to omit from logged output.
+ * - `serializers`: Custom serialization logic for specific fields.
+ * - `redact`: Paths or rules for redacting sensitive information from log output.
+ * - `redactText`: Custom function for redacting sensitive information from string values in logs. Receives the original string and a placeholder, and should return the redacted string.
+ */
+type LogFormattingOptions = FormatterOptions &
+  SerializerOptions & {
+    redact?: pino.LoggerOptions['redact'];
+  };
+
+/**
+ * The default options for log formatting applied when none are provided by the user.
+ *
+ * - `omitFunctions`: Whether to omit function properties from logged objects. Default is `false`, meaning functions are included as `"[Function]"`.
+ * - `maxObjectDepth`: The maximum depth to which objects are serialized in logs. Default is `4`.
+ * - `omitHeaderNames`: An array of header names to omit from logged output. Default is the value of `DEFAULT_OMIT_HEADER_NAMES`.
+ * - `stringLength`: The maximum length for string values in logs. Strings longer than this will be truncated. Default is `512`.
+ */
+const defaultLogFormattingOptions: LogFormattingOptions = {
+  omitFunctions: DEFAULT_OMIT_FUNCTIONS,
+  maxObjectDepth: DEFAULT_MAX_OBJECT_DEPTH,
+  omitHeaderNames: DEFAULT_OMIT_HEADER_NAMES,
+  stringLength: DEFAULT_STRING_LENGTH,
+};
+
+/**
  * Creates a logger that can enforce a strict logged object shape.
  * @param opts - Logger options.
  * @param destination - Destination stream. Default: `pino.destination({ sync: true })`.
@@ -181,15 +217,16 @@ export const createLogger = <CustomLevels extends string = never>(
   destination: pino.DestinationStream = createDestination({ mock: false })
     .destination,
 ): Logger<CustomLevels> => {
+  const { eeeoh: _, ...pinoOpts } = opts;
+
   const {
-    eeeoh: _,
-    functions,
+    omitFunctions,
     maxObjectDepth,
     omitHeaderNames,
     redactText,
     stringLength,
-    ...pinoOpts
-  } = opts;
+    redact,
+  } = opts.logFormattingOptions ?? defaultLogFormattingOptions;
 
   const serializers = createSerializers({
     maxObjectDepth,
@@ -199,7 +236,7 @@ export const createLogger = <CustomLevels extends string = never>(
 
   const formatters = createFormatters({
     maxObjectDepth,
-    functions,
+    omitFunctions,
     redactText,
     serializers,
     stringLength,
@@ -215,7 +252,7 @@ export const createLogger = <CustomLevels extends string = never>(
       formatters: { ...formatters, ...opts.formatters },
       mixin: eeeoh.mixin,
       mixinMergeStrategy: eeeoh.mixinMergeStrategy,
-      redact: redact.addDefaultRedactPathStrings(opts.redact),
+      redact: addDefaultRedactPathStrings(redact),
       serializers,
       timestamp:
         opts.timestamp ?? (() => `,"timestamp":"${new Date().toISOString()}"`),
