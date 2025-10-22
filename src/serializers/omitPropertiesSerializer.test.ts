@@ -66,7 +66,10 @@ it('omits properties from logged object', async () => {
   const inputString = JSON.stringify(input);
   const stream = sink();
   const logger = createLogger(
-    { name: 'my-app', serializers: { ...serializer } },
+    {
+      name: 'my-app',
+      logFormattingOptions: { serializers: { ...serializer } },
+    },
     stream,
   );
   logger.info(input);
@@ -100,7 +103,10 @@ it.each`
     const inputString = JSON.stringify(input);
     const stream = sink();
     const logger = createLogger(
-      { name: 'my-app', serializers: { ...serializer } },
+      {
+        name: 'my-app',
+        logFormattingOptions: { serializers: { ...serializer } },
+      },
       stream,
     );
     logger.info(input);
