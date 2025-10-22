@@ -28,7 +28,7 @@ export { pino };
 
 export type LoggerOptions<CustomLevels extends string = never> = Omit<
   pino.LoggerOptions<CustomLevels>,
-  'base' | 'redact'
+  'base' | 'redact' | 'formatters' | 'serializers'
 > &
   Eeeoh.Options<CustomLevels> & { logFormattingOptions?: LogFormattingOptions };
 
@@ -186,10 +186,14 @@ interface LoggerExtras<
  * - `serializers`: Custom serialization logic for specific fields.
  * - `redact`: Paths or rules for redacting sensitive information from log output.
  * - `redactText`: Custom function for redacting sensitive information from string values in logs. Receives the original string and a placeholder, and should return the redacted string.
+ * - `formatters`: Custom formatting logic for log entries.
+ * - `serializers`: Custom serialization logic for specific fields.
  */
 type LogFormattingOptions = FormatterOptions &
   SerializerOptions & {
     redact?: pino.LoggerOptions['redact'];
+    formatters?: pino.LoggerOptions['formatters'];
+    serializers?: pino.LoggerOptions['serializers'];
   };
 
 /**
@@ -226,12 +230,14 @@ export const createLogger = <CustomLevels extends string = never>(
     redactText,
     stringLength,
     redact,
+    serializers: customSerializers,
+    formatters: customFormatters,
   } = opts.logFormattingOptions ?? defaultLogFormattingOptions;
 
   const serializers = createSerializers({
     maxObjectDepth,
     omitHeaderNames,
-    serializers: opts.serializers,
+    serializers: customSerializers,
   });
 
   const formatters = createFormatters({
@@ -249,7 +255,7 @@ export const createLogger = <CustomLevels extends string = never>(
       ...pinoOpts,
       base: { ...base, ...eeeoh.base, ...opts.base },
       errorKey: opts.errorKey ?? eeeoh.errorKey,
-      formatters: { ...formatters, ...opts.formatters },
+      formatters: { ...formatters, ...customFormatters },
       mixin: eeeoh.mixin,
       mixinMergeStrategy: eeeoh.mixinMergeStrategy,
       redact: addDefaultRedactPathStrings(redact),

@@ -63,9 +63,6 @@
     "access": "public",
     "provenance": true
   },
-  "minimumReleaseAgeExcludeOverload": [
-    "dtrim"
-  ],
   "skuba": {
     "entryPoint": "src/index.ts",
     "template": null,

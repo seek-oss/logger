@@ -763,10 +763,12 @@ testLog(
   },
   'info',
   {
-    serializers: {
-      serialize: (input: unknown) => input,
+    logFormattingOptions: {
+      maxObjectDepth: 3,
+      serializers: {
+        serialize: (input: unknown) => input,
+      },
     },
-    logFormattingOptions: { maxObjectDepth: 3 },
   },
 );
 
@@ -844,9 +846,11 @@ test('it merges serializers', async () => {
   const logger = createLogger(
     {
       name: 'my-app',
-      logFormattingOptions: { omitHeaderNames: ['omit'] },
-      serializers: {
-        serialize: () => 'serialized',
+      logFormattingOptions: {
+        omitHeaderNames: ['omit'],
+        serializers: {
+          serialize: () => 'serialized',
+        },
       },
     },
     stream,
