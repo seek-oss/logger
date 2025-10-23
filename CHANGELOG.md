@@ -1,5 +1,17 @@
 # @seek/logger
 
+## 11.3.0
+
+### Minor Changes
+
+- **deps:** Migrate `stdoutMock` test functionality from `fast-redact` to `@pinojs/redact` ([#263](https://github.com/seek-oss/logger/pull/263))
+
+### Patch Changes
+
+- **deps:** Pino 10 ([#262](https://github.com/seek-oss/logger/pull/262))
+
+- **deps:** Sury 11.0.0-alpha.4 ([#258](https://github.com/seek-oss/logger/pull/258))
+
 ## 11.2.1
 
 ### Patch Changes
