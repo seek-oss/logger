@@ -55,7 +55,7 @@
     "sury": "11.0.0-alpha.4",
     "tsdown": "0.15.8"
   },
-  "packageManager": "pnpm@10.20.0",
+  "packageManager": "pnpm@10.22.0",
   "engines": {
     "node": ">=20.9.0"
   },
