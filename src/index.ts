@@ -23,7 +23,7 @@ export type LoggerOptions<CustomLevels extends string = never> = Exclude<
   pino.LoggerOptions<CustomLevels>,
   'base'
 > &
-  Eeeoh.Options<CustomLevels> &
+  Eeeoh.LoggerOptions<CustomLevels> &
   FormatterOptions &
   SerializerOptions;
 
