@@ -357,112 +357,120 @@ type Base = {
   [key: string]: unknown;
 };
 
-export type Options<CustomLevels extends string> =
-  | {
-      /**
-       * The eeeoh routing configuration for the logger.
-       *
-       * See the documentation for more information:
-       * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
-       */
-      eeeoh?: never;
+export type LoggerOptions<CustomLevels extends string> =
+  | NeverOptions
+  | Options<CustomLevels>;
 
-      base?: null | {
-        /**
-         * @deprecated Use the top-level `eeeoh` logger option.
-         */
-        eeeoh?: never;
+type NeverOptions = {
+  /**
+   * The eeeoh routing configuration for the logger.
+   *
+   * See the documentation for more information:
+   * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+   */
+  eeeoh?: undefined;
 
-        [key: string]: unknown;
-      };
-    }
-  | ((
-      | {
-          /**
-           * The eeeoh routing configuration for the logger.
-           *
-           * See the documentation for more information:
-           * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
-           */
-          eeeoh: Config<CustomLevels> & {
-            /**
-             * Whether to infer mandatory `base` attributes from a source.
-             *
-             * `environment` is the recommended approach of sourcing application
-             * metadata from the workload hosting environment to annotate logs.
-             *
-             * Automat v1+ workload hosting automatically adds base attributes
-             * to your logs through a telemetry agent. You do not need to
-             * manually set `DD_` environment variables in this environment.
-             *
-             * AWS Lambda requires your deployment configuration to manually
-             * propagate the following environment variables:
-             *
-             * - `DD_ENV` - The environment that the component is deployed to,
-             *   e.g. `production`.
-             * - `DD_SERVICE` - The name of the component, or the service name
-             *   override on a deployment of the component, e.g.
-             *   `my-component-name` or `my-service-name-override`.
-             * - `DD_VERSION` | `VERSION` - The unique identifier for the
-             *   current deployment, e.g. `abcdefa.123`.
-             *
-             * Gantry workload hosting requires your deployment configuration to
-             * manually propagate `DD_ENV` and `DD_SERVICE`.
-             *
-             * Carefully set these to enable correlation of observability data.
-             * An error is thrown if an environment variable is set to an
-             * invalid value (e.g. an empty string), as we recommend failing
-             * fast over silently continuing in a misconfigured state.
-             *
-             * See the documentation for more information:
-             * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
-             */
-            use: 'environment';
-          };
+  base?: null | {
+    /**
+     * @deprecated Use the top-level `eeeoh` logger option.
+     */
+    eeeoh?: never;
 
-          base?: Partial<Base>;
-        }
-      | {
-          /**
-           * The eeeoh routing configuration for the logger.
-           *
-           * See the documentation for more information:
-           * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
-           */
-          eeeoh: Config<CustomLevels>;
+    [key: string]: unknown;
+  };
+};
 
-          base: Base;
-        }
-    ) & {
-      /**
-       * @deprecated Do not customise `errorKey` if you opt in to eeeoh.
-       *
-       * This is pre-configured to match the expectations of eeeoh destinations.
-       *
-       * Contact the maintainers if you have a use case for this.
-       */
-      errorKey?: never;
+type BaseOptions<CustomLevels extends string> = {
+  /**
+   * The eeeoh routing configuration for the logger.
+   *
+   * See the documentation for more information:
+   * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+   */
+  eeeoh: Config<CustomLevels>;
 
-      /**
-       * @deprecated Do not customise `levelComparison` if you opt in to eeeoh.
-       *
-       * Custom comparison logic is difficult to reason about in relation to
-       * level-based Datadog log tiering.
-       *
-       * Contact the maintainers if you have a use case for this.
-       */
-      levelComparison?: never;
+  base: Base;
+};
 
-      /**
-       * @deprecated Do not disable default levels if you opt in to eeeoh.
-       *
-       * A fully custom scale of log levels is complex to support in relation to
-       * level-based Datadog log tiering.
-       *
-       * Contact the maintainers if you have a use case for this.
-       */
-      useOnlyCustomLevels?: false;
-    });
+type EnvironmentOptions<CustomLevels extends string> = {
+  /**
+   * The eeeoh routing configuration for the logger.
+   *
+   * See the documentation for more information:
+   * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+   */
+  eeeoh: Config<CustomLevels> & {
+    /**
+     * Whether to infer mandatory `base` attributes from a source.
+     *
+     * `environment` is the recommended approach of sourcing application
+     * metadata from the workload hosting environment to annotate logs.
+     *
+     * Automat v1+ workload hosting automatically adds base attributes
+     * to your logs through a telemetry agent. You do not need to
+     * manually set `DD_` environment variables in this environment.
+     *
+     * AWS Lambda requires your deployment configuration to manually
+     * propagate the following environment variables:
+     *
+     * - `DD_ENV` - The environment that the component is deployed to,
+     *   e.g. `production`.
+     * - `DD_SERVICE` - The name of the component, or the service name
+     *   override on a deployment of the component, e.g.
+     *   `my-component-name` or `my-service-name-override`.
+     * - `DD_VERSION` | `VERSION` - The unique identifier for the
+     *   current deployment, e.g. `abcdefa.123`.
+     *
+     * Gantry workload hosting requires your deployment configuration to
+     * manually propagate `DD_ENV` and `DD_SERVICE`.
+     *
+     * Carefully set these to enable correlation of observability data.
+     * An error is thrown if an environment variable is set to an
+     * invalid value (e.g. an empty string), as we recommend failing
+     * fast over silently continuing in a misconfigured state.
+     *
+     * See the documentation for more information:
+     * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md
+     */
+    use: 'environment';
+  };
+
+  base?: Partial<Base>;
+};
+
+export type Options<CustomLevels extends string> = (
+  | EnvironmentOptions<CustomLevels>
+  | BaseOptions<CustomLevels>
+) & {
+  /**
+   * @deprecated Do not customise `errorKey` if you opt in to eeeoh.
+   *
+   * This is pre-configured to match the expectations of eeeoh destinations.
+   *
+   * Contact the maintainers if you have a use case for this.
+   */
+  errorKey?: never;
+
+  /**
+   * @deprecated Do not customise `levelComparison` if you opt in to eeeoh.
+   *
+   * Custom comparison logic is difficult to reason about in relation to
+   * level-based Datadog log tiering.
+   *
+   * Contact the maintainers if you have a use case for this.
+   */
+  levelComparison?: never;
+
+  /**
+   * @deprecated Do not disable default levels if you opt in to eeeoh.
+   *
+   * A fully custom scale of log levels is complex to support in relation to
+   * level-based Datadog log tiering.
+   *
+   * Contact the maintainers if you have a use case for this.
+   */
+  useOnlyCustomLevels?: false;
+};
 
 const formatOutput = (
   tier: DatadogTier | false | null,
@@ -615,7 +623,7 @@ const getBaseOrThrow = <CustomLevels extends string>(
   }
 };
 
-type CreateOptions<CustomLevels extends string> = Options<CustomLevels> &
+type CreateOptions<CustomLevels extends string> = LoggerOptions<CustomLevels> &
   Pick<pino.LoggerOptions<CustomLevels>, 'mixin' | 'mixinMergeStrategy'>;
 
 export const createOptions = <CustomLevels extends string>(
