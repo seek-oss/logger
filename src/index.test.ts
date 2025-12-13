@@ -88,7 +88,14 @@ function testLog(
   test(testName, async () => {
     const inputString = JSON.stringify(input);
     const stream = sink();
-    const logger = createLogger({ name: 'my-app', ...loggerOptions }, stream);
+    const logger = createLogger(
+      {
+        name: 'my-app',
+        ...loggerOptions,
+        logTransformOptions: { ...loggerOptions?.logTransformOptions },
+      },
+      stream,
+    );
     logger[method ?? 'info'](input);
 
     const log: any = await once(stream, 'data');
@@ -206,7 +213,7 @@ testLog(
   { foo: { url: { c: { d: { e: { f: { g: {} } } } } } } },
   { foo: { url: { c: { d: { e: '[Object]' } } } } },
   undefined,
-  { maxObjectDepth: 5 },
+  { logTransformOptions: { maxObjectDepth: 5 } },
 );
 
 testLog(
@@ -223,6 +230,14 @@ testLog(
   'should truncate strings longer than 512 characters',
   { foo: { url: 'a'.repeat(555) } },
   { foo: { url: `${'a'.repeat(512)}...` } },
+);
+
+testLog(
+  'should truncate strings longer than 100 characters',
+  { foo: { url: 'a'.repeat(101) } },
+  { foo: { url: `${'a'.repeat(100)}...` } },
+  undefined,
+  { logTransformOptions: { maxStringLength: 100 } },
 );
 
 testLog(
@@ -377,7 +392,9 @@ testLog(
     data: { auth: '[Redacted 🙈]' },
   },
   undefined,
-  { redact: { paths: ['data.auth'], censor: '[Redacted 🙈]' } },
+  {
+    redact: { paths: ['data.auth'], censor: '[Redacted 🙈]' },
+  },
 );
 
 testLog(
@@ -395,7 +412,9 @@ testLog(
     redact: {
       paths: ['a.b.*'],
     },
-    maxObjectDepth: 2,
+    logTransformOptions: {
+      maxObjectDepth: 2,
+    },
   },
 );
 
@@ -549,12 +568,15 @@ testLog(
   },
   'info',
   {
-    redactText: (input, redactionPlaceholder) => {
-      const regex = /\b(client_secret=)([^&]+)/gi;
-      return input.replace(
-        regex,
-        (_, group1) => `${group1 as unknown as string}${redactionPlaceholder}`,
-      );
+    logTransformOptions: {
+      redactText: (input, redactionPlaceholder) => {
+        const regex = /\b(client_secret=)([^&]+)/gi;
+        return input.replace(
+          regex,
+          (_, group1) =>
+            `${group1 as unknown as string}${redactionPlaceholder}`,
+        );
+      },
     },
   },
 );
@@ -713,7 +735,7 @@ testLog(
   },
   'info',
   {
-    maxObjectDepth: 3,
+    logTransformOptions: { maxObjectDepth: 3 },
   },
 );
 
@@ -739,10 +761,12 @@ testLog(
   },
   'info',
   {
-    serializers: {
-      serialize: (input: unknown) => input,
+    logTransformOptions: {
+      maxObjectDepth: 3,
+      serializers: {
+        serialize: (input: unknown) => input,
+      },
     },
-    maxObjectDepth: 3,
   },
 );
 
@@ -812,7 +836,7 @@ testLog(
     },
   },
   'info',
-  { omitHeaderNames: [] },
+  { logTransformOptions: { omitHeaderNames: [] } },
 );
 
 test('it merges serializers', async () => {
@@ -820,9 +844,11 @@ test('it merges serializers', async () => {
   const logger = createLogger(
     {
       name: 'my-app',
-      omitHeaderNames: ['omit'],
-      serializers: {
-        serialize: () => 'serialized',
+      logTransformOptions: {
+        omitHeaderNames: ['omit'],
+        serializers: {
+          serialize: () => 'serialized',
+        },
       },
     },
     stream,
@@ -1998,9 +2024,11 @@ test('options are not mutated', () => {
       version: 'abcdef',
     },
     eeeoh: { datadog: 'tin', team: 'my-owner-name' },
-    maxObjectDepth: 5,
+    logTransformOptions: {
+      maxObjectDepth: 5,
+      omitHeaderNames: ['x-request-id'],
+    },
     mixin: () => ({}),
-    omitHeaderNames: ['x-request-id'],
   } as const satisfies LoggerOptions);
 
   expect(() => createLogger(opts)).not.toThrow();
