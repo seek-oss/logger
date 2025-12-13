@@ -2,4 +2,4 @@
 '@seek/logger': patch
 ---
 
-deps: Pino 10
+types: Export `Eeeoh.Options`
