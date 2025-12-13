@@ -40,7 +40,7 @@ export interface FormatterOptions {
   /**
    * Maximum length loggable string length. Default: 512
    */
-  stringLength?: number;
+  maxStringLength?: number;
 }
 
 export const createFormatters = (
@@ -49,7 +49,7 @@ export const createFormatters = (
   const trim = trimmer({
     depth: opts.maxObjectDepth ?? DEFAULT_MAX_OBJECT_DEPTH,
     functions: !(opts.omitFunctions ?? DEFAULT_OMIT_FUNCTIONS),
-    string: opts.stringLength ?? DEFAULT_STRING_LENGTH,
+    string: opts.maxStringLength ?? DEFAULT_STRING_LENGTH,
     retain: new Set(Object.keys(opts.serializers)),
   });
 

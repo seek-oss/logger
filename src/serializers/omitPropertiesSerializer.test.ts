@@ -68,7 +68,7 @@ it('omits properties from logged object', async () => {
   const logger = createLogger(
     {
       name: 'my-app',
-      logFormattingOptions: { serializers: { ...serializer } },
+      serializers: { ...serializer },
     },
     stream,
   );
@@ -105,7 +105,7 @@ it.each`
     const logger = createLogger(
       {
         name: 'my-app',
-        logFormattingOptions: { serializers: { ...serializer } },
+        serializers: { ...serializer },
       },
       stream,
     );

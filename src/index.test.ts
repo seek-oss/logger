@@ -92,7 +92,7 @@ function testLog(
       {
         name: 'my-app',
         ...loggerOptions,
-        logFormattingOptions: { ...loggerOptions?.logFormattingOptions },
+        logTransformOptions: { ...loggerOptions?.logTransformOptions },
       },
       stream,
     );
@@ -213,7 +213,7 @@ testLog(
   { foo: { url: { c: { d: { e: { f: { g: {} } } } } } } },
   { foo: { url: { c: { d: { e: '[Object]' } } } } },
   undefined,
-  { logFormattingOptions: { maxObjectDepth: 5 } },
+  { logTransformOptions: { maxObjectDepth: 5 } },
 );
 
 testLog(
@@ -237,7 +237,7 @@ testLog(
   { foo: { url: 'a'.repeat(101) } },
   { foo: { url: `${'a'.repeat(100)}...` } },
   undefined,
-  { logFormattingOptions: { stringLength: 100 } },
+  { logTransformOptions: { maxStringLength: 100 } },
 );
 
 testLog(
@@ -374,7 +374,7 @@ testLog(
     data: { auth: '[Redacted]' },
   },
   undefined,
-  { logFormattingOptions: { redact: ['data.auth'] } },
+  { redact: ['data.auth'] },
 );
 
 testLog(
@@ -393,9 +393,7 @@ testLog(
   },
   undefined,
   {
-    logFormattingOptions: {
-      redact: { paths: ['data.auth'], censor: '[Redacted 🙈]' },
-    },
+    redact: { paths: ['data.auth'], censor: '[Redacted 🙈]' },
   },
 );
 
@@ -411,10 +409,10 @@ testLog(
   },
   'info',
   {
-    logFormattingOptions: {
-      redact: {
-        paths: ['a.b.*'],
-      },
+    redact: {
+      paths: ['a.b.*'],
+    },
+    logTransformOptions: {
       maxObjectDepth: 2,
     },
   },
@@ -570,7 +568,7 @@ testLog(
   },
   'info',
   {
-    logFormattingOptions: {
+    logTransformOptions: {
       redactText: (input, redactionPlaceholder) => {
         const regex = /\b(client_secret=)([^&]+)/gi;
         return input.replace(
@@ -737,7 +735,7 @@ testLog(
   },
   'info',
   {
-    logFormattingOptions: { maxObjectDepth: 3 },
+    logTransformOptions: { maxObjectDepth: 3 },
   },
 );
 
@@ -763,7 +761,7 @@ testLog(
   },
   'info',
   {
-    logFormattingOptions: {
+    logTransformOptions: {
       maxObjectDepth: 3,
       serializers: {
         serialize: (input: unknown) => input,
@@ -838,7 +836,7 @@ testLog(
     },
   },
   'info',
-  { logFormattingOptions: { omitHeaderNames: [] } },
+  { logTransformOptions: { omitHeaderNames: [] } },
 );
 
 test('it merges serializers', async () => {
@@ -846,7 +844,7 @@ test('it merges serializers', async () => {
   const logger = createLogger(
     {
       name: 'my-app',
-      logFormattingOptions: {
+      logTransformOptions: {
         omitHeaderNames: ['omit'],
         serializers: {
           serialize: () => 'serialized',
@@ -2026,7 +2024,7 @@ test('options are not mutated', () => {
       version: 'abcdef',
     },
     eeeoh: { datadog: 'tin', team: 'my-owner-name' },
-    logFormattingOptions: {
+    logTransformOptions: {
       maxObjectDepth: 5,
       omitHeaderNames: ['x-request-id'],
     },
