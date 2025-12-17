@@ -1,5 +1,11 @@
 # @seek/logger
 
+## 11.3.1
+
+### Patch Changes
+
+- **types:** Export `Eeeoh.Options` ([#274](https://github.com/seek-oss/logger/pull/274))
+
 ## 11.3.0
 
 ### Minor Changes
