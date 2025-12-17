@@ -12,7 +12,7 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       dtrim:
-        specifier: ^1.11.0
+        specifier: ^1.13.0
         version: 1.13.1
       pino:
         specifier: ^10.1.0
