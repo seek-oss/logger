@@ -41,8 +41,7 @@ export type Logger<CustomLevels extends string = never> = Omit<
   child<ChildCustomLevels extends never = never>(
     bindings: Eeeoh.Bindings<CustomLevels> & pino.Bindings,
     options?: undefined,
-  ): // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Required for Pino type compatibility
-  Logger<CustomLevels | ChildCustomLevels>;
+  ): Logger<CustomLevels | ChildCustomLevels>;
 
   child<ChildCustomLevels extends string = never>(
     bindings: Eeeoh.Bindings<CustomLevels> & pino.Bindings,
