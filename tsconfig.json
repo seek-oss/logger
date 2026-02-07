@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "lib": ["ES2022"],
+    "rootDir": ".",
+    "lib": ["ES2023"],
     "outDir": "lib",
     "removeComments": false,
     "target": "es2023"

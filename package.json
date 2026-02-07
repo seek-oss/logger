@@ -57,7 +57,7 @@
   },
   "packageManager": "pnpm@10.28.1",
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22.14.0"
   },
   "publishConfig": {
     "access": "public",
@@ -67,6 +67,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "13.0.3"
+    "version": "14.1.0"
   }
 }
