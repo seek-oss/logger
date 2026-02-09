@@ -53,7 +53,7 @@
     "skuba": "13.1.1",
     "split2": "4.2.0",
     "sury": "11.0.0-alpha.4",
-    "tsdown": "0.18.3"
+    "tsdown": "0.20.3"
   },
   "packageManager": "pnpm@10.28.1",
   "engines": {
