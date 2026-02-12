@@ -52,7 +52,6 @@
     "@types/split2": "4.2.3",
     "skuba": "13.1.1",
     "split2": "4.2.0",
-    "sury": "11.0.0-alpha.4",
     "tsdown": "0.18.3"
   },
   "packageManager": "pnpm@10.29.1",
