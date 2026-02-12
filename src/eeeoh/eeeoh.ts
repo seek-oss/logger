@@ -1,5 +1,4 @@
 import pino from 'pino';
-import * as S from 'sury';
 
 import { ddtags } from './ddtags.js';
 
@@ -7,21 +6,7 @@ export const envs = ['development', 'production', 'sandbox', 'test'] as const;
 
 export type Env = (typeof envs)[number];
 
-const nonEmptyString = S.min(S.trim(S.string), 1, 'String cannot be empty');
-
-const parseNonEmptyString = S.compile(nonEmptyString, 'Any', 'Output', 'Sync');
-
-const baseSchema = S.schema({
-  env: nonEmptyString,
-  service: nonEmptyString,
-  version: nonEmptyString,
-});
-
-const parseBase = S.compile(baseSchema, 'Any', 'Output', 'Sync');
-
-type ParseBase = ReturnType<typeof parseBase>;
-
-const datadogTierSchema = S.union([
+const DATADOG_TIERS = [
   'zero',
   'tin',
   'tin-plus',
@@ -32,9 +17,42 @@ const datadogTierSchema = S.union([
   'silver',
   'silver-plus',
   'silver-plus-plus',
-]);
+] as const;
 
-export type DatadogTier = S.Output<typeof datadogTierSchema>;
+const datadogTierSet: ReadonlySet<string> = new Set(DATADOG_TIERS);
+
+const isNonEmptyString = (value: unknown): value is string =>
+  typeof value === 'string' && value.trim().length >= 1;
+
+const parseNonEmptyString = (value: unknown): string => {
+  if (!isNonEmptyString(value)) {
+    throw new Error('String cannot be empty');
+  }
+  return value.trim();
+};
+
+const isDatadogTier = (value: unknown): value is DatadogTier =>
+  typeof value === 'string' && datadogTierSet.has(value);
+
+const parseBase = (
+  value: unknown,
+): { env: string; service: string; version: string } => {
+  if (value === null || typeof value !== 'object') {
+    throw new Error('Expected an object with env, service, and version');
+  }
+
+  const obj = value as Record<string, unknown>;
+
+  return {
+    env: parseNonEmptyString(obj.env),
+    service: parseNonEmptyString(obj.service),
+    version: parseNonEmptyString(obj.version),
+  };
+};
+
+type ParseBase = ReturnType<typeof parseBase>;
+
+export type DatadogTier = (typeof DATADOG_TIERS)[number];
 
 export type DatadogConfig<CustomLevels extends string = never> =
   | DatadogTier
@@ -43,27 +61,86 @@ export type DatadogConfig<CustomLevels extends string = never> =
 
 type LevelToTier = (level: number) => DatadogTier | false | null;
 
-const tierByLevelMapSchema: S.Schema<Partial<Record<string, DatadogTier>>> =
-  S.record(datadogTierSchema);
+const parseTierByLevelMap = (
+  value: unknown,
+): Partial<Record<string, DatadogTier>> => {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error('Expected a record of DatadogTier values');
+  }
 
-const datadogTierByLevelSchema = S.schema([
-  datadogTierSchema,
-  tierByLevelMapSchema,
-]);
+  const result: Partial<Record<string, DatadogTier>> = {};
 
-const eeeohConfigSchema = S.schema({
-  datadog: S.union([datadogTierSchema, datadogTierByLevelSchema, false]),
-  team: S.optional(nonEmptyString),
-});
+  for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
+    if (!isDatadogTier(val)) {
+      throw new Error(`Invalid DatadogTier value for key "${key}"`);
+    }
+    result[key] = val;
+  }
 
-const parseEeeohConfig = S.compile(eeeohConfigSchema, 'Any', 'Output', 'Sync');
+  return result;
+};
 
-const eeeohFieldSchema = S.schema({
-  datadog: S.union([datadogTierSchema, false]),
-  team: S.optional(nonEmptyString),
-});
+const parseEeeohConfig = (
+  value: unknown,
+): { datadog: DatadogTier | [DatadogTier, Partial<Record<string, DatadogTier>>] | false; team?: string } => {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error('Expected an eeeoh config object');
+  }
 
-const parseEeeohField = S.compile(eeeohFieldSchema, 'Any', 'Output', 'Sync');
+  const obj = value as Record<string, unknown>;
+
+  let datadog: DatadogTier | [DatadogTier, Partial<Record<string, DatadogTier>>] | false;
+
+  if (obj.datadog === false) {
+    datadog = false;
+  } else if (isDatadogTier(obj.datadog)) {
+    datadog = obj.datadog;
+  } else if (Array.isArray(obj.datadog) && obj.datadog.length === 2) {
+    const [tier, map] = obj.datadog as [unknown, unknown];
+    if (!isDatadogTier(tier)) {
+      throw new Error('Expected first element to be a DatadogTier');
+    }
+    datadog = [tier, parseTierByLevelMap(map)];
+  } else {
+    throw new Error('Invalid datadog config');
+  }
+
+  const result: { datadog: typeof datadog; team?: string } = { datadog };
+
+  if (obj.team !== undefined) {
+    result.team = parseNonEmptyString(obj.team);
+  }
+
+  return result;
+};
+
+const parseEeeohField = (
+  value: unknown,
+): { datadog: DatadogTier | false; team?: string } => {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error('Expected an eeeoh field object');
+  }
+
+  const obj = value as Record<string, unknown>;
+
+  let datadog: DatadogTier | false;
+
+  if (obj.datadog === false) {
+    datadog = false;
+  } else if (isDatadogTier(obj.datadog)) {
+    datadog = obj.datadog;
+  } else {
+    throw new Error('Invalid datadog field value');
+  }
+
+  const result: { datadog: typeof datadog; team?: string } = { datadog };
+
+  if (obj.team !== undefined) {
+    result.team = parseNonEmptyString(obj.team);
+  }
+
+  return result;
+};
 
 export type Config<CustomLevels extends string> = {
   /**
