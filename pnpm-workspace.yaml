@@ -22,3 +22,6 @@ publicHoistPattern:
   - tsconfig-seek
   - typescript
   # end managed by skuba
+
+patchedDependencies:
+  sury: patches/sury.patch

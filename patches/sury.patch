@@ -1,0 +1,241 @@
+diff --git a/package.json b/package.json
+index 819d0795bdf042e0df805dd4d21b94e92969a31f..c3b5e749046c8c8c199590bbe1c95073d691e8d9 100644
+--- a/package.json
++++ b/package.json
+@@ -33,6 +33,13 @@
+   "main": "./src/S.js",
+   "module": "./src/S.mjs",
+   "types": "./src/S.d.ts",
++  "exports": {
++    ".": {
++      "types": "./src/S.d.ts",
++      "import": "./src/S.mjs",
++      "require": "./src/S.js"
++    }
++  },
+   "files": [
+     "src",
+     "rescript.json"
+diff --git a/src/S.mjs b/src/S.mjs
+index a8d5f271d83507518de72ef13049d6542e3d99d7..112c3b783096a68d0324b0b5d6e7abe1f476776d 100644
+--- a/src/S.mjs
++++ b/src/S.mjs
+@@ -1,74 +1,145 @@
+ /* @ts-self-types="./S.d.ts" */
+-import * as S from "./Sury.res.mjs"
++import {
++  ErrorClass,
++  string,
++  bool,
++  int,
++  float,
++  bigint,
++  symbol,
++  json,
++  never,
++  unknown,
++  js_optional,
++  js_nullable,
++  nullable,
++  array,
++  instance,
++  unnest,
++  dict,
++  jsonString,
++  jsonStringWithSpace,
++  js_union,
++  object,
++  js_schema,
++  js_safe,
++  js_safeAsync,
++  reverse,
++  convertOrThrow,
++  convertToJsonOrThrow,
++  convertToJsonStringOrThrow,
++  reverseConvertOrThrow,
++  reverseConvertToJsonOrThrow,
++  reverseConvertToJsonStringOrThrow,
++  parseOrThrow,
++  parseJsonOrThrow,
++  parseJsonStringOrThrow,
++  parseAsyncOrThrow,
++  assertOrThrow,
++  recursive,
++  js_merge,
++  strict,
++  deepStrict,
++  strip,
++  deepStrip,
++  to,
++  toJSONSchema,
++  fromJSONSchema,
++  extendJSONSchema,
++  shape,
++  tuple,
++  js_asyncParserRefine,
++  js_refine,
++  js_transform,
++  meta,
++  toExpression,
++  noValidation,
++  compile,
++  port,
++  min,
++  max,
++  length,
++  email,
++  uuid,
++  cuid,
++  url,
++  pattern,
++  datetime,
++  trim,
++  enableJson,
++  enableJsonString,
++  global,
++  brand
++} from "./Sury.res.mjs"
+ export { unit as void } from "./Sury.res.mjs"
+-export var Error = S.ErrorClass.value
+-export var string = S.string
+-export var boolean = S.bool
+-export var int32 = S.int
+-export var number = S.float
+-export var bigint = S.bigint
+-export var symbol = S.symbol
+-export var json = S.json
+-export var never = S.never
+-export var unknown = S.unknown
+-export var any = S.unknown
+-export var optional = S.js_optional
+-export var nullable = S.js_nullable
+-export var nullish = S.nullable
+-export var array = S.array
+-export var instance = S.instance
+-export var unnest = S.unnest
+-export var record = S.dict
+-export var jsonString = S.jsonString
+-export var jsonStringWithSpace = S.jsonStringWithSpace
+-export var union = S.js_union
+-export var object = S.object
+-export var schema = S.js_schema
+-export var safe = S.js_safe
+-export var safeAsync = S.js_safeAsync
+-export var reverse = S.reverse
+-export var convertOrThrow = S.convertOrThrow
+-export var convertToJsonOrThrow = S.convertToJsonOrThrow
+-export var convertToJsonStringOrThrow = S.convertToJsonStringOrThrow
+-export var reverseConvertOrThrow = S.reverseConvertOrThrow
+-export var reverseConvertToJsonOrThrow = S.reverseConvertToJsonOrThrow
+-export var reverseConvertToJsonStringOrThrow =   S.reverseConvertToJsonStringOrThrow
+-export var parseOrThrow = S.parseOrThrow
+-export var parseJsonOrThrow = S.parseJsonOrThrow
+-export var parseJsonStringOrThrow = S.parseJsonStringOrThrow
+-export var parseAsyncOrThrow = S.parseAsyncOrThrow
+-export var assertOrThrow = S.assertOrThrow
+-export var recursive = S.recursive
+-export var merge = S.js_merge
+-export var strict = S.strict
+-export var deepStrict = S.deepStrict
+-export var strip = S.strip
+-export var deepStrip = S.deepStrip
+-export var to = S.to
+-export var toJSONSchema = S.toJSONSchema
+-export var fromJSONSchema = S.fromJSONSchema
+-export var extendJSONSchema = S.extendJSONSchema
+-export var shape = S.shape
+-export var tuple = S.tuple
+-export var asyncParserRefine = S.js_asyncParserRefine
+-export var refine = S.js_refine
+-export var transform = S.js_transform
+-export var meta = S.meta
+-export var toExpression = S.toExpression
+-export var noValidation = S.noValidation
+-export var compile = S.compile
+-export var port = S.port
+-export var min = S.min
+-export var max = S.max
+-export var length = S.length
+-export var email = S.email
+-export var uuid = S.uuid
+-export var cuid = S.cuid
+-export var url = S.url
+-export var pattern = S.pattern
+-export var datetime = S.datetime
+-export var trim = S.trim
+-export var enableJson = S.enableJson
+-export var enableJsonString = S.enableJsonString
+-export var global = S.global
+-export var brand = S.brand
+\ No newline at end of file
++export var Error = ErrorClass.value
++export { string }
++export var boolean = bool
++export var int32 = int
++export var number = float
++export { bigint }
++export { symbol }
++export { json }
++export { never }
++export { unknown }
++export var any = unknown
++export var optional = js_optional
++export var nullable = js_nullable
++export var nullish = nullable
++export { array }
++export { instance }
++export { unnest }
++export var record = dict
++export { jsonString }
++export { jsonStringWithSpace }
++export var union = js_union
++export { object }
++export var schema = js_schema
++export var safe = js_safe
++export var safeAsync = js_safeAsync
++export { reverse }
++export { convertOrThrow }
++export { convertToJsonOrThrow }
++export { convertToJsonStringOrThrow }
++export { reverseConvertOrThrow }
++export { reverseConvertToJsonOrThrow }
++export { reverseConvertToJsonStringOrThrow }
++export { parseOrThrow }
++export { parseJsonOrThrow }
++export { parseJsonStringOrThrow }
++export { parseAsyncOrThrow }
++export { assertOrThrow }
++export { recursive }
++export var merge = js_merge
++export { strict }
++export { deepStrict }
++export { strip }
++export { deepStrip }
++export { to }
++export { toJSONSchema }
++export { fromJSONSchema }
++export { extendJSONSchema }
++export { shape }
++export { tuple }
++export var asyncParserRefine = js_asyncParserRefine
++export var refine = js_refine
++export var transform = js_transform
++export { meta }
++export { toExpression }
++export { noValidation }
++export { compile }
++export { port }
++export { min }
++export { max }
++export { length }
++export { email }
++export { uuid }
++export { cuid }
++export { url }
++export { pattern }
++export { datetime }
++export { trim }
++export { enableJson }
++export { enableJsonString }
++export { global }
++export { brand }
