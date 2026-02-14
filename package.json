@@ -19,13 +19,13 @@
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "require": "./dist/index.cjs"
     },
     "./package.json": "./package.json"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.cts",
   "files": [
     "dist"
   ],
@@ -53,7 +53,7 @@
     "skuba": "13.1.1",
     "split2": "4.2.0",
     "sury": "11.0.0-alpha.4",
-    "tsdown": "0.18.3"
+    "tsdown": "0.20.3"
   },
   "packageManager": "pnpm@10.29.1",
   "engines": {
