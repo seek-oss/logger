@@ -17,8 +17,8 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       dtrim:
-        specifier: ^1.11.0
-        version: 1.13.2
+        specifier: ^1.13.3
+        version: 1.13.3
       pino:
         specifier: ^10.1.0
         version: 10.3.0
@@ -1820,8 +1820,8 @@ packages:
     resolution: {integrity: sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==}
     engines: {node: '>=8'}
 
-  dtrim@1.13.2:
-    resolution: {integrity: sha512-s8SNTAh7J62jK7z3jZIFu+UB8chblbtokdcrbHSaCE6vceKiBuDksPPrFg15HziBxNaeVNj262YpbvvB94Eurg==}
+  dtrim@1.13.3:
+    resolution: {integrity: sha512-vbYv/ym5xZWwH4iOHGEXw98P6+hMUaJ6j1SNPBTWPJt945VtFFb/y1XiYwfTCeuMvRmUTb8Yu19uc7B5+hDBbA==}
 
   dts-resolver@2.1.3:
     resolution: {integrity: sha512-bihc7jPC90VrosXNzK0LTE2cuLP6jr0Ro8jk+kMugHReJVLIpHz/xadeq3MhuwyO4TD4OA3L1Q8pBBFRc08Tsw==}
@@ -6470,7 +6470,7 @@ snapshots:
     dependencies:
       is-obj: 2.0.0
 
-  dtrim@1.13.2: {}
+  dtrim@1.13.3: {}
 
   dts-resolver@2.1.3: {}
 
