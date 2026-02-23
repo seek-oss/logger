@@ -6,4 +6,5 @@ export default defineConfig({
   format: ['esm', 'cjs'],
   exports: true,
   inlineOnly: ['sury'],
+  failOnWarn: false,
 });
