@@ -1,5 +1,21 @@
 # @seek/logger
 
+## 12.0.0
+
+### Major Changes
+
+- Require Node.js 22.14.0+ ([#283](https://github.com/seek-oss/logger/pull/283))
+
+### Patch Changes
+
+- **deps:** dtrim 1.13.3 ([#290](https://github.com/seek-oss/logger/pull/290))
+
+  This prevents a runtime error when logging objects with strict this bindings
+
+- **types:** Export `Eeeoh.Options` ([#274](https://github.com/seek-oss/logger/pull/274))
+
+- Reduce bundle size ([#289](https://github.com/seek-oss/logger/pull/289))
+
 ## 11.3.0
 
 ### Minor Changes
