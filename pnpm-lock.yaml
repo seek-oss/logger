@@ -4,6 +4,8 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+pnpmfileChecksum: sha256-e2wSmHpUST1b8brCNLxtxz0qInzR2F4bW06i6V0e7p8=
+
 patchedDependencies:
   sury:
     hash: a31e5a175f601860a71b75af206566dd78d7d8439030f6471682e0bf6f381275
