@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
+    "skipLibCheck": true, // tsdown has optional deps
+    "customConditions": ["@seek/logger/source"],
     "rootDir": ".",
     "lib": ["ES2023"],
     "outDir": "lib",
     "removeComments": false,
     "target": "es2023"
   },
-  "exclude": ["lib*/**/*", "tsdown.config.mjs"],
+  "exclude": ["lib*/**/*"],
   "extends": "skuba/config/tsconfig.json"
 }
