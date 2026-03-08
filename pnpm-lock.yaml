@@ -38,8 +38,8 @@ importers:
         specifier: 4.2.3
         version: 4.2.3
       skuba:
-        specifier: 15.0.0
-        version: 15.0.0(@babel/core@7.29.0)(@jest/transform@30.2.0)(@typescript-eslint/eslint-plugin@8.56.0(@typescript-eslint/parser@8.56.0(eslint@9.39.3)(typescript@5.9.3))(eslint@9.39.3)(typescript@5.9.3))(@typescript-eslint/utils@8.56.0(eslint@9.39.3)(typescript@5.9.3))(babel-jest@30.2.0(@babel/core@7.29.0))(jest-util@30.2.0)(synckit@0.11.12)
+        specifier: 15.0.1
+        version: 15.0.1(@babel/core@7.29.0)(@jest/transform@30.2.0)(@typescript-eslint/eslint-plugin@8.56.0(@typescript-eslint/parser@8.56.0(eslint@9.39.3)(typescript@5.9.3))(eslint@9.39.3)(typescript@5.9.3))(@typescript-eslint/utils@8.56.0(eslint@9.39.3)(typescript@5.9.3))(babel-jest@30.2.0(@babel/core@7.29.0))(jest-util@30.2.0)(synckit@0.11.12)
       split2:
         specifier: 4.2.0
         version: 4.2.0
@@ -4016,8 +4016,8 @@ packages:
     resolution: {integrity: sha512-kUMbT1oBJCpgrnKoSr0o6wPtvRWT9W9UKvGLwfJYO2WuahZRHOpEyL1ckyMGgMWh0UdpmaoFqKKD29WTomNEGA==}
     engines: {node: '>=8'}
 
-  skuba@15.0.0:
-    resolution: {integrity: sha512-dwAuEMTJM0McypjEE1f5ppeDUDjb0S1Z3jzW2t8xQU9vQ1wKSympvDY2uFKpvKroye6hnCb4KfbpjIi51nV13A==}
+  skuba@15.0.1:
+    resolution: {integrity: sha512-tT7VzK6yuKAkExDPu5wTgeahRdwNg4ZPO4Gks9VDq/sOhqrOpSLAGkwYQOmDtzPgjsr0nRJYq6nUTyzWDPWO3A==}
     engines: {node: '>=22.14.0'}
     hasBin: true
 
@@ -9214,7 +9214,7 @@ snapshots:
     dependencies:
       unicode-emoji-modifier-base: 1.0.0
 
-  skuba@15.0.0(@babel/core@7.29.0)(@jest/transform@30.2.0)(@typescript-eslint/eslint-plugin@8.56.0(@typescript-eslint/parser@8.56.0(eslint@9.39.3)(typescript@5.9.3))(eslint@9.39.3)(typescript@5.9.3))(@typescript-eslint/utils@8.56.0(eslint@9.39.3)(typescript@5.9.3))(babel-jest@30.2.0(@babel/core@7.29.0))(jest-util@30.2.0)(synckit@0.11.12):
+  skuba@15.0.1(@babel/core@7.29.0)(@jest/transform@30.2.0)(@typescript-eslint/eslint-plugin@8.56.0(@typescript-eslint/parser@8.56.0(eslint@9.39.3)(typescript@5.9.3))(eslint@9.39.3)(typescript@5.9.3))(@typescript-eslint/utils@8.56.0(eslint@9.39.3)(typescript@5.9.3))(babel-jest@30.2.0(@babel/core@7.29.0))(jest-util@30.2.0)(synckit@0.11.12):
     dependencies:
       '@arethetypeswrong/core': 0.18.2
       '@ast-grep/lang-json': 0.0.6
