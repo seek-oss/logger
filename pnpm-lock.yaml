@@ -4,8 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-pnpmfileChecksum: sha256-e2wSmHpUST1b8brCNLxtxz0qInzR2F4bW06i6V0e7p8=
-
 patchedDependencies:
   sury:
     hash: a31e5a175f601860a71b75af206566dd78d7d8439030f6471682e0bf6f381275
@@ -38,8 +36,8 @@ importers:
         specifier: 4.2.3
         version: 4.2.3
       skuba:
-        specifier: 15.0.1
-        version: 15.0.1(@babel/core@7.29.0)(@jest/transform@30.2.0)(@typescript-eslint/eslint-plugin@8.56.0(@typescript-eslint/parser@8.56.0(eslint@9.39.3)(typescript@5.9.3))(eslint@9.39.3)(typescript@5.9.3))(@typescript-eslint/utils@8.56.0(eslint@9.39.3)(typescript@5.9.3))(babel-jest@30.2.0(@babel/core@7.29.0))(jest-util@30.2.0)(synckit@0.11.12)
+        specifier: 15.1.0
+        version: 15.1.0(@babel/core@7.29.0)(@jest/transform@30.2.0)(@typescript-eslint/eslint-plugin@8.56.0(@typescript-eslint/parser@8.56.0(eslint@9.39.3)(typescript@5.9.3))(eslint@9.39.3)(typescript@5.9.3))(@typescript-eslint/utils@8.56.0(eslint@9.39.3)(typescript@5.9.3))(babel-jest@30.2.0(@babel/core@7.29.0))(jest-util@30.2.0)(synckit@0.11.12)
       split2:
         specifier: 4.2.0
         version: 4.2.0
@@ -70,6 +68,14 @@ packages:
 
   '@ast-grep/lang-json@0.0.6':
     resolution: {integrity: sha512-xb4OXtyuyY9RqUs5Af4Jb5hAJcBD0hGD1rJSQm1chJqdWOjhM6G7V2vHLx6B8M9uXuTBnaNs4U4OccMp+e95JQ==}
+    peerDependencies:
+      tree-sitter-cli: 0.25.8
+    peerDependenciesMeta:
+      tree-sitter-cli:
+        optional: true
+
+  '@ast-grep/lang-yaml@0.0.5':
+    resolution: {integrity: sha512-IpApEjdDQ/bdZZQGwq+PIT9LwvPS+wSVmaA0v78StKbPN18JWE4fHGJyZgytKMmFGt4ihxEiDYZSdFAr5BjBTQ==}
     peerDependencies:
       tree-sitter-cli: 0.25.8
     peerDependenciesMeta:
@@ -1537,9 +1543,6 @@ packages:
   async-lock@1.4.1:
     resolution: {integrity: sha512-Az2ZTpuytrtqENulXwO3GGv1Bztugx6TT37NIo7imr/Qo0gsYiGtSdBa2B6fsXhTpVZDNfu1Qn3pk531e3q+nQ==}
 
-  async@3.2.6:
-    resolution: {integrity: sha512-htCUDlxyyCLMgaM3xXg0C0LW2xqfuQ6p05pCEIsXuyQ+a1koYKTuBMzRNwmybfLgvJDMd0r1LTn4+E0Ti6C2AA==}
-
   atomic-sleep@1.0.0:
     resolution: {integrity: sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==}
     engines: {node: '>=8.0.0'}
@@ -1945,8 +1948,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  ejs@4.0.1:
-    resolution: {integrity: sha512-krvQtxc0btwSm/nvnt1UpnaFDFVJpJ0fdckmALpCgShsr/iGYHTnJiUliZTgmzq/UxTX33TtOQVKaNigMQp/6Q==}
+  ejs@5.0.1:
+    resolution: {integrity: sha512-COqBPFMxuPTPspXl2DkVYaDS3HtrD1GpzOGkNTJ1IYkifq/r9h8SVEFrjA3D9/VJGOEoMQcrlhpntcSUrM8k6A==}
     engines: {node: '>=0.12.18'}
     hasBin: true
 
@@ -2299,9 +2302,6 @@ packages:
   file-entry-cache@8.0.0:
     resolution: {integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==}
     engines: {node: '>=16.0.0'}
-
-  filelist@1.0.4:
-    resolution: {integrity: sha512-w1cEuf3S+DrLCQL7ET6kz+gmlJdbq9J7yXCSjK/OZCPA+qEN1WyF4ZAf0YYJa4/shHJra2t/d/r8SV4Ji+x+8Q==}
 
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
@@ -2878,11 +2878,6 @@ packages:
   jackspeak@3.4.3:
     resolution: {integrity: sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==}
 
-  jake@10.9.4:
-    resolution: {integrity: sha512-wpHYzhxiVQL+IV05BLE2Xn34zW1S223hvjtqk0+gsPrwd/8JNLXJgZZM/iPFsYc1xyphF+6M6EvdE5E9MBGkDA==}
-    engines: {node: '>=10'}
-    hasBin: true
-
   java-properties@1.0.2:
     resolution: {integrity: sha512-qjdpeo2yKlYTH7nFdK0vbZWuTCesk4o63v5iVOlhMQPfuIZQfW/HI35SjfhA+4qpg36rnFSvUK5b1m+ckIblQQ==}
     engines: {node: '>= 0.6.0'}
@@ -3219,10 +3214,6 @@ packages:
 
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
-
-  minimatch@5.1.6:
-    resolution: {integrity: sha512-lKwV/1brpG6mBUFHtb7NUmtABCb2WZZmm2wNiOA5hAb8VdCS4B3dtMWyvcoViccwAW/COERjXLt0zP1zXUN26g==}
-    engines: {node: '>=10'}
 
   minimatch@9.0.5:
     resolution: {integrity: sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==}
@@ -4016,8 +4007,8 @@ packages:
     resolution: {integrity: sha512-kUMbT1oBJCpgrnKoSr0o6wPtvRWT9W9UKvGLwfJYO2WuahZRHOpEyL1ckyMGgMWh0UdpmaoFqKKD29WTomNEGA==}
     engines: {node: '>=8'}
 
-  skuba@15.0.1:
-    resolution: {integrity: sha512-tT7VzK6yuKAkExDPu5wTgeahRdwNg4ZPO4Gks9VDq/sOhqrOpSLAGkwYQOmDtzPgjsr0nRJYq6nUTyzWDPWO3A==}
+  skuba@15.1.0:
+    resolution: {integrity: sha512-MGRRYSp0slo/WQQ9RCfcNyrEqiPu5c0x3Xl12xe+rp9CBwwjGkmDS3emxAmqT/mdn+jb65X0EZ9IWHolnyhFkw==}
     engines: {node: '>=22.14.0'}
     hasBin: true
 
@@ -4732,6 +4723,10 @@ snapshots:
       validate-npm-package-name: 5.0.1
 
   '@ast-grep/lang-json@0.0.6':
+    dependencies:
+      '@ast-grep/setup-lang': 0.0.6
+
+  '@ast-grep/lang-yaml@0.0.5':
     dependencies:
       '@ast-grep/setup-lang': 0.0.6
 
@@ -6363,8 +6358,6 @@ snapshots:
 
   async-lock@1.4.1: {}
 
-  async@3.2.6: {}
-
   atomic-sleep@1.0.0: {}
 
   available-typed-arrays@1.0.7:
@@ -6767,9 +6760,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  ejs@4.0.1:
-    dependencies:
-      jake: 10.9.4
+  ejs@5.0.1: {}
 
   electron-to-chromium@1.5.302: {}
 
@@ -7278,10 +7269,6 @@ snapshots:
   file-entry-cache@8.0.0:
     dependencies:
       flat-cache: 4.0.1
-
-  filelist@1.0.4:
-    dependencies:
-      minimatch: 5.1.6
 
   fill-range@7.1.1:
     dependencies:
@@ -7864,12 +7851,6 @@ snapshots:
     optionalDependencies:
       '@pkgjs/parseargs': 0.11.0
 
-  jake@10.9.4:
-    dependencies:
-      async: 3.2.6
-      filelist: 1.0.4
-      picocolors: 1.1.1
-
   java-properties@1.0.2: {}
 
   jest-changed-files@30.2.0:
@@ -8412,10 +8393,6 @@ snapshots:
   minimatch@3.1.2:
     dependencies:
       brace-expansion: 1.1.12
-
-  minimatch@5.1.6:
-    dependencies:
-      brace-expansion: 2.0.2
 
   minimatch@9.0.5:
     dependencies:
@@ -9214,10 +9191,11 @@ snapshots:
     dependencies:
       unicode-emoji-modifier-base: 1.0.0
 
-  skuba@15.0.1(@babel/core@7.29.0)(@jest/transform@30.2.0)(@typescript-eslint/eslint-plugin@8.56.0(@typescript-eslint/parser@8.56.0(eslint@9.39.3)(typescript@5.9.3))(eslint@9.39.3)(typescript@5.9.3))(@typescript-eslint/utils@8.56.0(eslint@9.39.3)(typescript@5.9.3))(babel-jest@30.2.0(@babel/core@7.29.0))(jest-util@30.2.0)(synckit@0.11.12):
+  skuba@15.1.0(@babel/core@7.29.0)(@jest/transform@30.2.0)(@typescript-eslint/eslint-plugin@8.56.0(@typescript-eslint/parser@8.56.0(eslint@9.39.3)(typescript@5.9.3))(eslint@9.39.3)(typescript@5.9.3))(@typescript-eslint/utils@8.56.0(eslint@9.39.3)(typescript@5.9.3))(babel-jest@30.2.0(@babel/core@7.29.0))(jest-util@30.2.0)(synckit@0.11.12):
     dependencies:
       '@arethetypeswrong/core': 0.18.2
       '@ast-grep/lang-json': 0.0.6
+      '@ast-grep/lang-yaml': 0.0.5
       '@ast-grep/napi': 0.41.0
       '@esbuild-plugins/tsconfig-paths': 0.1.2(esbuild@0.27.3)(typescript@5.9.3)
       '@inquirer/prompts': 7.10.1(@types/node@24.10.13)
@@ -9230,7 +9208,7 @@ snapshots:
       '@types/jest': 30.0.0
       '@types/node': 24.10.13
       concurrently: 9.2.1
-      ejs: 4.0.1
+      ejs: 5.0.1
       esbuild: 0.27.3
       eslint: 9.39.3
       eslint-config-skuba: 8.1.0(@typescript-eslint/eslint-plugin@8.56.0(@typescript-eslint/parser@8.56.0(eslint@9.39.3)(typescript@5.9.3))(eslint@9.39.3)(typescript@5.9.3))(@typescript-eslint/utils@8.56.0(eslint@9.39.3)(typescript@5.9.3))(eslint@9.39.3)(jest@30.2.0(@types/node@24.10.13)(ts-node@10.9.2(@types/node@24.10.13)(typescript@5.9.3)))(typescript@5.9.3)
