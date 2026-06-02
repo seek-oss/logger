@@ -36,7 +36,7 @@ index a8d5f271d83507518de72ef13049d6542e3d99d7..112c3b783096a68d0324b0b5d6e7abe1
 +  unknown,
 +  js_optional,
 +  js_nullable,
-+  nullable,
++  nullable as nullish,
 +  array,
 +  instance,
 +  unnest,
@@ -181,7 +181,7 @@ index a8d5f271d83507518de72ef13049d6542e3d99d7..112c3b783096a68d0324b0b5d6e7abe1
 +export var any = unknown
 +export var optional = js_optional
 +export var nullable = js_nullable
-+export var nullish = nullable
++export { nullish }
 +export { array }
 +export { instance }
 +export { unnest }

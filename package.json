@@ -62,6 +62,9 @@
     "access": "public",
     "provenance": true
   },
+  "inlinedDependencies": {
+    "sury": "11.0.0-alpha.4"
+  },
   "skuba": {
     "entryPoint": "src/index.ts",
     "template": null,
