@@ -67,5 +67,8 @@
     "template": null,
     "type": "package",
     "version": "15.3.0"
+  },
+  "inlinedDependencies": {
+    "sury": "11.0.0-alpha.4"
   }
 }

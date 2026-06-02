@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   sury:
-    hash: a31e5a175f601860a71b75af206566dd78d7d8439030f6471682e0bf6f381275
+    hash: e555211309a34814b5f4579dbe55e0ad288875a64bcf61c4f96ef8921be275df
     path: patches/sury.patch
 
 importers:
@@ -43,7 +43,7 @@ importers:
         version: 4.2.0
       sury:
         specifier: 11.0.0-alpha.4
-        version: 11.0.0-alpha.4(patch_hash=a31e5a175f601860a71b75af206566dd78d7d8439030f6471682e0bf6f381275)
+        version: 11.0.0-alpha.4(patch_hash=e555211309a34814b5f4579dbe55e0ad288875a64bcf61c4f96ef8921be275df)
 
 packages:
 
@@ -9511,7 +9511,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  sury@11.0.0-alpha.4(patch_hash=a31e5a175f601860a71b75af206566dd78d7d8439030f6471682e0bf6f381275): {}
+  sury@11.0.0-alpha.4(patch_hash=e555211309a34814b5f4579dbe55e0ad288875a64bcf61c4f96ef8921be275df): {}
 
   synckit@0.11.12:
     dependencies:
