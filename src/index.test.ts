@@ -29,7 +29,6 @@ test('exports', () =>
       },
       "createDestination": [Function],
       "createLogger": [Function],
-      "default": [Function],
       "pino": [Function],
     }
   `));
