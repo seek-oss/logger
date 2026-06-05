@@ -16,6 +16,7 @@
     "name": "SEEK"
   },
   "sideEffects": false,
+  "type": "module",
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
@@ -69,6 +70,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "15.3.0"
+    "version": "16.1.0"
   }
 }

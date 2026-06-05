@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@arethetypeswrong/core@0.18.2>fflate': 0.8.2
+
 patchedDependencies:
   sury:
     hash: e555211309a34814b5f4579dbe55e0ad288875a64bcf61c4f96ef8921be275df

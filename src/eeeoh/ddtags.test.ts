@@ -1,3 +1,5 @@
+import { expect, test } from 'vitest';
+
 import { ddtags } from './ddtags.js';
 
 test('ddtags', () => {

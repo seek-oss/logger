@@ -1,6 +1,7 @@
 import type { Transform } from 'stream';
 
 import split from 'split2';
+import { expect, it } from 'vitest';
 
 import createLogger from '../index.js';
 

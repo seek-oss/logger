@@ -1,4 +1,5 @@
 import split from 'split2';
+import { afterEach, describe, expect, test } from 'vitest';
 
 import { DEFAULT_OMIT_HEADER_NAMES } from './serializers/index.js';
 
@@ -84,7 +85,7 @@ function testLog(
   method?: 'error' | 'info',
   loggerOptions?: LoggerOptions,
 ) {
-  // eslint-disable-next-line jest/valid-title
+  // eslint-disable-next-line vitest/valid-title
   test(testName, async () => {
     const inputString = JSON.stringify(input);
     const stream = sink();
@@ -932,7 +933,9 @@ describe('eeeoh', () => {
     version: 'abcdef',
   } satisfies Extract<LoggerOptions, { eeeoh: object }>['base'];
 
-  afterEach(stdoutMock.clear);
+  afterEach(() => {
+    stdoutMock.clear();
+  });
 
   test('static root config', () => {
     const logger = createLogger(
@@ -1322,7 +1325,7 @@ describe('eeeoh', () => {
       );
 
       expect(() => logger.info('error')).toThrowErrorMatchingInlineSnapshot(
-        `"No numeric value associated with log level: undefinedCustomLevel. Ensure custom levels listed in \`eeeoh.datadog\` are configured as \`customLevels\` of the logger instance."`,
+        `[Error: No numeric value associated with log level: undefinedCustomLevel. Ensure custom levels listed in \`eeeoh.datadog\` are configured as \`customLevels\` of the logger instance.]`,
       );
     }
 
@@ -1366,13 +1369,13 @@ describe('eeeoh', () => {
       expect(() =>
         childLogger.megaAsplode('broken'),
       ).toThrowErrorMatchingInlineSnapshot(
-        `"No numeric value associated with log level: asplode. Ensure custom levels listed in \`eeeoh.datadog\` are configured as \`customLevels\` of the logger instance."`,
+        `[Error: No numeric value associated with log level: asplode. Ensure custom levels listed in \`eeeoh.datadog\` are configured as \`customLevels\` of the logger instance.]`,
       );
 
       expect(() =>
         childLogger.asplode('broken'),
       ).toThrowErrorMatchingInlineSnapshot(
-        `"No numeric value associated with log level: asplode. Ensure custom levels listed in \`eeeoh.datadog\` are configured as \`customLevels\` of the logger instance."`,
+        `[Error: No numeric value associated with log level: asplode. Ensure custom levels listed in \`eeeoh.datadog\` are configured as \`customLevels\` of the logger instance.]`,
       );
     }
 
