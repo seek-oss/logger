@@ -14,7 +14,7 @@ export default defineConfig(
       },
       coverage: {
         provider: 'istanbul',
-        exclude: ['src/testing'], // TODO: Update these Jest regexp pattern strings from coveragePathIgnorePatterns to globs
+        exclude: ['src/testing'],
         thresholds: {
           branches: 100,
           functions: 100,
@@ -22,7 +22,7 @@ export default defineConfig(
           statements: 100,
         },
       },
-      exclude: ['/test\\.ts'], // TODO: Update these Jest regexp pattern strings from testPathIgnorePatterns to globs
+      exclude: ['**/test.ts'],
     },
   }),
 );
