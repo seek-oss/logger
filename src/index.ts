@@ -219,5 +219,3 @@ export const createLogger = <CustomLevels extends string = never>(
     withRedaction(destination, redactText),
   );
 };
-
-export default createLogger;
