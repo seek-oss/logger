@@ -1,6 +1,6 @@
-const skuba = require('skuba/config/eslint');
+import skuba from 'eslint-config-skuba';
 
-module.exports = [
+export default [
   {
     ignores: ['**/flow-typed'],
   },
