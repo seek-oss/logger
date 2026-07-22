@@ -7,6 +7,7 @@ export const defaultRedact = [
   'error.config.body',
   'error.config.data',
   "error.config.headers['user-email']",
+  'error.config.params',
   'error.response.config',
   "header['user-email']",
   "headers['user-email']",
