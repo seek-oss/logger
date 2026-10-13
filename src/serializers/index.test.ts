@@ -1,3 +1,5 @@
+import { describe, expect, it, test } from 'vitest';
+
 import { DEFAULT_OMIT_HEADER_NAMES, createSerializers } from './index.js';
 
 const serializers = createSerializers({});
@@ -10,7 +12,7 @@ describe('DEFAULT_OMIT_HEADER_NAMES', () => {
       // @ts-expect-error - We're trying to break the read-only array (TS2542).
       DEFAULT_OMIT_HEADER_NAMES[0] = 'badness!';
     }).toThrowErrorMatchingInlineSnapshot(
-      `"Cannot assign to read only property '0' of object '[object Array]'"`,
+      `[TypeError: Cannot assign to read only property '0' of object '[object Array]']`,
     );
 
     expect(() => {
@@ -18,7 +20,7 @@ describe('DEFAULT_OMIT_HEADER_NAMES', () => {
       // eslint-disable-next-line @typescript-eslint/no-array-delete
       delete DEFAULT_OMIT_HEADER_NAMES[0];
     }).toThrowErrorMatchingInlineSnapshot(
-      `"Cannot delete property '0' of [object Array]"`,
+      `[TypeError: Cannot delete property '0' of [object Array]]`,
     );
 
     // Assignment didn't take effect!
