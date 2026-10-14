@@ -1,3 +1,5 @@
+import { expect, it } from 'vitest';
+
 import { omitProperties } from './omitProperties.js';
 
 const omitPropertyNames = ['omit-prop', 'omit.prop', '', '0'];

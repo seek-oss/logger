@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events';
 
+import { afterEach, describe, expect, it, test } from 'vitest';
+
 import { createDestination } from './create.js';
 
 describe('createDestination', () => {
@@ -31,7 +33,7 @@ describe('createDestination', () => {
       const { stdoutMock } = createDestination({ mock: true });
 
       expect(() => stdoutMock.write('}')).toThrowErrorMatchingInlineSnapshot(
-        `"Unexpected token '}', "}" is not valid JSON"`,
+        `[SyntaxError: Unexpected token '}', "}" is not valid JSON]`,
       );
     });
 
@@ -39,7 +41,7 @@ describe('createDestination', () => {
       const { stdoutMock } = createDestination({ mock: true });
 
       expect(() => stdoutMock.write('null')).toThrowErrorMatchingInlineSnapshot(
-        `"@seek/logger mocking failed to process a log message: null"`,
+        `[Error: @seek/logger mocking failed to process a log message: null]`,
       );
     });
 
@@ -47,7 +49,7 @@ describe('createDestination', () => {
       const { stdoutMock } = createDestination({ mock: true });
 
       expect(() => stdoutMock.write('[]')).toThrowErrorMatchingInlineSnapshot(
-        `"@seek/logger mocking failed to process a log message: []"`,
+        `[Error: @seek/logger mocking failed to process a log message: []]`,
       );
     });
   });
@@ -221,13 +223,15 @@ describe('createDestination', () => {
   describe('calls + onlyCall', () => {
     const { destination, stdoutMock } = createDestination({ mock: true });
 
-    afterEach(stdoutMock.clear);
+    afterEach(() => {
+      stdoutMock.clear();
+    });
 
     test('no calls', () => {
       expect(stdoutMock.calls).toMatchInlineSnapshot(`[]`);
 
       expect(stdoutMock.onlyCall).toThrowErrorMatchingInlineSnapshot(
-        `"stdoutMock.onlyCall() found 0 calls; expected exactly 1"`,
+        `[Error: stdoutMock.onlyCall() found 0 calls; expected exactly 1]`,
       );
     });
 
@@ -255,7 +259,7 @@ describe('createDestination', () => {
       `);
 
       expect(stdoutMock.onlyCall).toThrowErrorMatchingInlineSnapshot(
-        `"stdoutMock.onlyCall() found 2 calls; expected exactly 1"`,
+        `[Error: stdoutMock.onlyCall() found 2 calls; expected exactly 1]`,
       );
     });
   });
