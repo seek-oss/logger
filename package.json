@@ -7,16 +7,22 @@
   "bugs": {
     "url": "https://github.com/seek-oss/logger/issues"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/seek-oss/logger.git"
-  },
   "license": "MIT",
   "author": {
     "name": "SEEK"
   },
-  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seek-oss/logger.git"
+  },
+  "files": [
+    "dist"
+  ],
   "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
@@ -24,12 +30,10 @@
     },
     "./package.json": "./package.json"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.cts",
-  "files": [
-    "dist"
-  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
     "build": "skuba build-package",
     "clean": "rm -fr lib",
@@ -55,14 +59,10 @@
     "split2": "4.2.0",
     "sury": "11.0.0-alpha.4"
   },
-  "packageManager": "pnpm@10.34.5",
   "engines": {
     "node": ">=22.14.0"
   },
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
+  "packageManager": "pnpm@11.28.2",
   "inlinedDependencies": {
     "sury": "11.0.0-alpha.4"
   },
@@ -70,6 +70,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "16.1.0"
+    "version": "16.4.0"
   }
 }
