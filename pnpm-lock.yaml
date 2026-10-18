@@ -34,8 +34,8 @@ importers:
         specifier: 4.2.0
         version: 4.2.0
       sury:
-        specifier: 11.0.0-alpha.4
-        version: 11.0.0-alpha.4(patch_hash=e555211309a34814b5f4579dbe55e0ad288875a64bcf61c4f96ef8921be275df)
+        specifier: 11.0.0
+        version: 11.0.0(patch_hash=e555211309a34814b5f4579dbe55e0ad288875a64bcf61c4f96ef8921be275df)
 
 packages:
 
@@ -4744,8 +4744,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  sury@11.0.0-alpha.4:
-    resolution: {integrity: sha512-oeG/GJWZvQCKtGPpLbu0yCZudfr5LxycDo5kh7SJmKHDPCsEPJssIZL2Eb4Tl7g9aPEvIDuRrkS+L0pybsMEMA==}
+  sury@11.0.0:
+    resolution: {integrity: sha512-ixo9P04kr1VB15m+9OX1llkGYityBl5z79XBZqU4hIUjixbdoaoK92wO25DsPqVH8UjyB1rbotf8Gqj0K/uRwA==}
     peerDependencies:
       rescript: 12.x
     peerDependenciesMeta:
@@ -10543,7 +10543,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  sury@11.0.0-alpha.4(patch_hash=e555211309a34814b5f4579dbe55e0ad288875a64bcf61c4f96ef8921be275df): {}
+  sury@11.0.0(patch_hash=e555211309a34814b5f4579dbe55e0ad288875a64bcf61c4f96ef8921be275df): {}
 
   synckit@0.11.12:
     dependencies:
