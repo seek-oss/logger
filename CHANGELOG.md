@@ -1,5 +1,20 @@
 # @seek/logger
 
+## 13.0.0
+
+### Major Changes
+
+- This package is now authored as an ESM package. It is still published as a dual CJS/ESM package. ([#307](https://github.com/seek-oss/logger/pull/307) [`12bd0f6`](https://github.com/seek-oss/logger/commit/12bd0f615784ac3edf572509c441bc985bc55cb4))
+
+  This release also drops the default export, so you will need to import `createLogger` as a named import:
+
+  ```diff
+  - import createLogger from '@seek/logger';
+  + import { createLogger } from '@seek/logger';
+  ```
+
+  If you're using [skuba](https://github.com/seek-oss/skuba), upgrade to [`skuba@16.4.0`](https://github.com/seek-oss/skuba/releases/tag/skuba%4016.4.0) or newer first. [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) or a manual `skuba format` will rewrite these imports for you.
+
 ## 12.1.0
 
 ### Minor Changes
